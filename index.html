@@ -3,36 +3,41 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>日语动词变形 · 每日练习</title>
+<title>yueyue小朋友和姐姐的练习册</title>
 <style>
-:root{--bg:#f6f5f1;--card:#fff;--ink:#222;--muted:#777;--line:#e4e1d8;--accent:#0f6e56;--accent-bg:#e1f5ee;--ng:#a32d2d;--ng-bg:#fcebeb;--warn-bg:#faeeda;--warn:#854f0b;--gold-bg:#fff4d6;--gold:#7a5300}
+:root{--bg:#f6f5f1;--card:#fff;--ink:#222;--muted:#777;--line:#e4e1d8;--accent:#0f6e56;--accent-bg:#e1f5ee;--ng:#a32d2d;--ng-bg:#fcebeb;--warn-bg:#faeeda;--warn:#854f0b;--gold-bg:#fff4d6;--gold:#7a5300;--pink:#993556;--pink-bg:#fbeaf0}
 *{box-sizing:border-box}
 body{margin:0;background:var(--bg);color:var(--ink);font-family:"Hiragino Sans","PingFang SC","Noto Sans JP","Microsoft YaHei",sans-serif;line-height:1.7}
 .wrap{max-width:760px;margin:0 auto;padding:24px 16px 60px}
-h1{font-size:22px;margin:0 0 4px}
-.sub{color:var(--muted);font-size:14px;margin:0 0 12px}
+h1{font-size:22px;margin:0 0 6px;color:var(--pink)}
+.greet{background:var(--pink-bg);color:var(--pink);border-radius:10px;padding:10px 14px;font-size:16px;font-weight:bold;margin:10px 0 14px}
+.profiles{display:flex;gap:8px;flex-wrap:wrap}
+.pf{padding:8px 16px;border-radius:20px;border:1px solid var(--line);background:#fff;cursor:pointer;font-size:15px}
+.pf.on{background:var(--pink);color:#fff;border-color:var(--pink)}
 .card{background:var(--card);border:1px solid var(--line);border-radius:12px;padding:18px;margin-bottom:14px}
 .hidden{display:none}
 .muted{color:var(--muted);font-size:13px}
 .barw{height:10px;background:var(--line);border-radius:5px;overflow:hidden;margin:8px 0}
 .barw>div{height:100%;background:var(--accent);transition:width .3s}
-.dash-top{display:flex;justify-content:space-between;align-items:baseline;flex-wrap:wrap;gap:8px}
+.dash-top{display:flex;justify-content:space-between;align-items:flex-start;flex-wrap:wrap;gap:8px}
 .dash-big{font-size:20px;font-weight:bold;color:var(--accent)}
 .cheer{background:var(--accent-bg);color:var(--accent);border-radius:8px;padding:10px 12px;font-size:14px;margin-top:10px}
 .tabs{display:flex;gap:8px;margin-bottom:14px;flex-wrap:wrap;align-items:center}
 .tab{flex:1;min-width:90px;padding:10px;border:1px solid var(--line);background:var(--card);border-radius:8px;font-size:15px;cursor:pointer}
 .tab.on{background:var(--accent);color:#fff;border-color:var(--accent)}
-select{padding:6px 8px;border-radius:8px;border:1px solid var(--line);font-size:14px}
+select{padding:5px 8px;border-radius:8px;border:1px solid var(--line);font-size:14px}
 .qtop{font-size:13px;color:var(--accent);margin-bottom:4px}
 .qhead{font-size:19px;font-weight:bold}
 .box{background:var(--accent-bg);border-radius:10px;padding:12px 14px;margin:12px 0}
 .box .big{font-size:22px;color:var(--accent)}
+
 .lbl{display:inline-block;font-size:12px;color:var(--accent);background:var(--accent-bg);border-radius:10px;padding:0 8px;margin-right:8px}
 .row{margin:8px 0}
 .inputrow{display:flex;gap:8px;margin-top:14px}
 input[type=text]{flex:1;min-width:0;font-size:20px;padding:10px 12px;border:1px solid var(--line);border-radius:8px}
 .btn{padding:9px 16px;border-radius:8px;border:1px solid var(--line);background:#fff;cursor:pointer;font-size:15px}
 .btn.main{background:var(--accent);color:#fff;border-color:var(--accent)}
+.mini{padding:2px 10px;border-radius:6px;border:1px solid var(--line);background:#fff;cursor:pointer;font-size:13px;margin-left:6px}
 .link{background:none;border:none;color:var(--accent);cursor:pointer;font-size:14px;padding:0;margin-top:10px;text-decoration:underline}
 .hint{background:var(--warn-bg);color:var(--warn);border-radius:8px;padding:10px 12px;font-size:14px;margin-top:8px}
 .err{color:var(--ng);font-size:13px;margin-top:6px}
@@ -49,67 +54,98 @@ td,th{border-bottom:1px solid var(--line);padding:8px 6px;text-align:left;vertic
 th{font-size:13px;color:var(--muted);font-weight:normal}
 tr.cur td{background:var(--accent-bg)}
 .btns{display:flex;gap:8px;flex-wrap:wrap;margin-top:14px}
+.ex{border-bottom:1px dashed var(--line);padding:8px 0}
+.exja{font-size:17px}
 .unit{display:flex;justify-content:space-between;gap:10px;padding:10px 12px;border:1px solid var(--line);border-radius:10px;margin-bottom:8px;cursor:pointer}
 .unit.sel{border-color:var(--accent);background:var(--accent-bg)}
 .unit.lock{opacity:.5;cursor:default}
 .unit .ur{text-align:right;white-space:nowrap}
 .lv{font-size:12px;background:var(--warn-bg);color:var(--warn);border-radius:10px;padding:0 8px;margin-left:4px}
+.cal{display:grid;grid-template-columns:repeat(7,1fr);gap:6px;margin-top:10px}
+.cell{border-radius:8px;padding:4px 0;text-align:center;font-size:12px;background:#f1efe8;color:var(--muted);min-height:44px}
+
+.cell.part{background:var(--accent-bg);color:var(--accent)}
+.cell.done{background:var(--accent);color:#fff}
+.cell.today{outline:2px solid var(--pink)}
+.cell b{display:block;font-size:14px}
 details summary{cursor:pointer;font-weight:bold}
 </style>
 </head>
 <body>
 <div class="wrap">
-  <h1>日语动词变形 · 每日练习</h1>
-  <p class="sub">同一个动词，每次只加一步变形。</p>
+  <h1>yueyue小朋友和姐姐的练习册</h1>
+  <div class="profiles" id="profiles"></div>
+  <div class="greet" id="greet"></div>
   <div class="card" id="dash"></div>
   <div class="tabs" id="tabs"></div>
   <div class="card" id="q"></div>
   <div class="card hidden" id="res"></div>
+  <div class="card" id="cal"></div>
   <div class="card" id="units"></div>
   <div class="card" id="plan"></div>
 </div>
 
 <script>
+const E=(s,ja,zh)=>({s,ja,zh});
 const VERBS = [
-  {k:"認める",r:"みとめる",t:"i",zh:"认可"},
-  {k:"確認する",r:"かくにんする",t:"s",zh:"确认"},
-  {k:"提出する",r:"ていしゅつする",t:"s",zh:"提交"},
-  {k:"説明する",r:"せつめいする",t:"s",zh:"说明"},
-  {k:"報告する",r:"ほうこくする",t:"s",zh:"汇报"},
-  {k:"送る",r:"おくる",t:"g",zh:"发送"},
-  {k:"書く",r:"かく",t:"g",zh:"写"},
-  {k:"行く",r:"いく",t:"g",zh:"去"},
-  {k:"読む",r:"よむ",t:"g",zh:"读"},
-  {k:"話す",r:"はなす",t:"g",zh:"说"},
-  {k:"払う",r:"はらう",t:"g",zh:"支付"},
-  {k:"待つ",r:"まつ",t:"g",zh:"等"},
-  {k:"呼ぶ",r:"よぶ",t:"g",zh:"叫"},
-  {k:"急ぐ",r:"いそぐ",t:"g",zh:"赶"},
-  {k:"使う",r:"つかう",t:"g",zh:"使用"},
-  {k:"帰る",r:"かえる",t:"g",zh:"回去"},
-  {k:"見る",r:"みる",t:"i",zh:"看"},
-  {k:"調べる",r:"しらべる",t:"i",zh:"查"},
-  {k:"決める",r:"きめる",t:"i",zh:"决定"},
-  {k:"受ける",r:"うける",t:"i",zh:"接受"},
-  {k:"来る",r:"くる",t:"k",zh:"来"}
+  {k:"認める",r:"みとめる",t:"i",zh:"认可",ex:[E("职场","部長はこの経費を認めてくれました。","部长批准了这笔经费。"),E("生活","自分の間違いを素直に認めよう。","要坦率地承认自己的错误。")]},
+  {k:"確認する",r:"かくにんする",t:"s",zh:"确认",ex:[E("职场","請求書の金額を確認していただけますか。","可以请您确认一下请求书的金额吗？"),E("生活","出かける前に、天気予報を確認した。","出门前确认了天气预报。")]},
+  {k:"提出する",r:"ていしゅつする",t:"s",zh:"提交",ex:[E("职场","月末までに報告書を提出しなければなりません。","月底之前必须提交报告。"),E("生活","宿題は明日までに提出してください。","作业请在明天之前交。")]},
+  {k:"説明する",r:"せつめいする",t:"s",zh:"说明",ex:[E("职场","会議でこの数字について説明します。","我在会议上说明这个数字。"),E("生活","先生がもう一度説明してくれた。","老师又解释了一遍。")]},
+  {k:"報告する",r:"ほうこくする",t:"s",zh:"汇报",ex:[E("职场","結果が出たら、すぐに報告します。","结果出来后马上汇报。"),E("生活","今日あったことをお母さんに報告した。","把今天发生的事告诉了妈妈。")]},
+  {k:"送る",r:"おくる",t:"g",zh:"发送",ex:[E("职场","資料はメールで送ります。","资料用邮件发送。"),E("生活","おばあちゃんに手紙を送った。","给奶奶寄了信。")]},
+  {k:"書く",r:"かく",t:"g",zh:"写",ex:[E("职场","議事録を書いてもらえますか。","能帮忙写一下会议记录吗？"),E("生活","日記を毎日書いている。","每天都在写日记。")]},
+  {k:"行く",r:"いく",t:"g",zh:"去",ex:[E("职场","午後、銀行に行ってきます。","下午去一趟银行。"),E("生活","週末、公園に行こう。","周末去公园吧。")]},
+
+  {k:"読む",r:"よむ",t:"g",zh:"读",ex:[E("职场","契約書をよく読んでからサインしてください。","请仔细阅读合同后再签字。"),E("生活","寝る前に絵本を読んだ。","睡前读了绘本。")]},
+  {k:"話す",r:"はなす",t:"g",zh:"说",ex:[E("职场","その件は部長と話してみます。","那件事我和部长谈一下。"),E("生活","友だちと日本語で話せた。","用日语和朋友说上话了。")]},
+  {k:"払う",r:"はらう",t:"g",zh:"支付",ex:[E("职场","請求書の金額を今週中に払います。","本周内支付请求书的金额。"),E("生活","レジでお金を払った。","在收银台付了钱。")]},
+  {k:"待つ",r:"まつ",t:"g",zh:"等",ex:[E("职场","少々お待ちください。","请稍等。"),E("生活","信号が青になるまで待とう。","等到信号灯变绿吧。")]},
+  {k:"呼ぶ",r:"よぶ",t:"g",zh:"叫",ex:[E("职场","会議室に田中さんを呼んでください。","请把田中叫到会议室。"),E("生活","名前を呼ばれたら、手を挙げてね。","被叫到名字时要举手哦。")]},
+  {k:"急ぐ",r:"いそぐ",t:"g",zh:"赶",ex:[E("职场","締め切りが近いので、急いでいます。","截止日期快到了，正在赶。"),E("生活","急がないと、バスに遅れるよ。","不快点的话会赶不上公交哦。")]},
+  {k:"使う",r:"つかう",t:"g",zh:"使用",ex:[E("职场","この会議室は午後使えますか。","这个会议室下午能用吗？"),E("生活","はさみを使ったら、元の場所に戻そう。","用完剪刀要放回原处。")]},
+  {k:"帰る",r:"かえる",t:"g",zh:"回去",ex:[E("职场","今日は早めに帰ります。","今天早点回去。"),E("生活","暗くなる前に家に帰ろう。","天黑前回家吧。")]},
+  {k:"見る",r:"みる",t:"i",zh:"看",ex:[E("职场","この表を見てください。","请看这个表。"),E("生活","夜、きれいな星を見た。","晚上看到了漂亮的星星。")]},
+  {k:"調べる",r:"しらべる",t:"i",zh:"查",ex:[E("职场","入金の記録を調べてみます。","我查一下入金记录。"),E("生活","わからない言葉を辞書で調べた。","用词典查了不懂的词。")]},
+  {k:"決める",r:"きめる",t:"i",zh:"决定",ex:[E("职场","来週までに予算を決めなければなりません。","下周前必须定下预算。"),E("生活","夏休みの目標を決めよう。","定一个暑假目标吧。")]},
+  {k:"受ける",r:"うける",t:"i",zh:"接受",ex:[E("职场","来月、日本語の試験を受けます。","下个月参加日语考试。"),E("生活","病院で健康診断を受けた。","在医院做了体检。")]},
+  {k:"来る",r:"くる",t:"k",zh:"来",ex:[E("职场","明日、お客様が会社に来ます。","明天客户来公司。"),E("生活","友だちが家に遊びに来た。","朋友来家里玩了。")]},
+  {k:"連絡する",r:"れんらくする",t:"s",zh:"联系",ex:[E("职场","確認できたら、こちらからご連絡します。","确认好之后，我这边联系您。"),E("生活","遅れるときは必ず連絡してね。","要迟到的时候一定要联系哦。")]},
+  {k:"準備する",r:"じゅんびする",t:"s",zh:"准备",ex:[E("职场","会議の資料を準備しておきます。","我先把会议资料准备好。"),E("生活","明日の遠足の準備ができた。","明天远足的东西准备好了。")]},
+  {k:"勉強する",r:"べんきょうする",t:"s",zh:"学习",ex:[E("职场","毎日少しずつ日本語を勉強しています。","每天一点点地学日语。"),E("生活","勉強が終わったら、遊んでもいいよ。","学习完了就可以玩哦。")]},
+  {k:"取る",r:"とる",t:"g",zh:"取得",ex:[E("职场","来週、休みを取ります。","下周请假。"),E("生活","棚の上の本を取ってくれる？","能帮我拿一下架子上的书吗？")]},
+  {k:"持つ",r:"もつ",t:"g",zh:"拿",ex:[E("职场","会議には資料を持って来てください。","开会请带资料来。"),E("生活","傘を持って出かけた。","带着伞出门了。")]},
+  {k:"頼む",r:"たのむ",t:"g",zh:"拜托",ex:[E("职场","この作業を山田さんに頼みました。","把这项工作拜托给了山田。"),E("生活","お姉ちゃんに宿題を手伝ってほしいと頼んだ。","拜托姐姐帮忙做作业。")]},
+  {k:"選ぶ",r:"えらぶ",t:"g",zh:"选择",ex:[E("职场","三つの案から一つを選んでください。","请从三个方案中选一个。"),E("生活","好きな色を選んでいいよ。","可以选喜欢的颜色哦。")]},
+  {k:"休む",r:"やすむ",t:"g",zh:"休息",ex:[E("职场","体調が悪いので、今日は休ませていただきます。","身体不舒服，今天请允许我休息。"),E("生活","疲れたら少し休もう。","累了就休息一下吧。")]},
+  {k:"返す",r:"かえす",t:"g",zh:"归还",ex:[E("职场","お借りした資料は明日お返しします。","借的资料明天还给您。"),E("生活","図書館に本を返しに行った。","去图书馆还书了。")]},
+  {k:"手伝う",r:"てつだう",t:"g",zh:"帮忙",ex:[E("职场","何か手伝えることがあれば言ってください。","有什么我能帮忙的请告诉我。"),E("生活","料理を手伝ったら、ほめられた。","帮忙做饭，被表扬了。")]},
+  {k:"作る",r:"つくる",t:"g",zh:"制作",ex:[E("职场","来週までに見積書を作ります。","下周之前做好报价单。"),E("生活","お母さんとケーキを作った。","和妈妈一起做了蛋糕。")]},
+  {k:"聞く",r:"きく",t:"g",zh:"听／问",ex:[E("职场","わからないことは、遠慮なく聞いてください。","不懂的地方请尽管问。"),E("生活","先生の話をよく聞こう。","好好听老师讲话吧。")]},
+  {k:"教える",r:"おしえる",t:"i",zh:"教",ex:[E("职场","新しいシステムの使い方を教えていただけますか。","能请您教我新系统的用法吗？"),E("生活","妹に九九を教えてあげた。","教了妹妹九九乘法表。")]},
+  {k:"始める",r:"はじめる",t:"i",zh:"开始",ex:[E("职场","では、会議を始めましょう。","那么，我们开始开会吧。"),E("生活","ピアノを習い始めた。","开始学钢琴了。")]},
+  {k:"忘れる",r:"わすれる",t:"i",zh:"忘记",ex:[E("职场","パスワードを忘れてしまいました。","把密码忘了。"),E("生活","宿題を忘れないでね。","别忘了作业哦。")]},
+  {k:"起きる",r:"おきる",t:"i",zh:"起床",ex:[E("职场","明日は早く起きなければなりません。","明天必须早起。"),E("生活","今朝は七時に起きた。","今天早上七点起床。")]},
+  {k:"出る",r:"でる",t:"i",zh:"出席",ex:[E("职场","明日の会議に出ます。","我参加明天的会议。"),E("生活","電話に出られなくてごめんね。","没能接电话，对不起哦。")]},
+  {k:"着る",r:"きる",t:"i",zh:"穿",ex:[E("职场","明日はスーツを着て来てください。","明天请穿西装来。"),E("生活","寒いから、コートを着よう。","很冷，穿上外套吧。")]}
 ];
 
+
 const UNITS = [
-  {id:1,name:"基础五形",lv:"N5",total:40,desc:"ます・て・た・ない形",
+  {id:1,name:"基础五形",lv:"N5",total:60,desc:"ます・て・た・ない形",
    tpl:[["masu"],["te"],["ta"],["nai"],["masu","masen"],["masu","mashita"],["masu","masen","msd"]]},
-  {id:2,name:"否定延伸",lv:"N5～N4",total:40,desc:"なかった・なくて・なければ・たら",
+  {id:2,name:"否定延伸",lv:"N5～N4",total:60,desc:"なかった・なくて・なければ・たら",
    tpl:[["nai","adjPast"],["nai","adjTe"],["nai","adjBa"],["ta","tara"],["nai","adjPast","tara"]]},
-  {id:3,name:"可能形组合",lv:"N4",total:40,desc:"可能形＋否定／过去／条件",
-   tpl:[["pot"],["pot","nai"],["pot","nai","adjPast"],["pot","nai","adjPast","tara"],["pot","masu","masen"],["pot","ta","tara"],["pot","ba"],["pot","te"]]},
-  {id:4,name:"条件与意向",lv:"N4",total:40,desc:"ば・たら・意向形・命令形・ている",
-   tpl:[["ba"],["ta","tara"],["vol"],["imp"],["teiru"],["teiru","nai"],["teiru","nai","adjPast","tara"],["nai","adjBa"],["masu","mashou"]]},
-  {id:5,name:"被动・使役・使役被动",lv:"N4～N3",total:50,desc:"最容易混淆的三种",
-   tpl:[["pas"],["cau"],["cp"],["pas","ta"],["pas","nai","adjPast"],["cau","te"],["cp","ta"],["cau","masu","masen"],["pas","ba"],["cp","nai","adjPast","tara"]]},
-  {id:6,name:"综合长链",lv:"N3实用",total:50,desc:"4～6步，全部变形混合",tpl:null}
+  {id:3,name:"可能形组合",lv:"N4",total:60,desc:"可能形＋否定／过去／条件",
+   tpl:[["pot"],["pot","nai"],["pot","nai","adjPast"],["pot","nai","adjPast","tara"],["pot","masu","masen"],["pot","ta","tara"],["pot","ba"],["pot","te"],["pot","masu"],["pot","nai","adjTe"],["pot","nai","adjBa"],["pot","masu","mashita"]]},
+  {id:4,name:"条件与意向",lv:"N4",total:60,desc:"ば・たら・意向形・命令形・ている",
+   tpl:[["ba"],["ta","tara"],["vol"],["imp"],["teiru"],["teiru","nai"],["teiru","nai","adjPast","tara"],["nai","adjBa"],["masu","mashou"],["teiru","ta"],["teiru","masu"],["teiru","masu","masen"]]},
+  {id:5,name:"被动・使役・使役被动",lv:"N4～N3",total:80,desc:"最容易混淆的三种",
+   tpl:[["pas"],["cau"],["cp"],["pas","ta"],["pas","nai","adjPast"],["cau","te"],["cp","ta"],["cau","masu","masen"],["pas","ba"],["cp","nai","adjPast","tara"],["pas","masu"],["cau","ta"],["cau","nai"],["cp","masu","mashita"],["pas","te"],["cau","ba"],["cp","nai"]]},
+  {id:6,name:"综合长链",lv:"N3实用",total:80,desc:"4～6步，全部变形混合",tpl:null}
 ];
-const PLAN = [1,1,2,2,3,3,4,4,5,5,5,6,6,6,"R","R"];
-const DAILY = 20;
-const PRAISE = ["很好！","漂亮！","这一步拿下了！","稳！","越来越熟练了！","完全掌握！","反应很快！"];
+const PROFILES = [{id:"yueyue",name:"yueyue小朋友"},{id:"jiejie",name:"姐姐"}];
+const PRAISE = ["很好！","漂亮！","这一步拿下了！","稳！","越来越熟练了！","完全掌握！","反应很快！","太棒了！"];
 const COMFORT = ["错了没关系，这题已经放进错题复习。","正是错过的地方最容易记住。","差一点，对照路线看看哪一步不同。","出错说明找到了薄弱点，这是好事。"];
 
 const CLS = {g:"一类动词（五段）",i:"二类动词（一段）",s:"三类动词（する）",k:"三类动词（来る）"};
@@ -126,6 +162,7 @@ function gTe(f,ta){
   return s+(v?(ta?"だ":"で"):(ta?"た":"て"));
 }
 function V(f,g,i,s,k,t){
+
   if(f.t==="g") return cut(f,1,g(f),t);
   if(f.t==="i") return cut(f,1,i,t);
   if(f.t==="s") return cut(f,2,s,t);
@@ -158,6 +195,7 @@ const OPS = {
 
 const HINT = {
   pot:"一类：う段→え段＋る（書く→書ける）；二类：去る＋られる；する→できる；来る→来られる（こられる）",
+
   pas:"一类：う段→あ段＋れる（う→わ）；二类：去る＋られる；する→される；来る→来られる",
   cau:"一类：う段→あ段＋せる；二类：去る＋させる；する→させる；来る→来させる（こさせる）",
   cp:"一类：あ段＋せられる（す结尾以外也可以说あ段＋される）；二类：去る＋させられる；する→させられる；来る→来させられる",
@@ -190,6 +228,7 @@ const base = v => ({k:v.k,r:v.r,t:v.t,voice:null,teiru:false,fl:{}});
 
 function run(verb,ops){
   let st=base(verb);
+
   const steps=[];
   for(const op of ops){
     if(!allowed(st).includes(op==="cpS"?"cp":op)) return null;
@@ -222,6 +261,7 @@ function zh(st){
   if(fl.imp) s+="！（命令）";
   if(fl.mashou) s="一起"+s+"吧";
   if(fl.pol&&!fl.mashou) s+="（礼貌）";
+
   return s;
 }
 
@@ -229,12 +269,23 @@ const fmtDate=d=>d.getFullYear()+"-"+String(d.getMonth()+1).padStart(2,"0")+"-"+
 const today=()=>fmtDate(new Date());
 function dayDiff(a,b){const p=s=>{const [y,m,d]=s.split("-").map(Number);return new Date(y,m-1,d);};return Math.round((p(b)-p(a))/864e5);}
 
-const KEY="jp-course-v1";
-let S={n:1,total:0,correct:0,streak:0,best:0,wrong:[],units:{},start:null,days:{},course:0};
-try{S=Object.assign(S,JSON.parse(localStorage.getItem(KEY))||{});}catch(e){}
-if(!S.start) S.start=today();
-UNITS.forEach(u=>{if(!S.units[u.id]) S.units[u.id]={done:0,ok:0,recent:[],passed:false};});
-const save=()=>{try{localStorage.setItem(KEY,JSON.stringify(S));}catch(e){}};
+const KEYP="jp-book-";
+let pid="jiejie";
+try{pid=localStorage.getItem("jp-current")||"jiejie";}catch(e){}
+if(!PROFILES.some(p=>p.id===pid)) pid="jiejie";
+let S;
+const fresh=()=>({n:1,total:0,correct:0,streak:0,best:0,wrong:[],units:{},start:today(),days:{},checkins:{},course:0,goal:20});
+function load(id){
+  let d=null;
+  try{d=JSON.parse(localStorage.getItem(KEYP+id));}catch(e){}
+  if(!d&&id==="jiejie"){try{d=JSON.parse(localStorage.getItem("jp-course-v1"));}catch(e){}}
+  S=Object.assign(fresh(),d||{});
+  if(!S.checkins) S.checkins={};
+  if(!S.goal) S.goal=20;
+  UNITS.forEach(u=>{if(!S.units[u.id]) S.units[u.id]={done:0,ok:0,recent:[],passed:false};});
+}
+const save=()=>{try{localStorage.setItem(KEYP+pid,JSON.stringify(S));localStorage.setItem("jp-current",pid);}catch(e){}};
+load(pid);
 
 const esc=s=>String(s).replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
 const pick=a=>a[Math.floor(Math.random()*a.length)];
@@ -242,8 +293,21 @@ const norm=s=>s.trim().replace(/[\s。．.、，,「」]/g,"");
 const fmt=f=>f.k===f.r?f.k:f.k+"（"+f.r+"）";
 const acc=U=>U.recent.length?U.recent.reduce((a,b)=>a+b,0)/U.recent.length:0;
 const curUnit=()=>{const u=UNITS.find(u=>!S.units[u.id].passed);return u?u.id:7;};
+const pname=()=>PROFILES.find(p=>p.id===pid).name;
+
+function plan(){const p=[];UNITS.forEach(u=>{for(let i=0;i<Math.ceil(u.total/S.goal);i++)p.push(u.id);});p.push("R","R");return p;}
 
 let chain=null, j=0, phase="ask", firstTry=true, mode="course", selUnit=Math.min(curUnit(),6), level=2, reviewIdx=0, justPassed=false, lastOk=false;
+
+function speak(text){
+  if(!window.speechSynthesis){alert("这个浏览器不支持朗读");return;}
+  speechSynthesis.cancel();
+  const u=new SpeechSynthesisUtterance(text);
+  u.lang="ja-JP"; u.rate=0.9;
+  speechSynthesis.speak(u);
+}
+function speakAns(){speak(chain.steps[j].k);}
+function speakEx(i){speak(chain.verb.ex[i].ja);}
 
 function genOps(verb,mn,mx){
   const L=mn+Math.floor(Math.random()*(mx-mn+1));
@@ -263,6 +327,7 @@ function genOps(verb,mn,mx){
 }
 function build(verb,ops){
   let alt=null;
+
   if(ops[0]==="cp"&&verb.t==="g"&&verb.k.slice(-1)!=="す") alt=run(verb,["cpS",...ops.slice(1)]);
   return {verb,ops,steps:run(verb,ops),alt};
 }
@@ -295,6 +360,7 @@ function newChain(){
 function showEmptyReview(){
   phase="none";
   document.getElementById("res").classList.add("hidden");
+
   document.getElementById("q").innerHTML=`<div class="ok-h">错题全部清空了！</div>
     <p>之前答错的题都已经重新答对，基础越来越扎实了。</p>
     <button class="btn main" onclick="setMode('course')">回到课程</button>`;
@@ -327,6 +393,7 @@ function showQ(){
       <button class="btn main" onclick="submit()">提交</button>
     </div>
     <div class="err" id="err"></div>
+
     <button class="link" onclick="document.getElementById('hint').classList.toggle('hidden')">看提示</button>
     <div class="hint hidden" id="hint">${HINT[t.op]}</div>`;
   document.getElementById("ans").focus();
@@ -359,6 +426,7 @@ function diagnose(val){
   }
   if(val===verb.k||val===verb.r) return "你写的是原形，还没有变形。";
   for(const v of variants(pre)){
+
     const l=lastOf(v);
     if(l&&(val===l.k||val===l.r))
       return `你写的是「${routeLabel(v)}」，意思是“${esc(zh(l))}”。本题要的是“${esc(zh(t))}”。`;
@@ -391,6 +459,7 @@ function submit(){
   const accepted=[t.k,t.r];
   if(alt) accepted.push(alt[j].k,alt[j].r);
   const ok=accepted.includes(val);
+
   lastOk=ok;
   const cheers=[];
 
@@ -402,8 +471,10 @@ function submit(){
 
     const d=today(), before=S.days[d]||0;
     S.days[d]=before+1;
-    if(before+1===DAILY) cheers.push("今天的20题完成了！继续做就是超前进度，明天会更轻松。");
-    else if(before+1>DAILY&&(before+1-DAILY)%10===0) cheers.push(`今天已经超前做了 ${before+1-DAILY} 题，太拼了！`);
+    if(before+1===S.goal){
+      S.checkins[d]=true;
+      cheers.push(`打卡成功！今天的 ${S.goal} 题完成了，${pname()}是最棒的！继续做就是超前进度。`);
+    } else if(before+1>S.goal&&(before+1-S.goal)%10===0) cheers.push(`今天已经超前做了 ${before+1-S.goal} 题，太拼了！`);
 
     if(mode==="course"){
       const u=UNITS[selUnit-1], U=S.units[selUnit];
@@ -420,6 +491,7 @@ function submit(){
         }
       }
     }
+
 
     if(mode==="review"){
       if(ok){
@@ -444,7 +516,7 @@ function submit(){
           :`<div class="ng-h">第${S.n}题：还差一点</div><div class="comfort">${pick(COMFORT)}</div>`;
   cheers.forEach(c=>{h+=`<div class="celebrate">${c}</div>`;});
   h+=`<div class="row">你的答案：「${esc(val)}」</div>`;
-  h+=`<div class="row">正确答案：「${fmt(t)}」</div>`;
+  h+=`<div class="row">正确答案：「${fmt(t)}」<button class="mini" onclick="speakAns()">朗读</button></div>`;
   if(alt) h+=`<div class="muted">也可以说「${fmt(alt[j])}」（使役被动的短形式，口语常用）</div>`;
   if(!ok) h+=`<div class="diag">${diagnose(val)}</div>`;
 
@@ -453,6 +525,7 @@ function submit(){
     <tr><td>原形</td><td>${fmt(verb)}</td><td>${verb.zh}</td></tr>`;
   for(let i=0;i<=j;i++){
     const s=steps[i];
+
     h+=`<tr class="${i===j?"cur":""}"><td>${OPS[s.op].label}</td><td>${fmt(s)}</td><td>${esc(zh(s))}</td></tr>`;
   }
   h+=`</table>`;
@@ -466,11 +539,17 @@ function submit(){
   if(["i","k"].includes(verb.t)&&(t.voice==="pot"||t.voice==="pas"))
     h+=`<div class="note">注意：二类动词和「来る」的可能形与被动形同形（都是〜られる），实际交流时要看上下文判断。</div>`;
 
+  if(verb.ex&&verb.ex.length){
+    h+=`<h3>三、应用场景（「${verb.k}」在实际中的用法）</h3>`;
+    verb.ex.forEach((e,i)=>{
+      h+=`<div class="ex"><span class="lv">${e.s}</span> <span class="exja">${e.ja}</span><button class="mini" onclick="speakEx(${i})">朗读</button><div class="muted">${e.zh}</div></div>`;
+    });
+  }
+
   const last=j===steps.length-1;
   let nextLabel="下一题";
-  if(mode==="course"&&!justPassed) nextLabel=last?"下一题（换新动词）":"下一题（再加一步）";
+  if(mode!=="review") nextLabel=last?"下一题（换新动词）":"下一题（再加一步）";
   if(justPassed) nextLabel="进入下一单元";
-  if(mode==="free") nextLabel=last?"下一题（换新动词）":"下一题（再加一步）";
   h+=`<div class="btns">`;
   if(!ok) h+=`<button class="btn" onclick="retry()">再试一次</button>`;
   h+=`<button class="btn main" onclick="next()">${nextLabel}</button></div>`;
@@ -479,6 +558,7 @@ function submit(){
   res.innerHTML=h;
   res.classList.remove("hidden");
   renderAll();
+
 }
 
 function retry(){
@@ -510,42 +590,83 @@ function setMode(m){
 }
 function selectUnit(id){mode="course";selUnit=id;justPassed=false;newChain();}
 function setLevel(v){level=+v;newChain();}
+function setGoal(v){
 
-function studyStreak(){
+  S.goal=+v;
+  const d=today();
+  if((S.days[d]||0)>=S.goal) S.checkins[d]=true;
+  save(); renderAll();
+}
+function switchProfile(id){
+  if(id===pid) return;
+  save();
+  pid=id; load(pid); save();
+  mode="course"; reviewIdx=0; justPassed=false; selUnit=Math.min(curUnit(),6);
+  newChain();
+}
+
+function checkinStreak(){
   const d=new Date();
-  if(!(S.days[fmtDate(d)]>0)) d.setDate(d.getDate()-1);
+  if(!S.checkins[fmtDate(d)]) d.setDate(d.getDate()-1);
   let k=0;
-  while(S.days[fmtDate(d)]>0){k++;d.setDate(d.getDate()-1);}
+  while(S.checkins[fmtDate(d)]){k++;d.setDate(d.getDate()-1);}
   return k;
 }
 
+function renderHeader(){
+  document.getElementById("profiles").innerHTML=PROFILES.map(p=>
+    `<button class="pf ${p.id===pid?"on":""}" onclick="switchProfile('${p.id}')">${p.name}</button>`).join("");
+  document.getElementById("greet").textContent=`${pname()}，我是最棒的，今天也加油呀！`;
+}
+
 function renderDash(){
-  const t=today(), tc=S.days[t]||0;
-  const cal=Math.min(PLAN.length,dayDiff(S.start,t)+1);
-  const prog=Math.floor(S.course/DAILY)+1;
-  const ahead=Math.min(prog,PLAN.length)-cal;
+  const P=plan(), t=today(), tc=S.days[t]||0, g=S.goal;
+  const cal=Math.min(P.length,dayDiff(S.start,t)+1);
+  const prog=Math.floor(S.course/g)+1;
+  const dayNow=Math.min(prog,P.length);
+
+  const ahead=dayNow-cal;
   const pct=S.total?Math.round(S.correct/S.total*100):0;
-  const streak=studyStreak();
   let msg;
-  if(prog>PLAN.length) msg="16天计划全部完成！接下来用错题复习和自由练习保持手感。";
-  else if(tc===0) msg="今天还没开始。20题大约15分钟，先做5题热热身也很好。";
-  else if(tc<DAILY) msg=`还差 ${DAILY-tc} 题完成今天的目标，加油！`;
-  else msg=`今天的目标已完成 ✓ 想多做就继续，超前的题都会算进计划进度。`;
-  if(prog<=PLAN.length){
+  if(prog>P.length) msg=`${P.length}天计划全部完成！接下来用错题复习和自由练习保持手感。`;
+  else if(tc===0) msg=`今天还没开始。${g}题大约${Math.round(g*0.8)}分钟，先做5题热热身也很好。`;
+  else if(tc<g) msg=`还差 ${g-tc} 题就能打卡了，加油！`;
+  else msg=`今天已打卡 ✓ 想多做就继续，超前的题都会算进计划进度。`;
+  if(prog<=P.length){
     if(ahead>0) msg+=` 你目前超前计划 ${ahead} 天。`;
     else if(ahead<0) msg+=` 比日历计划慢 ${-ahead} 天，没关系，按自己的节奏来，每做一题都算数。`;
   }
-  const dayNow=Math.min(prog,PLAN.length);
-  const pu=PLAN[dayNow-1];
+  const pu=P[dayNow-1];
   const planTxt=pu==="R"?"总复习":`单元${pu}「${UNITS[pu-1].name}」`;
   document.getElementById("dash").innerHTML=`
     <div class="dash-top">
-      <div><span class="muted">今日目标</span><div class="dash-big">${Math.min(tc,DAILY)} / ${DAILY} 题${tc>DAILY?`<span class="muted">　＋超前 ${tc-DAILY} 题</span>`:""}</div></div>
-      <div class="muted">连续学习 ${streak} 天<br>总正确率 ${pct}% ｜ 最佳连对 ${S.best}</div>
+      <div><span class="muted">今日目标</span>
+        <div class="dash-big">${Math.min(tc,g)} / ${g} 题${tc>g?`<span class="muted">　＋超前 ${tc-g} 题</span>`:""}</div></div>
+      <div class="muted" style="text-align:right">每日目标
+        <select onchange="setGoal(this.value)">${[10,15,20,30].map(x=>`<option value="${x}" ${x===g?"selected":""}>${x}题</option>`).join("")}</select>
+        <br>总正确率 ${pct}% ｜ 最佳连对 ${S.best}</div>
     </div>
-    <div class="barw"><div style="width:${Math.min(100,tc/DAILY*100)}%"></div></div>
+    <div class="barw"><div style="width:${Math.min(100,tc/g*100)}%"></div></div>
     <div class="muted">按日历：计划第 ${cal} 天　｜　按完成量：第 ${dayNow} 天（${planTxt}）</div>
     <div class="cheer">${msg}</div>`;
+}
+
+function renderCal(){
+  const cells=[];
+  const d=new Date();
+  d.setDate(d.getDate()-27);
+  for(let i=0;i<28;i++){
+    const key=fmtDate(d), c=S.days[key]||0, done=!!S.checkins[key];
+
+    const cls=done?"done":c?"part":"";
+    const isToday=i===27;
+    cells.push(`<div class="cell ${cls} ${isToday?"today":""}" title="${key}：${c}题"><div>${d.getMonth()+1}/${d.getDate()}</div><b>${done?"✓":c?c:""}</b></div>`);
+    d.setDate(d.getDate()+1);
+  }
+  const totalCk=Object.keys(S.checkins).length;
+  document.getElementById("cal").innerHTML=`<h3 style="margin-top:0">${pname()}的打卡记录</h3>
+    <div class="muted">累计打卡 ${totalCk} 天 ｜ 连续打卡 ${checkinStreak()} 天 ｜ 深绿✓＝完成当天目标，浅绿数字＝做了几题</div>
+    <div class="cal">${cells.join("")}</div>`;
 }
 
 function renderTabs(){
@@ -569,24 +690,25 @@ function renderUnits(){
       <div><b>单元${u.id} ${u.name}</b><span class="lv">${u.lv}</span><div class="muted">${u.desc}</div></div>
       <div class="ur"><div>${Math.min(U.done,u.total)}/${u.total}</div><div class="muted">${st} · 近20题 ${a}</div></div>
     </div>`;
-  }).join("")+`<div class="muted">过关条件：题数做满，并且最近20题正确率达到80%。</div>`;
+
+  }).join("")+`<div class="muted">过关条件：题数做满，并且最近20题正确率达到80%。共 ${VERBS.length} 个动词，题目每次随机组合。</div>`;
 }
 
 function renderPlan(){
-  const t=today(), cal=Math.min(PLAN.length,dayDiff(S.start,t)+1), prog=Math.floor(S.course/DAILY)+1;
-  let h=`<details><summary>查看16天学习计划</summary><table><tr><th>天</th><th>内容</th><th>状态</th></tr>`;
-  PLAN.forEach((p,i)=>{
+  const P=plan(), t=today(), cal=Math.min(P.length,dayDiff(S.start,t)+1), prog=Math.floor(S.course/S.goal)+1;
+  let h=`<details><summary>查看${P.length}天学习计划（每天${S.goal}题）</summary><table><tr><th>天</th><th>内容</th><th>状态</th></tr>`;
+  P.forEach((p,i)=>{
     const d=i+1;
     const name=p==="R"?"总复习（错题复习＋自由练习）":`单元${p} ${UNITS[p-1].name}（${UNITS[p-1].lv}）`;
     let st=d<prog?"✓ 完成":d===prog?"← 你在这里":"";
     if(d===cal) st+=(st?" ":"")+"（今天）";
     h+=`<tr class="${d===prog?"cur":""}"><td>第${d}天</td><td>${name}</td><td>${st}</td></tr>`;
   });
-  h+=`</table><div class="muted" style="margin-top:8px">每天20题，约15～20分钟。可以超前做，计划会按你的完成量往前推。</div></details>`;
+  h+=`</table><div class="muted" style="margin-top:8px">可以超前做，计划会按完成量往前推。改每日目标后，计划天数会自动调整。</div></details>`;
   document.getElementById("plan").innerHTML=h;
 }
 
-function renderAll(){renderDash();renderTabs();renderUnits();renderPlan();}
+function renderAll(){renderHeader();renderDash();renderTabs();renderCal();renderUnits();renderPlan();}
 
 document.addEventListener("keydown",e=>{
   if(e.key!=="Enter"||e.isComposing) return;
