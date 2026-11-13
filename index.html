@@ -3,35 +3,44 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>日语动词变形 · 逐步练习</title>
+<title>日语动词变形 · 每日练习</title>
 <style>
-:root{--bg:#f6f5f1;--card:#fff;--ink:#222;--muted:#777;--line:#e4e1d8;--accent:#0f6e56;--accent-bg:#e1f5ee;--ng:#a32d2d;--ng-bg:#fcebeb;--warn-bg:#faeeda;--warn:#854f0b}
+:root{--bg:#f6f5f1;--card:#fff;--ink:#222;--muted:#777;--line:#e4e1d8;--accent:#0f6e56;--accent-bg:#e1f5ee;--ng:#a32d2d;--ng-bg:#fcebeb;--warn-bg:#faeeda;--warn:#854f0b;--gold-bg:#fff4d6;--gold:#7a5300}
 *{box-sizing:border-box}
 body{margin:0;background:var(--bg);color:var(--ink);font-family:"Hiragino Sans","PingFang SC","Noto Sans JP","Microsoft YaHei",sans-serif;line-height:1.7}
 .wrap{max-width:760px;margin:0 auto;padding:24px 16px 60px}
 h1{font-size:22px;margin:0 0 4px}
 .sub{color:var(--muted);font-size:14px;margin:0 0 12px}
-.stats{font-size:13px;color:var(--muted);margin-bottom:10px}
-.ctrl{display:flex;gap:10px;align-items:center;flex-wrap:wrap;margin-bottom:16px;font-size:14px}
-select{padding:6px 8px;border-radius:8px;border:1px solid var(--line);font-size:14px}
 .card{background:var(--card);border:1px solid var(--line);border-radius:12px;padding:18px;margin-bottom:14px}
 .hidden{display:none}
-.qhead{font-size:19px;font-weight:bold}
 .muted{color:var(--muted);font-size:13px}
+.barw{height:10px;background:var(--line);border-radius:5px;overflow:hidden;margin:8px 0}
+.barw>div{height:100%;background:var(--accent);transition:width .3s}
+.dash-top{display:flex;justify-content:space-between;align-items:baseline;flex-wrap:wrap;gap:8px}
+.dash-big{font-size:20px;font-weight:bold;color:var(--accent)}
+.cheer{background:var(--accent-bg);color:var(--accent);border-radius:8px;padding:10px 12px;font-size:14px;margin-top:10px}
+.tabs{display:flex;gap:8px;margin-bottom:14px;flex-wrap:wrap;align-items:center}
+.tab{flex:1;min-width:90px;padding:10px;border:1px solid var(--line);background:var(--card);border-radius:8px;font-size:15px;cursor:pointer}
+.tab.on{background:var(--accent);color:#fff;border-color:var(--accent)}
+select{padding:6px 8px;border-radius:8px;border:1px solid var(--line);font-size:14px}
+.qtop{font-size:13px;color:var(--accent);margin-bottom:4px}
+.qhead{font-size:19px;font-weight:bold}
 .box{background:var(--accent-bg);border-radius:10px;padding:12px 14px;margin:12px 0}
 .box .big{font-size:22px;color:var(--accent)}
 .lbl{display:inline-block;font-size:12px;color:var(--accent);background:var(--accent-bg);border-radius:10px;padding:0 8px;margin-right:8px}
 .row{margin:8px 0}
 .inputrow{display:flex;gap:8px;margin-top:14px}
-input[type=text]{flex:1;font-size:20px;padding:10px 12px;border:1px solid var(--line);border-radius:8px}
+input[type=text]{flex:1;min-width:0;font-size:20px;padding:10px 12px;border:1px solid var(--line);border-radius:8px}
 .btn{padding:9px 16px;border-radius:8px;border:1px solid var(--line);background:#fff;cursor:pointer;font-size:15px}
 .btn.main{background:var(--accent);color:#fff;border-color:var(--accent)}
 .link{background:none;border:none;color:var(--accent);cursor:pointer;font-size:14px;padding:0;margin-top:10px;text-decoration:underline}
 .hint{background:var(--warn-bg);color:var(--warn);border-radius:8px;padding:10px 12px;font-size:14px;margin-top:8px}
 .err{color:var(--ng);font-size:13px;margin-top:6px}
 .ok-h{color:var(--accent);font-size:19px;font-weight:bold}
-
 .ng-h{color:var(--ng);font-size:19px;font-weight:bold}
+.praise{color:var(--accent);font-size:14px}
+.comfort{color:var(--muted);font-size:14px}
+.celebrate{background:var(--gold-bg);color:var(--gold);border-radius:10px;padding:12px 14px;margin:10px 0;font-size:15px;font-weight:bold}
 .diag{background:var(--ng-bg);color:var(--ng);border-radius:8px;padding:10px 12px;font-size:14px;margin:10px 0}
 .note{background:var(--warn-bg);color:var(--warn);border-radius:8px;padding:10px 12px;font-size:14px;margin:10px 0}
 h3{font-size:16px;margin:18px 0 8px}
@@ -40,29 +49,25 @@ td,th{border-bottom:1px solid var(--line);padding:8px 6px;text-align:left;vertic
 th{font-size:13px;color:var(--muted);font-weight:normal}
 tr.cur td{background:var(--accent-bg)}
 .btns{display:flex;gap:8px;flex-wrap:wrap;margin-top:14px}
-.wl{font-size:14px;border-bottom:1px dashed var(--line);padding:6px 0}
+.unit{display:flex;justify-content:space-between;gap:10px;padding:10px 12px;border:1px solid var(--line);border-radius:10px;margin-bottom:8px;cursor:pointer}
+.unit.sel{border-color:var(--accent);background:var(--accent-bg)}
+.unit.lock{opacity:.5;cursor:default}
+.unit .ur{text-align:right;white-space:nowrap}
+.lv{font-size:12px;background:var(--warn-bg);color:var(--warn);border-radius:10px;padding:0 8px;margin-left:4px}
+details summary{cursor:pointer;font-weight:bold}
 </style>
 </head>
 <body>
 <div class="wrap">
-  <h1>日语动词变形 · 逐步练习</h1>
+  <h1>日语动词变形 · 每日练习</h1>
   <p class="sub">同一个动词，每次只加一步变形。</p>
-  <div class="stats" id="stats"></div>
-  <div class="ctrl">
-    <label>难度
-      <select id="level" onchange="newChain()">
-        <option value="1">入门（2～3步）</option>
-        <option value="2" selected>标准（3～4步）</option>
-        <option value="3">挑战（4～6步）</option>
-      </select>
-    </label>
-    <button class="btn" onclick="newChain()">换一个动词</button>
-  </div>
+  <div class="card" id="dash"></div>
+  <div class="tabs" id="tabs"></div>
   <div class="card" id="q"></div>
   <div class="card hidden" id="res"></div>
-  <div class="card" id="wrongBox"></div>
+  <div class="card" id="units"></div>
+  <div class="card" id="plan"></div>
 </div>
-
 
 <script>
 const VERBS = [
@@ -88,6 +93,25 @@ const VERBS = [
   {k:"受ける",r:"うける",t:"i",zh:"接受"},
   {k:"来る",r:"くる",t:"k",zh:"来"}
 ];
+
+const UNITS = [
+  {id:1,name:"基础五形",lv:"N5",total:40,desc:"ます・て・た・ない形",
+   tpl:[["masu"],["te"],["ta"],["nai"],["masu","masen"],["masu","mashita"],["masu","masen","msd"]]},
+  {id:2,name:"否定延伸",lv:"N5～N4",total:40,desc:"なかった・なくて・なければ・たら",
+   tpl:[["nai","adjPast"],["nai","adjTe"],["nai","adjBa"],["ta","tara"],["nai","adjPast","tara"]]},
+  {id:3,name:"可能形组合",lv:"N4",total:40,desc:"可能形＋否定／过去／条件",
+   tpl:[["pot"],["pot","nai"],["pot","nai","adjPast"],["pot","nai","adjPast","tara"],["pot","masu","masen"],["pot","ta","tara"],["pot","ba"],["pot","te"]]},
+  {id:4,name:"条件与意向",lv:"N4",total:40,desc:"ば・たら・意向形・命令形・ている",
+   tpl:[["ba"],["ta","tara"],["vol"],["imp"],["teiru"],["teiru","nai"],["teiru","nai","adjPast","tara"],["nai","adjBa"],["masu","mashou"]]},
+  {id:5,name:"被动・使役・使役被动",lv:"N4～N3",total:50,desc:"最容易混淆的三种",
+   tpl:[["pas"],["cau"],["cp"],["pas","ta"],["pas","nai","adjPast"],["cau","te"],["cp","ta"],["cau","masu","masen"],["pas","ba"],["cp","nai","adjPast","tara"]]},
+  {id:6,name:"综合长链",lv:"N3实用",total:50,desc:"4～6步，全部变形混合",tpl:null}
+];
+const PLAN = [1,1,2,2,3,3,4,4,5,5,5,6,6,6,"R","R"];
+const DAILY = 20;
+const PRAISE = ["很好！","漂亮！","这一步拿下了！","稳！","越来越熟练了！","完全掌握！","反应很快！"];
+const COMFORT = ["错了没关系，这题已经放进错题复习。","正是错过的地方最容易记住。","差一点，对照路线看看哪一步不同。","出错说明找到了薄弱点，这是好事。"];
+
 const CLS = {g:"一类动词（五段）",i:"二类动词（一段）",s:"三类动词（する）",k:"三类动词（来る）"};
 const ROW = {"う":"わいうえお","く":"かきくけこ","ぐ":"がぎぐげご","す":"さしすせそ","つ":"たちつてと","ぬ":"なにぬねの","ぶ":"ばびぶべぼ","む":"まみむめも","る":"らりるれろ"};
 const VOICE = ["pot","pas","cau","cp","cpS"];
@@ -96,7 +120,6 @@ const row = (f,i) => ROW[f.k.slice(-1)][i];
 const cut = (f,n,add,t) => ({k:f.k.slice(0,f.k.length-n)+add, r:f.r.slice(0,f.r.length-n)+add, t});
 function gTe(f,ta){
   const ch=f.k.slice(-1);
-
   const m={"う":"っ","つ":"っ","る":"っ","む":"ん","ぶ":"ん","ぬ":"ん","く":"い","ぐ":"い","す":"し"};
   let s=m[ch], v=["む","ぶ","ぬ","ぐ"].includes(ch);
   if(f.k==="行く"){s="っ";v=false;}
@@ -129,7 +152,6 @@ const OPS = {
   tara:{label:"たら条件形",fn:f=>cut(f,0,"ら","end")},
   masen:{label:"礼貌否定（ません）",fn:f=>cut(f,1,"せん","masen")},
   mashita:{label:"礼貌过去（ました）",fn:f=>cut(f,1,"した","end")},
-
   mashou:{label:"礼貌意向（ましょう）",fn:f=>cut(f,1,"しょう","end")},
   msd:{label:"礼貌过去否定（ませんでした）",fn:f=>cut(f,0,"でした","end")}
 };
@@ -162,7 +184,6 @@ function allowed(st){
     if(st.voice||st.teiru) return ["nai","masu","te","ta","ba"];
     return ["pot","pas","cau","cp","nai","masu","te","ta","ba","vol","imp","teiru"];
   }
-
   return ({adj:["adjPast","adjTe","adjBa"],ta:["tara"],masu:["masen","mashita","mashou"],masen:["msd"]})[st.t]||[];
 }
 const base = v => ({k:v.k,r:v.r,t:v.t,voice:null,teiru:false,fl:{}});
@@ -195,7 +216,6 @@ function zh(st){
   if(st.voice==="pot") s=fl.neg?(fl.past?"没能":"不能")+v:"能"+v+(fl.past?"了":"");
   else if(st.teiru) s=fl.neg?(fl.past?"当时还没":"还没")+core:(fl.past?"当时正在／已经":"正在／已经")+core;
   else s=fl.neg?(fl.past?"没有":"不")+core:core+(fl.past?"了":"");
-
   if(fl.cond) s="如果"+s;
   if(fl.te) s+="（て形，连接下文）";
   if(fl.vol) s="打算"+s+"／"+s+"吧";
@@ -205,22 +225,28 @@ function zh(st){
   return s;
 }
 
-const KEY="jp-chain-v1";
-let S={n:1,total:0,correct:0,streak:0,best:0,wrong:[]};
+const fmtDate=d=>d.getFullYear()+"-"+String(d.getMonth()+1).padStart(2,"0")+"-"+String(d.getDate()).padStart(2,"0");
+const today=()=>fmtDate(new Date());
+function dayDiff(a,b){const p=s=>{const [y,m,d]=s.split("-").map(Number);return new Date(y,m-1,d);};return Math.round((p(b)-p(a))/864e5);}
+
+const KEY="jp-course-v1";
+let S={n:1,total:0,correct:0,streak:0,best:0,wrong:[],units:{},start:null,days:{},course:0};
 try{S=Object.assign(S,JSON.parse(localStorage.getItem(KEY))||{});}catch(e){}
+if(!S.start) S.start=today();
+UNITS.forEach(u=>{if(!S.units[u.id]) S.units[u.id]={done:0,ok:0,recent:[],passed:false};});
 const save=()=>{try{localStorage.setItem(KEY,JSON.stringify(S));}catch(e){}};
+
 const esc=s=>String(s).replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
 const pick=a=>a[Math.floor(Math.random()*a.length)];
 const norm=s=>s.trim().replace(/[\s。．.、，,「」]/g,"");
 const fmt=f=>f.k===f.r?f.k:f.k+"（"+f.r+"）";
+const acc=U=>U.recent.length?U.recent.reduce((a,b)=>a+b,0)/U.recent.length:0;
+const curUnit=()=>{const u=UNITS.find(u=>!S.units[u.id].passed);return u?u.id:7;};
 
-let chain=null, j=0, phase="ask", firstTry=true;
+let chain=null, j=0, phase="ask", firstTry=true, mode="course", selUnit=Math.min(curUnit(),6), level=2, reviewIdx=0, justPassed=false, lastOk=false;
 
-function newChain(){
-  const lv=+document.getElementById("level").value;
-  const [mn,mx]=({1:[2,3],2:[3,4],3:[4,6]})[lv];
+function genOps(verb,mn,mx){
   const L=mn+Math.floor(Math.random()*(mx-mn+1));
-  const verb=pick(VERBS);
   const ops=[];
   for(let i=0;i<L;i++){
     const cur=ops.length?run(verb,ops).at(-1):base(verb);
@@ -228,25 +254,68 @@ function newChain(){
     if(!c.length) break;
     if(i===0&&Math.random()<0.5) c=c.filter(o=>VOICE.includes(o));
     if(L-i>1){
-
       const c2=c.filter(o=>{const s=run(verb,[...ops,o]);return s&&allowed(s.at(-1)).length>0;});
       if(c2.length) c=c2;
     }
     ops.push(pick(c));
   }
+  return ops;
+}
+function build(verb,ops){
   let alt=null;
   if(ops[0]==="cp"&&verb.t==="g"&&verb.k.slice(-1)!=="す") alt=run(verb,["cpS",...ops.slice(1)]);
-  chain={verb,ops,steps:run(verb,ops),alt};
+  return {verb,ops,steps:run(verb,ops),alt};
+}
+
+function newChain(){
+  if(mode==="review"){
+    S.wrong=S.wrong.filter(w=>VERBS[w.vi]&&run(VERBS[w.vi],w.ops));
+    if(!S.wrong.length){showEmptyReview();return;}
+    const w=S.wrong[reviewIdx%S.wrong.length];
+    chain=build(VERBS[w.vi],w.ops);
+    chain.review=w;
+    j=w.j;
+    showQ();
+    return;
+  }
+  const verb=pick(VERBS);
+  let ops;
+  if(mode==="course"){
+    const u=UNITS[selUnit-1];
+    ops=u.tpl?pick(u.tpl).slice():genOps(verb,4,6);
+  } else {
+    const [mn,mx]=({1:[2,3],2:[3,4],3:[4,6]})[level];
+    ops=genOps(verb,mn,mx);
+  }
+  chain=build(verb,ops);
   j=0;
   showQ();
+}
+
+function showEmptyReview(){
+  phase="none";
+  document.getElementById("res").classList.add("hidden");
+  document.getElementById("q").innerHTML=`<div class="ok-h">错题全部清空了！</div>
+    <p>之前答错的题都已经重新答对，基础越来越扎实了。</p>
+    <button class="btn main" onclick="setMode('course')">回到课程</button>`;
+  renderAll();
 }
 
 function showQ(){
   phase="ask"; firstTry=true;
   const {verb,steps}=chain, t=steps[j], known=j?steps[j-1]:null;
   const s=Math.min(5,j+1);
+  let top="";
+  if(mode==="course"){
+    const u=UNITS[selUnit-1], U=S.units[selUnit];
+    top=U.done<u.total
+      ?`单元${u.id}「${u.name}」 · 第 ${U.done+1}/${u.total} 题`
+      :`单元${u.id}「${u.name}」 · 巩固练习（最近20题正确率 ${Math.round(acc(U)*100)}%）`;
+  } else if(mode==="review") top=`错题复习 · 剩余 ${S.wrong.length} 题`;
+  else top="自由练习";
   document.getElementById("res").classList.add("hidden");
   document.getElementById("q").innerHTML=`
+    <div class="qtop">${top}</div>
     <div class="qhead">第${S.n}题｜${OPS[t.op].label}</div>
     <div class="muted">难度：${"★".repeat(s)+"☆".repeat(5-s)}　本动词第 ${j+1}/${steps.length} 步</div>
     <div class="box"><div class="muted">指定动词原形</div><div class="big">${fmt(verb)}</div><div>${verb.zh}</div></div>
@@ -261,8 +330,7 @@ function showQ(){
     <button class="link" onclick="document.getElementById('hint').classList.toggle('hidden')">看提示</button>
     <div class="hint hidden" id="hint">${HINT[t.op]}</div>`;
   document.getElementById("ans").focus();
-
-  renderStats(); renderWrong();
+  renderAll();
 }
 
 function variants(pre){
@@ -294,13 +362,12 @@ function diagnose(val){
     const l=lastOf(v);
     if(l&&(val===l.k||val===l.r))
       return `你写的是「${routeLabel(v)}」，意思是“${esc(zh(l))}”。本题要的是“${esc(zh(t))}”。`;
-
   }
   return "形式不对。对照下面的变形路线，找出是哪一步出了问题。";
 }
 
 function compareRows(){
-  const pre=chain.ops.slice(0,j+1), t=chain.steps[j];
+  const pre=chain.ops.slice(0,j+1);
   const vIdx=pre.findIndex(o=>VOICE.includes(o));
   const rest=vIdx>=0?pre.filter((o,i)=>i!==vIdx):pre.slice();
   const cand=[pre,rest,["pot",...rest],["pas",...rest]];
@@ -321,17 +388,51 @@ function submit(){
   const val=norm(input.value);
   if(!val){document.getElementById("err").textContent="请先输入答案";return;}
   const {verb,steps,alt}=chain, t=steps[j];
-  const acc=[t.k,t.r];
-  if(alt) acc.push(alt[j].k,alt[j].r);
-  const ok=acc.includes(val);
+  const accepted=[t.k,t.r];
+  if(alt) accepted.push(alt[j].k,alt[j].r);
+  const ok=accepted.includes(val);
+  lastOk=ok;
+  const cheers=[];
+
   if(firstTry){
     S.total++;
     if(ok){S.correct++;S.streak++;S.best=Math.max(S.best,S.streak);}
+    else S.streak=0;
+    if(ok&&[5,10,20,30,50,100].includes(S.streak)) cheers.push(`连续答对 ${S.streak} 题！状态非常好！`);
 
-    else{
-      S.streak=0;
-      S.wrong.unshift({n:S.n,verb:verb.k,route:routeLabel(chain.ops.slice(0,j+1)),ans:t.k,yours:val});
-      S.wrong=S.wrong.slice(0,15);
+    const d=today(), before=S.days[d]||0;
+    S.days[d]=before+1;
+    if(before+1===DAILY) cheers.push("今天的20题完成了！继续做就是超前进度，明天会更轻松。");
+    else if(before+1>DAILY&&(before+1-DAILY)%10===0) cheers.push(`今天已经超前做了 ${before+1-DAILY} 题，太拼了！`);
+
+    if(mode==="course"){
+      const u=UNITS[selUnit-1], U=S.units[selUnit];
+      U.done++; if(ok) U.ok++;
+      U.recent.push(ok?1:0); U.recent=U.recent.slice(-20);
+      S.course++;
+      if(!U.passed&&U.done>=u.total){
+        if(acc(U)>=0.8){
+          U.passed=true; justPassed=true;
+          const nx=UNITS[selUnit];
+          cheers.push(`恭喜通过单元${u.id}「${u.name}」！`+(nx?`已解锁单元${nx.id}「${nx.name}」（${nx.lv}）。`:"全部6个单元都完成了，太厉害了！"));
+        } else if(U.done===u.total){
+          cheers.push(`单元${u.id}的${u.total}题做完了！最近20题正确率 ${Math.round(acc(U)*100)}%，再巩固几题达到80%就能过关。`);
+        }
+      }
+    }
+
+    if(mode==="review"){
+      if(ok){
+        const w=chain.review;
+        S.wrong=S.wrong.filter(x=>x!==w);
+        cheers.push("这道错题攻克了，已从错题本移除！");
+      }
+    } else if(!ok){
+      const key=VERBS.indexOf(verb)+"|"+chain.ops.join()+"|"+j;
+      if(!S.wrong.some(w=>w.key===key)){
+        S.wrong.unshift({key,vi:VERBS.indexOf(verb),ops:chain.ops,j,ans:t.k});
+        S.wrong=S.wrong.slice(0,60);
+      }
     }
     save();
   }
@@ -339,12 +440,13 @@ function submit(){
   phase=ok?"done":"wrong";
   input.disabled=true;
 
-  let h=ok?`<div class="ok-h">第${S.n}题：完全正确！</div>`:`<div class="ng-h">第${S.n}题：还差一点</div>`;
+  let h=ok?`<div class="ok-h">第${S.n}题：完全正确！</div><div class="praise">${pick(PRAISE)}</div>`
+          :`<div class="ng-h">第${S.n}题：还差一点</div><div class="comfort">${pick(COMFORT)}</div>`;
+  cheers.forEach(c=>{h+=`<div class="celebrate">${c}</div>`;});
   h+=`<div class="row">你的答案：「${esc(val)}」</div>`;
   h+=`<div class="row">正确答案：「${fmt(t)}」</div>`;
   if(alt) h+=`<div class="muted">也可以说「${fmt(alt[j])}」（使役被动的短形式，口语常用）</div>`;
   if(!ok) h+=`<div class="diag">${diagnose(val)}</div>`;
-  if(ok&&S.streak>=3) h+=`<div class="muted">已经连续答对 ${S.streak} 题。</div>`;
 
   h+=`<h3>一、完整变形路线</h3><div class="muted">动词类别：${CLS[verb.t]}</div>
     <table><tr><th>步骤</th><th>形式</th><th>意思</th></tr>
@@ -360,20 +462,23 @@ function submit(){
     h+=`<h3>二、相似形式的区别</h3><table><tr><th>中文</th><th>日语</th><th></th></tr>`;
     rows.forEach(r=>{h+=`<tr class="${r.cur?"cur":""}"><td>${esc(r.zh)}</td><td>${fmt(r.f)}</td><td>${r.cur?"本题":""}</td></tr>`;});
     h+=`</table>`;
-
   }
   if(["i","k"].includes(verb.t)&&(t.voice==="pot"||t.voice==="pas"))
     h+=`<div class="note">注意：二类动词和「来る」的可能形与被动形同形（都是〜られる），实际交流时要看上下文判断。</div>`;
 
   const last=j===steps.length-1;
+  let nextLabel="下一题";
+  if(mode==="course"&&!justPassed) nextLabel=last?"下一题（换新动词）":"下一题（再加一步）";
+  if(justPassed) nextLabel="进入下一单元";
+  if(mode==="free") nextLabel=last?"下一题（换新动词）":"下一题（再加一步）";
   h+=`<div class="btns">`;
   if(!ok) h+=`<button class="btn" onclick="retry()">再试一次</button>`;
-  h+=`<button class="btn main" onclick="next()">${last?"下一题（换新动词）":"下一题（再加一步）"}</button></div>`;
+  h+=`<button class="btn main" onclick="next()">${nextLabel}</button></div>`;
 
   const res=document.getElementById("res");
   res.innerHTML=h;
   res.classList.remove("hidden");
-  renderStats(); renderWrong();
+  renderAll();
 }
 
 function retry(){
@@ -385,22 +490,103 @@ function retry(){
 
 function next(){
   S.n++; save();
+  if(mode==="review"){
+    if(!lastOk) reviewIdx++;
+    newChain(); return;
+  }
+  if(justPassed){
+    justPassed=false;
+    selUnit=Math.min(curUnit(),6);
+    newChain(); return;
+  }
   if(j<chain.steps.length-1){j++;showQ();}
   else newChain();
 }
 
-function renderStats(){
-  const pct=S.total?Math.round(S.correct/S.total*100):0;
-  document.getElementById("stats").textContent=`已答 ${S.total} ｜ 正确率 ${pct}% ｜ 连对 ${S.streak} ｜ 最佳连对 ${S.best}`;
+function setMode(m){
+  mode=m; reviewIdx=0; justPassed=false;
+  if(m==="course") selUnit=Math.min(curUnit(),6);
+  newChain();
+}
+function selectUnit(id){mode="course";selUnit=id;justPassed=false;newChain();}
+function setLevel(v){level=+v;newChain();}
+
+function studyStreak(){
+  const d=new Date();
+  if(!(S.days[fmtDate(d)]>0)) d.setDate(d.getDate()-1);
+  let k=0;
+  while(S.days[fmtDate(d)]>0){k++;d.setDate(d.getDate()-1);}
+  return k;
 }
 
-function renderWrong(){
-  const b=document.getElementById("wrongBox");
-  if(!S.wrong.length){b.innerHTML=`<h3 style="margin-top:0">最近错题</h3><div class="muted">还没有错题。</div>`;return;}
-  b.innerHTML=`<h3 style="margin-top:0">最近错题</h3>`+S.wrong.map(w=>
-    `<div class="wl">第${w.n}题 · ${esc(w.verb)} · ${esc(w.route)}<br>
-    <span class="muted">你写：${esc(w.yours)}　正确：${esc(w.ans)}</span></div>`).join("");
+function renderDash(){
+  const t=today(), tc=S.days[t]||0;
+  const cal=Math.min(PLAN.length,dayDiff(S.start,t)+1);
+  const prog=Math.floor(S.course/DAILY)+1;
+  const ahead=Math.min(prog,PLAN.length)-cal;
+  const pct=S.total?Math.round(S.correct/S.total*100):0;
+  const streak=studyStreak();
+  let msg;
+  if(prog>PLAN.length) msg="16天计划全部完成！接下来用错题复习和自由练习保持手感。";
+  else if(tc===0) msg="今天还没开始。20题大约15分钟，先做5题热热身也很好。";
+  else if(tc<DAILY) msg=`还差 ${DAILY-tc} 题完成今天的目标，加油！`;
+  else msg=`今天的目标已完成 ✓ 想多做就继续，超前的题都会算进计划进度。`;
+  if(prog<=PLAN.length){
+    if(ahead>0) msg+=` 你目前超前计划 ${ahead} 天。`;
+    else if(ahead<0) msg+=` 比日历计划慢 ${-ahead} 天，没关系，按自己的节奏来，每做一题都算数。`;
+  }
+  const dayNow=Math.min(prog,PLAN.length);
+  const pu=PLAN[dayNow-1];
+  const planTxt=pu==="R"?"总复习":`单元${pu}「${UNITS[pu-1].name}」`;
+  document.getElementById("dash").innerHTML=`
+    <div class="dash-top">
+      <div><span class="muted">今日目标</span><div class="dash-big">${Math.min(tc,DAILY)} / ${DAILY} 题${tc>DAILY?`<span class="muted">　＋超前 ${tc-DAILY} 题</span>`:""}</div></div>
+      <div class="muted">连续学习 ${streak} 天<br>总正确率 ${pct}% ｜ 最佳连对 ${S.best}</div>
+    </div>
+    <div class="barw"><div style="width:${Math.min(100,tc/DAILY*100)}%"></div></div>
+    <div class="muted">按日历：计划第 ${cal} 天　｜　按完成量：第 ${dayNow} 天（${planTxt}）</div>
+    <div class="cheer">${msg}</div>`;
 }
+
+function renderTabs(){
+  document.getElementById("tabs").innerHTML=`
+    <button class="tab ${mode==="course"?"on":""}" onclick="setMode('course')">课程</button>
+    <button class="tab ${mode==="review"?"on":""}" onclick="setMode('review')">错题复习（${S.wrong.length}）</button>
+    <button class="tab ${mode==="free"?"on":""}" onclick="setMode('free')">自由练习</button>
+    ${mode==="free"?`<select onchange="setLevel(this.value)">
+      <option value="1" ${level===1?"selected":""}>入门（2～3步）</option>
+      <option value="2" ${level===2?"selected":""}>标准（3～4步）</option>
+      <option value="3" ${level===3?"selected":""}>挑战（4～6步）</option></select>`:""}`;
+}
+
+function renderUnits(){
+  const cu=curUnit();
+  document.getElementById("units").innerHTML=`<h3 style="margin-top:0">课程单元</h3>`+UNITS.map(u=>{
+    const U=S.units[u.id], lock=u.id>cu;
+    const st=U.passed?"✓ 已通过":lock?"未解锁":"进行中";
+    const a=U.recent.length?Math.round(acc(U)*100)+"%":"—";
+    return `<div class="unit ${lock?"lock":""} ${mode==="course"&&selUnit===u.id?"sel":""}" ${lock?"":`onclick="selectUnit(${u.id})"`}>
+      <div><b>单元${u.id} ${u.name}</b><span class="lv">${u.lv}</span><div class="muted">${u.desc}</div></div>
+      <div class="ur"><div>${Math.min(U.done,u.total)}/${u.total}</div><div class="muted">${st} · 近20题 ${a}</div></div>
+    </div>`;
+  }).join("")+`<div class="muted">过关条件：题数做满，并且最近20题正确率达到80%。</div>`;
+}
+
+function renderPlan(){
+  const t=today(), cal=Math.min(PLAN.length,dayDiff(S.start,t)+1), prog=Math.floor(S.course/DAILY)+1;
+  let h=`<details><summary>查看16天学习计划</summary><table><tr><th>天</th><th>内容</th><th>状态</th></tr>`;
+  PLAN.forEach((p,i)=>{
+    const d=i+1;
+    const name=p==="R"?"总复习（错题复习＋自由练习）":`单元${p} ${UNITS[p-1].name}（${UNITS[p-1].lv}）`;
+    let st=d<prog?"✓ 完成":d===prog?"← 你在这里":"";
+    if(d===cal) st+=(st?" ":"")+"（今天）";
+    h+=`<tr class="${d===prog?"cur":""}"><td>第${d}天</td><td>${name}</td><td>${st}</td></tr>`;
+  });
+  h+=`</table><div class="muted" style="margin-top:8px">每天20题，约15～20分钟。可以超前做，计划会按你的完成量往前推。</div></details>`;
+  document.getElementById("plan").innerHTML=h;
+}
+
+function renderAll(){renderDash();renderTabs();renderUnits();renderPlan();}
 
 document.addEventListener("keydown",e=>{
   if(e.key!=="Enter"||e.isComposing) return;
@@ -408,6 +594,7 @@ document.addEventListener("keydown",e=>{
   else if(phase==="done") next();
 });
 
+save();
 newChain();
 </script>
 </body>
