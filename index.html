@@ -3,186 +3,412 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>日语变形开口练习 · 第1天</title>
+<title>日语动词变形 · 逐步练习</title>
 <style>
-:root{--bg:#f6f5f1;--card:#fff;--ink:#222;--muted:#777;--line:#e4e1d8;--accent:#0f6e56;--accent-bg:#e1f5ee;--ng:#a32d2d;--ng-bg:#fcebeb}
+:root{--bg:#f6f5f1;--card:#fff;--ink:#222;--muted:#777;--line:#e4e1d8;--accent:#0f6e56;--accent-bg:#e1f5ee;--ng:#a32d2d;--ng-bg:#fcebeb;--warn-bg:#faeeda;--warn:#854f0b}
 *{box-sizing:border-box}
 body{margin:0;background:var(--bg);color:var(--ink);font-family:"Hiragino Sans","PingFang SC","Noto Sans JP","Microsoft YaHei",sans-serif;line-height:1.7}
-.wrap{max-width:720px;margin:0 auto;padding:24px 16px 60px}
+.wrap{max-width:760px;margin:0 auto;padding:24px 16px 60px}
 h1{font-size:22px;margin:0 0 4px}
-.sub{color:var(--muted);font-size:14px;margin:0 0 16px}
-.bar{height:8px;background:var(--line);border-radius:4px;overflow:hidden}
-.bar>div{height:100%;background:var(--accent);width:0;transition:width .3s}
-.stat{font-size:13px;color:var(--muted);margin:6px 0 16px;display:flex;justify-content:space-between;align-items:center}
-.tabs{display:flex;gap:8px;margin-bottom:16px}
-.tabs button{flex:1;padding:10px;border:1px solid var(--line);background:var(--card);border-radius:8px;font-size:15px;cursor:pointer}
-.tabs button.on{background:var(--accent);color:#fff;border-color:var(--accent)}
-.card{background:var(--card);border:1px solid var(--line);border-radius:12px;padding:16px;margin-bottom:12px}
-.card.ok{border-left:4px solid var(--accent)}
-.card.ng{border-left:4px solid var(--ng)}
-.tag{display:inline-block;font-size:12px;padding:1px 8px;border-radius:10px;background:var(--accent-bg);color:var(--accent);margin-right:6px}
-.zh{font-size:17px;margin:8px 0}
-.ans{display:none;margin-top:10px;padding-top:10px;border-top:1px dashed var(--line)}
-.ans.show{display:block}
-.ja{font-size:20px}
-.kana{font-size:13px;color:var(--muted)}
-.note{font-size:14px;margin-top:6px}
-.verdict{font-weight:bold}
-.btns{display:flex;gap:8px;flex-wrap:wrap;margin-top:10px}
-.btn{padding:7px 14px;border-radius:8px;border:1px solid var(--line);background:#fff;cursor:pointer;font-size:14px}
+.sub{color:var(--muted);font-size:14px;margin:0 0 12px}
+.stats{font-size:13px;color:var(--muted);margin-bottom:10px}
+.ctrl{display:flex;gap:10px;align-items:center;flex-wrap:wrap;margin-bottom:16px;font-size:14px}
+select{padding:6px 8px;border-radius:8px;border:1px solid var(--line);font-size:14px}
+.card{background:var(--card);border:1px solid var(--line);border-radius:12px;padding:18px;margin-bottom:14px}
+.hidden{display:none}
+.qhead{font-size:19px;font-weight:bold}
+.muted{color:var(--muted);font-size:13px}
+.box{background:var(--accent-bg);border-radius:10px;padding:12px 14px;margin:12px 0}
+.box .big{font-size:22px;color:var(--accent)}
+.lbl{display:inline-block;font-size:12px;color:var(--accent);background:var(--accent-bg);border-radius:10px;padding:0 8px;margin-right:8px}
+.row{margin:8px 0}
+.inputrow{display:flex;gap:8px;margin-top:14px}
+input[type=text]{flex:1;font-size:20px;padding:10px 12px;border:1px solid var(--line);border-radius:8px}
+.btn{padding:9px 16px;border-radius:8px;border:1px solid var(--line);background:#fff;cursor:pointer;font-size:15px}
 .btn.main{background:var(--accent);color:#fff;border-color:var(--accent)}
-.opt{display:block;width:100%;text-align:left;margin-top:8px;padding:10px 12px;border:1px solid var(--line);border-radius:8px;background:#fff;cursor:pointer;font-size:16px;color:var(--ink)}
-.opt.right{background:var(--accent-bg);border-color:var(--accent)}
-.opt.wrong{background:var(--ng-bg);border-color:var(--ng)}
-.opt:disabled{cursor:default}
-.empty{text-align:center;color:var(--muted);padding:40px 0}
-.reset{background:none;border:none;color:var(--muted);font-size:13px;cursor:pointer;text-decoration:underline}
+.link{background:none;border:none;color:var(--accent);cursor:pointer;font-size:14px;padding:0;margin-top:10px;text-decoration:underline}
+.hint{background:var(--warn-bg);color:var(--warn);border-radius:8px;padding:10px 12px;font-size:14px;margin-top:8px}
+.err{color:var(--ng);font-size:13px;margin-top:6px}
+.ok-h{color:var(--accent);font-size:19px;font-weight:bold}
+
+.ng-h{color:var(--ng);font-size:19px;font-weight:bold}
+.diag{background:var(--ng-bg);color:var(--ng);border-radius:8px;padding:10px 12px;font-size:14px;margin:10px 0}
+.note{background:var(--warn-bg);color:var(--warn);border-radius:8px;padding:10px 12px;font-size:14px;margin:10px 0}
+h3{font-size:16px;margin:18px 0 8px}
+table{width:100%;border-collapse:collapse;font-size:15px}
+td,th{border-bottom:1px solid var(--line);padding:8px 6px;text-align:left;vertical-align:top}
+th{font-size:13px;color:var(--muted);font-weight:normal}
+tr.cur td{background:var(--accent-bg)}
+.btns{display:flex;gap:8px;flex-wrap:wrap;margin-top:14px}
+.wl{font-size:14px;border-bottom:1px dashed var(--line);padding:6px 0}
 </style>
 </head>
 <body>
 <div class="wrap">
-  <h1>第1天：可能形</h1>
-  <p class="sub">先看中文，自己说出日语，再看答案。</p>
-  <div class="bar"><div id="bar"></div></div>
-  <div class="stat"><span id="stat"></span><button class="reset" onclick="resetAll()">重新开始</button></div>
-  <div class="tabs">
-    <button data-m="speak">开口练习</button>
-    <button data-m="quiz">选择题</button>
-    <button data-m="review">错题本</button>
+  <h1>日语动词变形 · 逐步练习</h1>
+  <p class="sub">同一个动词，每次只加一步变形。</p>
+  <div class="stats" id="stats"></div>
+  <div class="ctrl">
+    <label>难度
+      <select id="level" onchange="newChain()">
+        <option value="1">入门（2～3步）</option>
+        <option value="2" selected>标准（3～4步）</option>
+        <option value="3">挑战（4～6步）</option>
+      </select>
+    </label>
+    <button class="btn" onclick="newChain()">换一个动词</button>
   </div>
-  <div id="list"></div>
+  <div class="card" id="q"></div>
+  <div class="card hidden" id="res"></div>
+  <div class="card" id="wrongBox"></div>
 </div>
 
+
 <script>
-const DATA = [
-  {id:"D1-01",type:"开口",zh:"今天之内可以确认。",ja:"今日中に確認できます。",kana:"きょうじゅうにかくにんできます",form:"可能形",scene:"汇报",note:"する→できる。「今日中」读きょうじゅう"},
-  {id:"D1-02",type:"开口",zh:"我明天可以去银行。",ja:"明日、銀行に行けます。",kana:"あした、ぎんこうにいけます",form:"可能形",scene:"银行",note:"能去用「行ける」；「行かれる」是尊敬或被动"},
-  {id:"D1-03",type:"开口",zh:"目前还无法判断。",ja:"現時点では、まだ判断できません。",kana:"げんじてんでは、まだはんだんできません",form:"可能形否定",scene:"汇报",note:"「まだ〜できません」表示现在还不能"},
-  {id:"D1-04",type:"开口",zh:"明天之前可以提交。",ja:"明日までに提出できます。",kana:"あしたまでにていしゅつできます",form:"可能形",scene:"汇报",note:"「までに」表示截止期限"},
-  {id:"D1-05",type:"开口",zh:"我这边可以发送。",ja:"こちらから送れます。",kana:"こちらからおくれます",form:"可能形",scene:"邮件",note:"一类：る→れる"},
-  {id:"D1-06",type:"开口",zh:"今天不能提交。",ja:"今日は提出できません。",kana:"きょうはていしゅつできません",form:"可能形否定",scene:"汇报",note:"“不能”用できません；「提出しません」是“不提交”"},
-  {id:"D1-07",type:"开口",zh:"这份资料在哪里能看到？",ja:"この資料はどこで見られますか。",kana:"このしりょうはどこでみられますか",form:"可能形",scene:"资料",note:"二类：見る→見られる"},
-  {id:"D1-08",type:"开口",zh:"我能用日语说明。",ja:"日本語で説明できます。",kana:"にほんごでせつめいできます",form:"可能形",scene:"汇报",note:"する动词统一变成できる"},
-  {id:"D1-09",type:"开口",zh:"明天的会议我能出席。",ja:"明日の会議に出られます。",kana:"あしたのかいぎにでられます",form:"可能形",scene:"会议",note:"二类：出る→出られる；更正式可说「出席できます」"},
-  {id:"D1-10",type:"开口",zh:"下午的话能接电话。",ja:"午後なら電話に出られます。",kana:"ごごならでんわにでられます",form:"可能形",scene:"电话",note:"「電話に出る」＝接电话"},
-  {id:"D1-11",type:"开口",zh:"这周之内可以付款。",ja:"今週中にお支払いできます。",kana:"こんしゅうちゅうにおしはらいできます",form:"可能形（谦让）",scene:"付款",note:"「お＋名词＋できます」对客户更礼貌"},
-  {id:"D1-12",type:"开口",zh:"这个数字我能查到。",ja:"この数字は調べられます。",kana:"このすうじはしらべられます",form:"可能形",scene:"查询",note:"二类：調べる→調べられる"},
-  {id:"D1-13",type:"开口",zh:"明天能来公司吗？",ja:"明日、会社に来られますか。",kana:"あした、かいしゃにこられますか",form:"可能形",scene:"同事",note:"来る→来られる，读こられる"},
-  {id:"D1-14",type:"开口",zh:"现在方便说几句话吗？",ja:"今、少しお話しできますか。",kana:"いま、すこしおはなしできますか",form:"可能形（谦让）",scene:"电话",note:"打电话开头常用"},
-  {id:"D1-15",type:"开口",zh:"我还没能确认。",ja:"まだ確認できていません。",kana:"まだかくにんできていません",form:"可能形＋ていない",scene:"汇报",note:"“还没能做到”用「できていません」"},
-  {id:"D1-16",type:"开口",zh:"在网银上能看到入金记录。",ja:"ネットバンキングで入金履歴が見られます。",kana:"ねっとばんきんぐでにゅうきんりれきがみられます",form:"可能形",scene:"银行",note:"可能形前的宾语常用「が」"},
-  {id:"D1-17",type:"选择",zh:"「書く」的可能形是？",ja:"書ける",kana:"かける",wrong:["書かれる","書きれる"],form:"可能形",scene:"基础",note:"一类：く→け＋る；書かれる是被动"},
-  {id:"D1-18",type:"选择",zh:"「食べる」的可能形是？",ja:"食べられる",kana:"たべられる",wrong:["食べける","食べさせる"],form:"可能形",scene:"基础",note:"二类：去る＋られる"},
-  {id:"D1-19",type:"选择",zh:"「する」的可能形是？",ja:"できる",kana:"できる",wrong:["される","しれる"],form:"可能形",scene:"基础",note:"三类单独记；される是被动"},
-  {id:"D1-20",type:"选择",zh:"「来る」的可能形是？",ja:"来られる",kana:"こられる",wrong:["来させる","来される"],form:"可能形",scene:"基础",note:"三类单独记；来させる是使役"},
-  {id:"D1-21",type:"选择",zh:"「払う」的可能形是？",ja:"払える",kana:"はらえる",wrong:["払われる","払いえる"],form:"可能形",scene:"基础",note:"一类：う→え＋る"},
-  {id:"D1-22",type:"选择",zh:"对同事说“我明天能去”，哪句正确？",ja:"明日行けます。",kana:"あしたいけます",wrong:["明日行かれます。","明日行きられます。"],form:"可能形",scene:"易混淆",note:"说自己不能用尊敬的「行かれます」"},
-  {id:"D1-23",type:"选择",zh:"「部長は銀行に行かれます」是什么意思？",ja:"部长去银行（尊敬表达）",kana:"",wrong:["部长能去银行","部长被叫去银行"],form:"尊敬形",scene:"易混淆",note:"主语是上级时，「行かれる」多为尊敬"},
-  {id:"D1-24",type:"选择",zh:"想请对方帮忙确认，哪句更合适？",ja:"確認していただけますか。",kana:"かくにんしていただけますか",wrong:["確認できますか。","確認してあげますか。"],form:"请求表达",scene:"敬语",note:"「できますか」只是问对方能不能"},
-  {id:"D1-25",type:"选择",zh:"同事问「今日中に送れますか」，意思是？",ja:"今天之内能发送吗？",kana:"",wrong:["今天之内被发送了吗？","今天之内要发送吗？"],form:"可能形",scene:"同事",note:"送れる＝能发送"}
+const VERBS = [
+  {k:"認める",r:"みとめる",t:"i",zh:"认可"},
+  {k:"確認する",r:"かくにんする",t:"s",zh:"确认"},
+  {k:"提出する",r:"ていしゅつする",t:"s",zh:"提交"},
+  {k:"説明する",r:"せつめいする",t:"s",zh:"说明"},
+  {k:"報告する",r:"ほうこくする",t:"s",zh:"汇报"},
+  {k:"送る",r:"おくる",t:"g",zh:"发送"},
+  {k:"書く",r:"かく",t:"g",zh:"写"},
+  {k:"行く",r:"いく",t:"g",zh:"去"},
+  {k:"読む",r:"よむ",t:"g",zh:"读"},
+  {k:"話す",r:"はなす",t:"g",zh:"说"},
+  {k:"払う",r:"はらう",t:"g",zh:"支付"},
+  {k:"待つ",r:"まつ",t:"g",zh:"等"},
+  {k:"呼ぶ",r:"よぶ",t:"g",zh:"叫"},
+  {k:"急ぐ",r:"いそぐ",t:"g",zh:"赶"},
+  {k:"使う",r:"つかう",t:"g",zh:"使用"},
+  {k:"帰る",r:"かえる",t:"g",zh:"回去"},
+  {k:"見る",r:"みる",t:"i",zh:"看"},
+  {k:"調べる",r:"しらべる",t:"i",zh:"查"},
+  {k:"決める",r:"きめる",t:"i",zh:"决定"},
+  {k:"受ける",r:"うける",t:"i",zh:"接受"},
+  {k:"来る",r:"くる",t:"k",zh:"来"}
 ];
+const CLS = {g:"一类动词（五段）",i:"二类动词（一段）",s:"三类动词（する）",k:"三类动词（来る）"};
+const ROW = {"う":"わいうえお","く":"かきくけこ","ぐ":"がぎぐげご","す":"さしすせそ","つ":"たちつてと","ぬ":"なにぬねの","ぶ":"ばびぶべぼ","む":"まみむめも","る":"らりるれろ"};
+const VOICE = ["pot","pas","cau","cp","cpS"];
 
-const KEY = "jp-practice-day1";
-const byId = {};
-DATA.forEach(d => byId[d.id] = d);
-let status = {};
-try { status = JSON.parse(localStorage.getItem(KEY)) || {}; } catch (e) {}
-let mode = "speak";
+const row = (f,i) => ROW[f.k.slice(-1)][i];
+const cut = (f,n,add,t) => ({k:f.k.slice(0,f.k.length-n)+add, r:f.r.slice(0,f.r.length-n)+add, t});
+function gTe(f,ta){
+  const ch=f.k.slice(-1);
 
-function save() { try { localStorage.setItem(KEY, JSON.stringify(status)); } catch (e) {} }
-function esc(s) { return String(s).replace(/[&<>"']/g, c => ({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c])); }
-function shuffle(a) { a = a.slice(); for (let i = a.length - 1; i > 0; i--) { const j = Math.floor(Math.random() * (i + 1)); [a[i], a[j]] = [a[j], a[i]]; } return a; }
-
-function speak(id) {
-  if (!window.speechSynthesis) { alert("这个浏览器不支持朗读"); return; }
-  speechSynthesis.cancel();
-  const u = new SpeechSynthesisUtterance(byId[id].ja);
-  u.lang = "ja-JP"; u.rate = 0.9;
-  speechSynthesis.speak(u);
+  const m={"う":"っ","つ":"っ","る":"っ","む":"ん","ぶ":"ん","ぬ":"ん","く":"い","ぐ":"い","す":"し"};
+  let s=m[ch], v=["む","ぶ","ぬ","ぐ"].includes(ch);
+  if(f.k==="行く"){s="っ";v=false;}
+  return s+(v?(ta?"だ":"で"):(ta?"た":"て"));
+}
+function V(f,g,i,s,k,t){
+  if(f.t==="g") return cut(f,1,g(f),t);
+  if(f.t==="i") return cut(f,1,i,t);
+  if(f.t==="s") return cut(f,2,s,t);
+  return {k:"来"+k[1], r:k[0]+k[1], t};
 }
 
-function updateStat() {
-  const ok = DATA.filter(d => status[d.id] === "ok").length;
-  const ng = DATA.filter(d => status[d.id] === "ng").length;
-  document.getElementById("bar").style.width = (ok / DATA.length * 100) + "%";
-  document.getElementById("stat").textContent = `已掌握 ${ok}/${DATA.length}　待复习 ${ng}`;
-}
+const OPS = {
+  pot:{label:"可能形",fn:f=>V(f,f=>row(f,3)+"る","られる","できる",["こ","られる"],"i")},
+  pas:{label:"被动形",fn:f=>V(f,f=>row(f,0)+"れる","られる","される",["こ","られる"],"i")},
+  cau:{label:"使役形",fn:f=>V(f,f=>row(f,0)+"せる","させる","させる",["こ","させる"],"i")},
+  cp:{label:"使役被动形",fn:f=>V(f,f=>row(f,0)+"せられる","させられる","させられる",["こ","させられる"],"i")},
+  cpS:{label:"使役被动形（短）",fn:f=>V(f,f=>row(f,0)+"される","させられる","させられる",["こ","させられる"],"i")},
+  nai:{label:"否定形（ない）",fn:f=>V(f,f=>row(f,0)+"ない","ない","しない",["こ","ない"],"adj")},
+  masu:{label:"ます形",fn:f=>V(f,f=>row(f,1)+"ます","ます","します",["き","ます"],"masu")},
+  te:{label:"て形",fn:f=>V(f,f=>gTe(f,false),"て","して",["き","て"],"end")},
+  ta:{label:"た形（过去）",fn:f=>V(f,f=>gTe(f,true),"た","した",["き","た"],"ta")},
+  ba:{label:"ば条件形",fn:f=>V(f,f=>row(f,3)+"ば","れば","すれば",["く","れば"],"end")},
+  vol:{label:"意向形",fn:f=>V(f,f=>row(f,4)+"う","よう","しよう",["こ","よう"],"end")},
+  imp:{label:"命令形",fn:f=>V(f,f=>row(f,3),"ろ","しろ",["こ","い"],"end")},
+  teiru:{label:"ている形",fn:f=>{const x=OPS.te.fn(f);return {k:x.k+"いる",r:x.r+"いる",t:"i"};}},
+  adjPast:{label:"过去否定（なかった）",fn:f=>cut(f,1,"かった","ta")},
+  adjTe:{label:"なくて形",fn:f=>cut(f,1,"くて","end")},
+  adjBa:{label:"なければ（ば条件）",fn:f=>cut(f,1,"ければ","end")},
+  tara:{label:"たら条件形",fn:f=>cut(f,0,"ら","end")},
+  masen:{label:"礼貌否定（ません）",fn:f=>cut(f,1,"せん","masen")},
+  mashita:{label:"礼貌过去（ました）",fn:f=>cut(f,1,"した","end")},
 
-function mark(id, v) {
-  status[id] = v; save(); updateStat();
-  const c = document.getElementById("c-" + id);
-  if (c) { c.classList.remove("ok", "ng"); c.classList.add(v); }
-}
+  mashou:{label:"礼貌意向（ましょう）",fn:f=>cut(f,1,"しょう","end")},
+  msd:{label:"礼貌过去否定（ませんでした）",fn:f=>cut(f,0,"でした","end")}
+};
 
-function reveal(id) { document.getElementById("a-" + id).classList.add("show"); }
+const HINT = {
+  pot:"一类：う段→え段＋る（書く→書ける）；二类：去る＋られる；する→できる；来る→来られる（こられる）",
+  pas:"一类：う段→あ段＋れる（う→わ）；二类：去る＋られる；する→される；来る→来られる",
+  cau:"一类：う段→あ段＋せる；二类：去る＋させる；する→させる；来る→来させる（こさせる）",
+  cp:"一类：あ段＋せられる（す结尾以外也可以说あ段＋される）；二类：去る＋させられる；する→させられる；来る→来させられる",
+  nai:"一类：う段→あ段＋ない（う→わ）；二类：去る＋ない；する→しない；来る→来ない（こない）。可能形、被动形等变完后都按二类处理",
+  masu:"一类：う段→い段＋ます；二类：去る＋ます；する→します；来る→来ます（きます）",
+  te:"一类：う・つ・る→って；む・ぶ・ぬ→んで；く→いて；ぐ→いで；す→して；行く→行って。二类：去る＋て。する→して；来る→来て（きて）",
+  ta:"和て形规则相同，把て／で换成た／だ",
+  ba:"一类：う段→え段＋ば；二类：去る＋れば；する→すれば；来る→来れば（くれば）",
+  vol:"一类：う段→お段＋う；二类：去る＋よう；する→しよう；来る→来よう（こよう）",
+  imp:"一类：う段→え段；二类：去る＋ろ；する→しろ；来る→来い（こい）",
+  teiru:"先变成て形，再加「いる」",
+  adjPast:"ない→なかった（去掉い，加かった）",
+  adjTe:"ない→なくて",
+  adjBa:"ない→なければ",
+  tara:"在た形（〜た／〜だ／〜なかった）后面加「ら」",
+  masen:"ます→ません",
+  mashita:"ます→ました",
+  mashou:"ます→ましょう",
+  msd:"ません→ませんでした"
+};
 
-function tags(d) { return `<span class="tag">${esc(d.scene)}</span><span class="tag">${esc(d.form)}</span>`; }
-
-function speakCard(d) {
-  return `<div class="card ${status[d.id] || ""}" id="c-${d.id}">
-    ${tags(d)}<div class="zh">${esc(d.zh)}</div>
-    <button class="btn main" onclick="reveal('${d.id}')">看答案</button>
-    <div class="ans" id="a-${d.id}">
-      <div class="ja">${esc(d.ja)}</div>
-      ${d.kana ? `<div class="kana">${esc(d.kana)}</div>` : ""}
-      <div class="note">${esc(d.note)}</div>
-      <div class="btns">
-        ${d.kana ? `<button class="btn" onclick="speak('${d.id}')">朗读</button>` : ""}
-        <button class="btn main" onclick="mark('${d.id}','ok')">会了</button>
-        <button class="btn" onclick="mark('${d.id}','ng')">还不熟</button>
-      </div>
-    </div>
-  </div>`;
-}
-
-function quizCard(d) {
-  const opts = shuffle([d.ja, ...d.wrong]);
-  return `<div class="card ${status[d.id] || ""}" id="c-${d.id}">
-    ${tags(d)}<div class="zh">${esc(d.zh)}</div>
-    ${opts.map(o => `<button class="opt" onclick="choose('${d.id}', this)">${esc(o)}</button>`).join("")}
-    <div class="ans" id="a-${d.id}">
-      <div class="verdict" id="v-${d.id}"></div>
-      <div class="note">${esc(d.note)}</div>
-      ${d.kana ? `<div class="btns"><button class="btn" onclick="speak('${d.id}')">朗读</button></div>` : ""}
-    </div>
-  </div>`;
-}
-
-function choose(id, el) {
-  const d = byId[id];
-  const card = document.getElementById("c-" + id);
-  const right = el.textContent === d.ja;
-  card.querySelectorAll(".opt").forEach(b => {
-    b.disabled = true;
-    if (b.textContent === d.ja) b.classList.add("right");
-  });
-  if (!right) el.classList.add("wrong");
-  document.getElementById("v-" + id).textContent = right ? "答对了！" : "再记一下：";
-  reveal(id);
-  mark(id, right ? "ok" : "ng");
-}
-
-function render() {
-  document.querySelectorAll(".tabs button").forEach(b => b.classList.toggle("on", b.dataset.m === mode));
-  const list = document.getElementById("list");
-  if (mode === "speak") {
-    list.innerHTML = DATA.filter(d => d.type === "开口").map(speakCard).join("");
-  } else if (mode === "quiz") {
-    list.innerHTML = DATA.filter(d => d.type === "选择").map(quizCard).join("");
-  } else {
-    const ng = DATA.filter(d => status[d.id] === "ng");
-    list.innerHTML = ng.length ? ng.map(speakCard).join("") : `<div class="empty">错题本是空的，继续保持！</div>`;
+function allowed(st){
+  if(["g","i","s","k"].includes(st.t)){
+    if(st.voice||st.teiru) return ["nai","masu","te","ta","ba"];
+    return ["pot","pas","cau","cp","nai","masu","te","ta","ba","vol","imp","teiru"];
   }
-  updateStat();
+
+  return ({adj:["adjPast","adjTe","adjBa"],ta:["tara"],masu:["masen","mashita","mashou"],masen:["msd"]})[st.t]||[];
+}
+const base = v => ({k:v.k,r:v.r,t:v.t,voice:null,teiru:false,fl:{}});
+
+function run(verb,ops){
+  let st=base(verb);
+  const steps=[];
+  for(const op of ops){
+    if(!allowed(st).includes(op==="cpS"?"cp":op)) return null;
+    const x=OPS[op].fn(st);
+    const fl={...st.fl};
+    if(op==="nai"||op==="masen") fl.neg=true;
+    if(["ta","adjPast","mashita","msd"].includes(op)) fl.past=true;
+    if(op==="masu"||op==="masen") fl.pol=true;
+    if(["tara","ba","adjBa"].includes(op)) fl.cond=true;
+    if(op==="te"||op==="adjTe") fl.te=true;
+    if(op==="vol") fl.vol=true;
+    if(op==="imp") fl.imp=true;
+    if(op==="mashou") fl.mashou=true;
+    st={k:x.k,r:x.r,t:x.t,voice:VOICE.includes(op)?(op==="cpS"?"cp":op):st.voice,teiru:st.teiru||op==="teiru",fl,op};
+    steps.push(st);
+  }
+  return steps;
 }
 
-function resetAll() {
-  if (!confirm("确定要清空所有进度吗？")) return;
-  status = {}; save(); render();
+function zh(st){
+  const v=chain.verb.zh, fl=st.fl||{};
+  const core={pas:"被"+v,cau:"让人"+v,cp:"被迫"+v}[st.voice]||v;
+  let s;
+  if(st.voice==="pot") s=fl.neg?(fl.past?"没能":"不能")+v:"能"+v+(fl.past?"了":"");
+  else if(st.teiru) s=fl.neg?(fl.past?"当时还没":"还没")+core:(fl.past?"当时正在／已经":"正在／已经")+core;
+  else s=fl.neg?(fl.past?"没有":"不")+core:core+(fl.past?"了":"");
+
+  if(fl.cond) s="如果"+s;
+  if(fl.te) s+="（て形，连接下文）";
+  if(fl.vol) s="打算"+s+"／"+s+"吧";
+  if(fl.imp) s+="！（命令）";
+  if(fl.mashou) s="一起"+s+"吧";
+  if(fl.pol&&!fl.mashou) s+="（礼貌）";
+  return s;
 }
 
-document.querySelectorAll(".tabs button").forEach(b => b.addEventListener("click", () => { mode = b.dataset.m; render(); }));
-render();
+const KEY="jp-chain-v1";
+let S={n:1,total:0,correct:0,streak:0,best:0,wrong:[]};
+try{S=Object.assign(S,JSON.parse(localStorage.getItem(KEY))||{});}catch(e){}
+const save=()=>{try{localStorage.setItem(KEY,JSON.stringify(S));}catch(e){}};
+const esc=s=>String(s).replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
+const pick=a=>a[Math.floor(Math.random()*a.length)];
+const norm=s=>s.trim().replace(/[\s。．.、，,「」]/g,"");
+const fmt=f=>f.k===f.r?f.k:f.k+"（"+f.r+"）";
+
+let chain=null, j=0, phase="ask", firstTry=true;
+
+function newChain(){
+  const lv=+document.getElementById("level").value;
+  const [mn,mx]=({1:[2,3],2:[3,4],3:[4,6]})[lv];
+  const L=mn+Math.floor(Math.random()*(mx-mn+1));
+  const verb=pick(VERBS);
+  const ops=[];
+  for(let i=0;i<L;i++){
+    const cur=ops.length?run(verb,ops).at(-1):base(verb);
+    let c=allowed(cur);
+    if(!c.length) break;
+    if(i===0&&Math.random()<0.5) c=c.filter(o=>VOICE.includes(o));
+    if(L-i>1){
+
+      const c2=c.filter(o=>{const s=run(verb,[...ops,o]);return s&&allowed(s.at(-1)).length>0;});
+      if(c2.length) c=c2;
+    }
+    ops.push(pick(c));
+  }
+  let alt=null;
+  if(ops[0]==="cp"&&verb.t==="g"&&verb.k.slice(-1)!=="す") alt=run(verb,["cpS",...ops.slice(1)]);
+  chain={verb,ops,steps:run(verb,ops),alt};
+  j=0;
+  showQ();
+}
+
+function showQ(){
+  phase="ask"; firstTry=true;
+  const {verb,steps}=chain, t=steps[j], known=j?steps[j-1]:null;
+  const s=Math.min(5,j+1);
+  document.getElementById("res").classList.add("hidden");
+  document.getElementById("q").innerHTML=`
+    <div class="qhead">第${S.n}题｜${OPS[t.op].label}</div>
+    <div class="muted">难度：${"★".repeat(s)+"☆".repeat(5-s)}　本动词第 ${j+1}/${steps.length} 步</div>
+    <div class="box"><div class="muted">指定动词原形</div><div class="big">${fmt(verb)}</div><div>${verb.zh}</div></div>
+    <div class="row"><span class="lbl">目标</span>${esc(zh(t))}</div>
+    <div class="row"><span class="lbl">已知</span>${known?`${fmt(known)} ＝ ${esc(zh(known))}`:`原形 ${fmt(verb)}`}</div>
+    <div class="row"><span class="lbl">要求</span>在已知形式的基础上变成「${OPS[t.op].label}」。写标准完整形式，不使用ら抜き言葉，只写一个动词，不造句。</div>
+    <div class="inputrow">
+      <input type="text" id="ans" placeholder="汉字或假名都可以" autocomplete="off" oninput="document.getElementById('err').textContent=''">
+      <button class="btn main" onclick="submit()">提交</button>
+    </div>
+    <div class="err" id="err"></div>
+    <button class="link" onclick="document.getElementById('hint').classList.toggle('hidden')">看提示</button>
+    <div class="hint hidden" id="hint">${HINT[t.op]}</div>`;
+  document.getElementById("ans").focus();
+
+  renderStats(); renderWrong();
+}
+
+function variants(pre){
+  const vIdx=pre.findIndex(o=>VOICE.includes(o));
+  const rest=vIdx>=0?pre.filter((o,i)=>i!==vIdx):pre.slice();
+  const list=[rest,["pot",...rest],["pas",...rest],["cau",...rest],["cp",...rest]];
+  if(vIdx<0) list.push(["teiru",...rest]);
+  return list.filter(v=>v.join()!==pre.join());
+}
+function lastOf(ops){
+  if(!ops.length) return {...base(chain.verb),op:null};
+  const s=run(chain.verb,ops);
+  return s?s.at(-1):null;
+}
+const routeLabel=ops=>ops.length?ops.map(o=>OPS[o].label).join(" → "):"原形";
+
+function diagnose(val){
+  const {verb,steps}=chain, t=steps[j], pre=chain.ops.slice(0,j+1);
+  if(["i","k"].includes(verb.t)&&t.voice==="pot"){
+    if(val===t.k.replace("られ","れ")||val===t.r.replace("られ","れ"))
+      return "这是「ら抜き言葉」（漏掉了「ら」）。口语里常听到，但标准形式要保留「られ」。";
+  }
+  for(let i=0;i<j;i++){
+    if(val===steps[i].k||val===steps[i].r)
+      return `你写到「${OPS[steps[i].op].label}」就停了，还差后面的「${OPS[t.op].label}」。`;
+  }
+  if(val===verb.k||val===verb.r) return "你写的是原形，还没有变形。";
+  for(const v of variants(pre)){
+    const l=lastOf(v);
+    if(l&&(val===l.k||val===l.r))
+      return `你写的是「${routeLabel(v)}」，意思是“${esc(zh(l))}”。本题要的是“${esc(zh(t))}”。`;
+
+  }
+  return "形式不对。对照下面的变形路线，找出是哪一步出了问题。";
+}
+
+function compareRows(){
+  const pre=chain.ops.slice(0,j+1), t=chain.steps[j];
+  const vIdx=pre.findIndex(o=>VOICE.includes(o));
+  const rest=vIdx>=0?pre.filter((o,i)=>i!==vIdx):pre.slice();
+  const cand=[pre,rest,["pot",...rest],["pas",...rest]];
+  if(vIdx<0) cand.push(["teiru",...rest]);
+  const seen=new Set(), rows=[];
+  for(const v of cand){
+    const l=lastOf(v);
+    if(!l||seen.has(l.k)) continue;
+    seen.add(l.k);
+    rows.push({cur:v===pre,zh:zh(l),f:l});
+  }
+  return rows;
+}
+
+function submit(){
+  if(phase!=="ask") return;
+  const input=document.getElementById("ans");
+  const val=norm(input.value);
+  if(!val){document.getElementById("err").textContent="请先输入答案";return;}
+  const {verb,steps,alt}=chain, t=steps[j];
+  const acc=[t.k,t.r];
+  if(alt) acc.push(alt[j].k,alt[j].r);
+  const ok=acc.includes(val);
+  if(firstTry){
+    S.total++;
+    if(ok){S.correct++;S.streak++;S.best=Math.max(S.best,S.streak);}
+
+    else{
+      S.streak=0;
+      S.wrong.unshift({n:S.n,verb:verb.k,route:routeLabel(chain.ops.slice(0,j+1)),ans:t.k,yours:val});
+      S.wrong=S.wrong.slice(0,15);
+    }
+    save();
+  }
+  firstTry=false;
+  phase=ok?"done":"wrong";
+  input.disabled=true;
+
+  let h=ok?`<div class="ok-h">第${S.n}题：完全正确！</div>`:`<div class="ng-h">第${S.n}题：还差一点</div>`;
+  h+=`<div class="row">你的答案：「${esc(val)}」</div>`;
+  h+=`<div class="row">正确答案：「${fmt(t)}」</div>`;
+  if(alt) h+=`<div class="muted">也可以说「${fmt(alt[j])}」（使役被动的短形式，口语常用）</div>`;
+  if(!ok) h+=`<div class="diag">${diagnose(val)}</div>`;
+  if(ok&&S.streak>=3) h+=`<div class="muted">已经连续答对 ${S.streak} 题。</div>`;
+
+  h+=`<h3>一、完整变形路线</h3><div class="muted">动词类别：${CLS[verb.t]}</div>
+    <table><tr><th>步骤</th><th>形式</th><th>意思</th></tr>
+    <tr><td>原形</td><td>${fmt(verb)}</td><td>${verb.zh}</td></tr>`;
+  for(let i=0;i<=j;i++){
+    const s=steps[i];
+    h+=`<tr class="${i===j?"cur":""}"><td>${OPS[s.op].label}</td><td>${fmt(s)}</td><td>${esc(zh(s))}</td></tr>`;
+  }
+  h+=`</table>`;
+
+  const rows=compareRows();
+  if(rows.length>=2){
+    h+=`<h3>二、相似形式的区别</h3><table><tr><th>中文</th><th>日语</th><th></th></tr>`;
+    rows.forEach(r=>{h+=`<tr class="${r.cur?"cur":""}"><td>${esc(r.zh)}</td><td>${fmt(r.f)}</td><td>${r.cur?"本题":""}</td></tr>`;});
+    h+=`</table>`;
+
+  }
+  if(["i","k"].includes(verb.t)&&(t.voice==="pot"||t.voice==="pas"))
+    h+=`<div class="note">注意：二类动词和「来る」的可能形与被动形同形（都是〜られる），实际交流时要看上下文判断。</div>`;
+
+  const last=j===steps.length-1;
+  h+=`<div class="btns">`;
+  if(!ok) h+=`<button class="btn" onclick="retry()">再试一次</button>`;
+  h+=`<button class="btn main" onclick="next()">${last?"下一题（换新动词）":"下一题（再加一步）"}</button></div>`;
+
+  const res=document.getElementById("res");
+  res.innerHTML=h;
+  res.classList.remove("hidden");
+  renderStats(); renderWrong();
+}
+
+function retry(){
+  phase="ask";
+  const input=document.getElementById("ans");
+  input.disabled=false; input.value=""; input.focus();
+  document.getElementById("res").classList.add("hidden");
+}
+
+function next(){
+  S.n++; save();
+  if(j<chain.steps.length-1){j++;showQ();}
+  else newChain();
+}
+
+function renderStats(){
+  const pct=S.total?Math.round(S.correct/S.total*100):0;
+  document.getElementById("stats").textContent=`已答 ${S.total} ｜ 正确率 ${pct}% ｜ 连对 ${S.streak} ｜ 最佳连对 ${S.best}`;
+}
+
+function renderWrong(){
+  const b=document.getElementById("wrongBox");
+  if(!S.wrong.length){b.innerHTML=`<h3 style="margin-top:0">最近错题</h3><div class="muted">还没有错题。</div>`;return;}
+  b.innerHTML=`<h3 style="margin-top:0">最近错题</h3>`+S.wrong.map(w=>
+    `<div class="wl">第${w.n}题 · ${esc(w.verb)} · ${esc(w.route)}<br>
+    <span class="muted">你写：${esc(w.yours)}　正确：${esc(w.ans)}</span></div>`).join("");
+}
+
+document.addEventListener("keydown",e=>{
+  if(e.key!=="Enter"||e.isComposing) return;
+  if(phase==="ask") submit();
+  else if(phase==="done") next();
+});
+
+newChain();
 </script>
 </body>
 </html>
