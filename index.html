@@ -1,0 +1,188 @@
+<!DOCTYPE html>
+<html lang="zh">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>日语变形开口练习 · 第1天</title>
+<style>
+:root{--bg:#f6f5f1;--card:#fff;--ink:#222;--muted:#777;--line:#e4e1d8;--accent:#0f6e56;--accent-bg:#e1f5ee;--ng:#a32d2d;--ng-bg:#fcebeb}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--ink);font-family:"Hiragino Sans","PingFang SC","Noto Sans JP","Microsoft YaHei",sans-serif;line-height:1.7}
+.wrap{max-width:720px;margin:0 auto;padding:24px 16px 60px}
+h1{font-size:22px;margin:0 0 4px}
+.sub{color:var(--muted);font-size:14px;margin:0 0 16px}
+.bar{height:8px;background:var(--line);border-radius:4px;overflow:hidden}
+.bar>div{height:100%;background:var(--accent);width:0;transition:width .3s}
+.stat{font-size:13px;color:var(--muted);margin:6px 0 16px;display:flex;justify-content:space-between;align-items:center}
+.tabs{display:flex;gap:8px;margin-bottom:16px}
+.tabs button{flex:1;padding:10px;border:1px solid var(--line);background:var(--card);border-radius:8px;font-size:15px;cursor:pointer}
+.tabs button.on{background:var(--accent);color:#fff;border-color:var(--accent)}
+.card{background:var(--card);border:1px solid var(--line);border-radius:12px;padding:16px;margin-bottom:12px}
+.card.ok{border-left:4px solid var(--accent)}
+.card.ng{border-left:4px solid var(--ng)}
+.tag{display:inline-block;font-size:12px;padding:1px 8px;border-radius:10px;background:var(--accent-bg);color:var(--accent);margin-right:6px}
+.zh{font-size:17px;margin:8px 0}
+.ans{display:none;margin-top:10px;padding-top:10px;border-top:1px dashed var(--line)}
+.ans.show{display:block}
+.ja{font-size:20px}
+.kana{font-size:13px;color:var(--muted)}
+.note{font-size:14px;margin-top:6px}
+.verdict{font-weight:bold}
+.btns{display:flex;gap:8px;flex-wrap:wrap;margin-top:10px}
+.btn{padding:7px 14px;border-radius:8px;border:1px solid var(--line);background:#fff;cursor:pointer;font-size:14px}
+.btn.main{background:var(--accent);color:#fff;border-color:var(--accent)}
+.opt{display:block;width:100%;text-align:left;margin-top:8px;padding:10px 12px;border:1px solid var(--line);border-radius:8px;background:#fff;cursor:pointer;font-size:16px;color:var(--ink)}
+.opt.right{background:var(--accent-bg);border-color:var(--accent)}
+.opt.wrong{background:var(--ng-bg);border-color:var(--ng)}
+.opt:disabled{cursor:default}
+.empty{text-align:center;color:var(--muted);padding:40px 0}
+.reset{background:none;border:none;color:var(--muted);font-size:13px;cursor:pointer;text-decoration:underline}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <h1>第1天：可能形</h1>
+  <p class="sub">先看中文，自己说出日语，再看答案。</p>
+  <div class="bar"><div id="bar"></div></div>
+  <div class="stat"><span id="stat"></span><button class="reset" onclick="resetAll()">重新开始</button></div>
+  <div class="tabs">
+    <button data-m="speak">开口练习</button>
+    <button data-m="quiz">选择题</button>
+    <button data-m="review">错题本</button>
+  </div>
+  <div id="list"></div>
+</div>
+
+<script>
+const DATA = [
+  {id:"D1-01",type:"开口",zh:"今天之内可以确认。",ja:"今日中に確認できます。",kana:"きょうじゅうにかくにんできます",form:"可能形",scene:"汇报",note:"する→できる。「今日中」读きょうじゅう"},
+  {id:"D1-02",type:"开口",zh:"我明天可以去银行。",ja:"明日、銀行に行けます。",kana:"あした、ぎんこうにいけます",form:"可能形",scene:"银行",note:"能去用「行ける」；「行かれる」是尊敬或被动"},
+  {id:"D1-03",type:"开口",zh:"目前还无法判断。",ja:"現時点では、まだ判断できません。",kana:"げんじてんでは、まだはんだんできません",form:"可能形否定",scene:"汇报",note:"「まだ〜できません」表示现在还不能"},
+  {id:"D1-04",type:"开口",zh:"明天之前可以提交。",ja:"明日までに提出できます。",kana:"あしたまでにていしゅつできます",form:"可能形",scene:"汇报",note:"「までに」表示截止期限"},
+  {id:"D1-05",type:"开口",zh:"我这边可以发送。",ja:"こちらから送れます。",kana:"こちらからおくれます",form:"可能形",scene:"邮件",note:"一类：る→れる"},
+  {id:"D1-06",type:"开口",zh:"今天不能提交。",ja:"今日は提出できません。",kana:"きょうはていしゅつできません",form:"可能形否定",scene:"汇报",note:"“不能”用できません；「提出しません」是“不提交”"},
+  {id:"D1-07",type:"开口",zh:"这份资料在哪里能看到？",ja:"この資料はどこで見られますか。",kana:"このしりょうはどこでみられますか",form:"可能形",scene:"资料",note:"二类：見る→見られる"},
+  {id:"D1-08",type:"开口",zh:"我能用日语说明。",ja:"日本語で説明できます。",kana:"にほんごでせつめいできます",form:"可能形",scene:"汇报",note:"する动词统一变成できる"},
+  {id:"D1-09",type:"开口",zh:"明天的会议我能出席。",ja:"明日の会議に出られます。",kana:"あしたのかいぎにでられます",form:"可能形",scene:"会议",note:"二类：出る→出られる；更正式可说「出席できます」"},
+  {id:"D1-10",type:"开口",zh:"下午的话能接电话。",ja:"午後なら電話に出られます。",kana:"ごごならでんわにでられます",form:"可能形",scene:"电话",note:"「電話に出る」＝接电话"},
+  {id:"D1-11",type:"开口",zh:"这周之内可以付款。",ja:"今週中にお支払いできます。",kana:"こんしゅうちゅうにおしはらいできます",form:"可能形（谦让）",scene:"付款",note:"「お＋名词＋できます」对客户更礼貌"},
+  {id:"D1-12",type:"开口",zh:"这个数字我能查到。",ja:"この数字は調べられます。",kana:"このすうじはしらべられます",form:"可能形",scene:"查询",note:"二类：調べる→調べられる"},
+  {id:"D1-13",type:"开口",zh:"明天能来公司吗？",ja:"明日、会社に来られますか。",kana:"あした、かいしゃにこられますか",form:"可能形",scene:"同事",note:"来る→来られる，读こられる"},
+  {id:"D1-14",type:"开口",zh:"现在方便说几句话吗？",ja:"今、少しお話しできますか。",kana:"いま、すこしおはなしできますか",form:"可能形（谦让）",scene:"电话",note:"打电话开头常用"},
+  {id:"D1-15",type:"开口",zh:"我还没能确认。",ja:"まだ確認できていません。",kana:"まだかくにんできていません",form:"可能形＋ていない",scene:"汇报",note:"“还没能做到”用「できていません」"},
+  {id:"D1-16",type:"开口",zh:"在网银上能看到入金记录。",ja:"ネットバンキングで入金履歴が見られます。",kana:"ねっとばんきんぐでにゅうきんりれきがみられます",form:"可能形",scene:"银行",note:"可能形前的宾语常用「が」"},
+  {id:"D1-17",type:"选择",zh:"「書く」的可能形是？",ja:"書ける",kana:"かける",wrong:["書かれる","書きれる"],form:"可能形",scene:"基础",note:"一类：く→け＋る；書かれる是被动"},
+  {id:"D1-18",type:"选择",zh:"「食べる」的可能形是？",ja:"食べられる",kana:"たべられる",wrong:["食べける","食べさせる"],form:"可能形",scene:"基础",note:"二类：去る＋られる"},
+  {id:"D1-19",type:"选择",zh:"「する」的可能形是？",ja:"できる",kana:"できる",wrong:["される","しれる"],form:"可能形",scene:"基础",note:"三类单独记；される是被动"},
+  {id:"D1-20",type:"选择",zh:"「来る」的可能形是？",ja:"来られる",kana:"こられる",wrong:["来させる","来される"],form:"可能形",scene:"基础",note:"三类单独记；来させる是使役"},
+  {id:"D1-21",type:"选择",zh:"「払う」的可能形是？",ja:"払える",kana:"はらえる",wrong:["払われる","払いえる"],form:"可能形",scene:"基础",note:"一类：う→え＋る"},
+  {id:"D1-22",type:"选择",zh:"对同事说“我明天能去”，哪句正确？",ja:"明日行けます。",kana:"あしたいけます",wrong:["明日行かれます。","明日行きられます。"],form:"可能形",scene:"易混淆",note:"说自己不能用尊敬的「行かれます」"},
+  {id:"D1-23",type:"选择",zh:"「部長は銀行に行かれます」是什么意思？",ja:"部长去银行（尊敬表达）",kana:"",wrong:["部长能去银行","部长被叫去银行"],form:"尊敬形",scene:"易混淆",note:"主语是上级时，「行かれる」多为尊敬"},
+  {id:"D1-24",type:"选择",zh:"想请对方帮忙确认，哪句更合适？",ja:"確認していただけますか。",kana:"かくにんしていただけますか",wrong:["確認できますか。","確認してあげますか。"],form:"请求表达",scene:"敬语",note:"「できますか」只是问对方能不能"},
+  {id:"D1-25",type:"选择",zh:"同事问「今日中に送れますか」，意思是？",ja:"今天之内能发送吗？",kana:"",wrong:["今天之内被发送了吗？","今天之内要发送吗？"],form:"可能形",scene:"同事",note:"送れる＝能发送"}
+];
+
+const KEY = "jp-practice-day1";
+const byId = {};
+DATA.forEach(d => byId[d.id] = d);
+let status = {};
+try { status = JSON.parse(localStorage.getItem(KEY)) || {}; } catch (e) {}
+let mode = "speak";
+
+function save() { try { localStorage.setItem(KEY, JSON.stringify(status)); } catch (e) {} }
+function esc(s) { return String(s).replace(/[&<>"']/g, c => ({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c])); }
+function shuffle(a) { a = a.slice(); for (let i = a.length - 1; i > 0; i--) { const j = Math.floor(Math.random() * (i + 1)); [a[i], a[j]] = [a[j], a[i]]; } return a; }
+
+function speak(id) {
+  if (!window.speechSynthesis) { alert("这个浏览器不支持朗读"); return; }
+  speechSynthesis.cancel();
+  const u = new SpeechSynthesisUtterance(byId[id].ja);
+  u.lang = "ja-JP"; u.rate = 0.9;
+  speechSynthesis.speak(u);
+}
+
+function updateStat() {
+  const ok = DATA.filter(d => status[d.id] === "ok").length;
+  const ng = DATA.filter(d => status[d.id] === "ng").length;
+  document.getElementById("bar").style.width = (ok / DATA.length * 100) + "%";
+  document.getElementById("stat").textContent = `已掌握 ${ok}/${DATA.length}　待复习 ${ng}`;
+}
+
+function mark(id, v) {
+  status[id] = v; save(); updateStat();
+  const c = document.getElementById("c-" + id);
+  if (c) { c.classList.remove("ok", "ng"); c.classList.add(v); }
+}
+
+function reveal(id) { document.getElementById("a-" + id).classList.add("show"); }
+
+function tags(d) { return `<span class="tag">${esc(d.scene)}</span><span class="tag">${esc(d.form)}</span>`; }
+
+function speakCard(d) {
+  return `<div class="card ${status[d.id] || ""}" id="c-${d.id}">
+    ${tags(d)}<div class="zh">${esc(d.zh)}</div>
+    <button class="btn main" onclick="reveal('${d.id}')">看答案</button>
+    <div class="ans" id="a-${d.id}">
+      <div class="ja">${esc(d.ja)}</div>
+      ${d.kana ? `<div class="kana">${esc(d.kana)}</div>` : ""}
+      <div class="note">${esc(d.note)}</div>
+      <div class="btns">
+        ${d.kana ? `<button class="btn" onclick="speak('${d.id}')">朗读</button>` : ""}
+        <button class="btn main" onclick="mark('${d.id}','ok')">会了</button>
+        <button class="btn" onclick="mark('${d.id}','ng')">还不熟</button>
+      </div>
+    </div>
+  </div>`;
+}
+
+function quizCard(d) {
+  const opts = shuffle([d.ja, ...d.wrong]);
+  return `<div class="card ${status[d.id] || ""}" id="c-${d.id}">
+    ${tags(d)}<div class="zh">${esc(d.zh)}</div>
+    ${opts.map(o => `<button class="opt" onclick="choose('${d.id}', this)">${esc(o)}</button>`).join("")}
+    <div class="ans" id="a-${d.id}">
+      <div class="verdict" id="v-${d.id}"></div>
+      <div class="note">${esc(d.note)}</div>
+      ${d.kana ? `<div class="btns"><button class="btn" onclick="speak('${d.id}')">朗读</button></div>` : ""}
+    </div>
+  </div>`;
+}
+
+function choose(id, el) {
+  const d = byId[id];
+  const card = document.getElementById("c-" + id);
+  const right = el.textContent === d.ja;
+  card.querySelectorAll(".opt").forEach(b => {
+    b.disabled = true;
+    if (b.textContent === d.ja) b.classList.add("right");
+  });
+  if (!right) el.classList.add("wrong");
+  document.getElementById("v-" + id).textContent = right ? "答对了！" : "再记一下：";
+  reveal(id);
+  mark(id, right ? "ok" : "ng");
+}
+
+function render() {
+  document.querySelectorAll(".tabs button").forEach(b => b.classList.toggle("on", b.dataset.m === mode));
+  const list = document.getElementById("list");
+  if (mode === "speak") {
+    list.innerHTML = DATA.filter(d => d.type === "开口").map(speakCard).join("");
+  } else if (mode === "quiz") {
+    list.innerHTML = DATA.filter(d => d.type === "选择").map(quizCard).join("");
+  } else {
+    const ng = DATA.filter(d => status[d.id] === "ng");
+    list.innerHTML = ng.length ? ng.map(speakCard).join("") : `<div class="empty">错题本是空的，继续保持！</div>`;
+  }
+  updateStat();
+}
+
+function resetAll() {
+  if (!confirm("确定要清空所有进度吗？")) return;
+  status = {}; save(); render();
+}
+
+document.querySelectorAll(".tabs button").forEach(b => b.addEventListener("click", () => { mode = b.dataset.m; render(); }));
+render();
+</script>
+</body>
+</html>
