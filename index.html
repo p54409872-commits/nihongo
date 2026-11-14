@@ -1,3 +1,138 @@
+<!DOCTYPE html>
+<html lang="zh">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>练习册</title>
+<script type="module">
+// ===== Firebase 配置 =====
+const FIREBASE_CONFIG = {
+  apiKey: "AIzaSyCpZiw8SJU-pPPL2aI0i1sL-49Vn5W-T-E",
+  authDomain: "nihongo-37daf.firebaseapp.com",
+  projectId: "nihongo-37daf",
+  storageBucket: "nihongo-37daf.firebasestorage.app",
+  messagingSenderId: "1056385782450",
+  appId: "1:1056385782450:web:0f00f35ff66a078288afab",
+  measurementId: "G-59NPK6WLKH"
+};
+// ========================
+window.FB_CONF = !!FIREBASE_CONFIG;
+if (!FIREBASE_CONFIG) {
+  window.FB = null;
+} else {
+  try {
+    const { initializeApp } = await import("https://www.gstatic.com/firebasejs/12.18.0/firebase-app.js");
+    const fs = await import("https://www.gstatic.com/firebasejs/12.18.0/firebase-firestore.js");
+    const app = initializeApp(FIREBASE_CONFIG);
+    window.FB = { db: fs.getFirestore(app), doc: fs.doc, getDoc: fs.getDoc, setDoc: fs.setDoc, onSnapshot: fs.onSnapshot };
+  } catch (e) {
+    console.error(e);
+    window.FB = null;
+  }
+}
+
+window.dispatchEvent(new Event("fb-ready"));
+</script>
+<style>
+:root{--bg:#f6f5f1;--card:#fff;--ink:#222;--muted:#777;--line:#e4e1d8;--accent:#0f6e56;--accent-bg:#e1f5ee;--ng:#a32d2d;--ng-bg:#fcebeb;--warn-bg:#faeeda;--warn:#854f0b;--gold-bg:#fff4d6;--gold:#7a5300;--pink:#993556;--pink-bg:#fbeaf0;--blue:#185fa5;--blue-bg:#e6f1fb}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--ink);font-family:"Hiragino Sans","PingFang SC","Noto Sans JP","Microsoft YaHei",sans-serif;line-height:1.7}
+.wrap{max-width:760px;margin:0 auto;padding:24px 16px 60px}
+h1{font-size:22px;margin:0 0 6px;color:var(--pink)}
+.greet{background:var(--pink-bg);color:var(--pink);border-radius:10px;padding:10px 14px;font-size:16px;font-weight:bold;margin:10px 0 14px}
+.profiles{display:flex;gap:8px;flex-wrap:wrap;align-items:center;font-size:15px}
+.sync{font-size:12px;border-radius:10px;padding:2px 10px;background:var(--blue-bg);color:var(--blue)}
+.sync.fail{background:var(--ng-bg);color:var(--ng)}
+.card{background:var(--card);border:1px solid var(--line);border-radius:12px;padding:18px;margin-bottom:14px}
+.hidden{display:none}
+.muted{color:var(--muted);font-size:13px}
+.barw{height:10px;background:var(--line);border-radius:5px;overflow:hidden;margin:8px 0}
+.barw>div{height:100%;background:var(--accent);transition:width .3s}
+.dash-top{display:flex;justify-content:space-between;align-items:flex-start;flex-wrap:wrap;gap:8px}
+.dash-big{font-size:20px;font-weight:bold;color:var(--accent)}
+.cheer{background:var(--accent-bg);color:var(--accent);border-radius:8px;padding:10px 12px;font-size:14px;margin-top:10px}
+.tabs{display:flex;gap:8px;margin-bottom:14px;flex-wrap:wrap;align-items:center}
+.tab{flex:1;min-width:90px;padding:10px;border:1px solid var(--line);background:var(--card);border-radius:8px;font-size:15px;cursor:pointer}
+.tab.on{background:var(--accent);color:#fff;border-color:var(--accent)}
+select{padding:5px 8px;border-radius:8px;border:1px solid var(--line);font-size:14px}
+.qtop{font-size:13px;color:var(--accent);margin-bottom:4px}
+.qhead{font-size:19px;font-weight:bold}
+.box{background:var(--accent-bg);border-radius:10px;padding:12px 14px;margin:12px 0}
+.box .big{font-size:22px;color:var(--accent)}
+.lbl{display:inline-block;font-size:12px;color:var(--accent);background:var(--accent-bg);border-radius:10px;padding:0 8px;margin-right:8px}
+.row{margin:8px 0}
+.inputrow{display:flex;gap:8px;margin-top:14px}
+input[type=text],input[type=password]{flex:1;min-width:0;font-size:20px;padding:10px 12px;border:1px solid var(--line);border-radius:8px}
+
+.btn{padding:9px 16px;border-radius:8px;border:1px solid var(--line);background:#fff;cursor:pointer;font-size:15px}
+.btn.main{background:var(--accent);color:#fff;border-color:var(--accent)}
+.mini{padding:2px 10px;border-radius:6px;border:1px solid var(--line);background:#fff;cursor:pointer;font-size:13px;margin-left:6px}
+.link{background:none;border:none;color:var(--accent);cursor:pointer;font-size:14px;padding:0;margin-top:10px;text-decoration:underline}
+.hint{background:var(--warn-bg);color:var(--warn);border-radius:8px;padding:10px 12px;font-size:14px;margin-top:8px}
+.err{color:var(--ng);font-size:13px;margin-top:6px}
+.ok-h{color:var(--accent);font-size:19px;font-weight:bold}
+.ng-h{color:var(--ng);font-size:19px;font-weight:bold}
+.praise{color:var(--accent);font-size:14px}
+.comfort{color:var(--muted);font-size:14px}
+.celebrate{background:var(--gold-bg);color:var(--gold);border-radius:10px;padding:12px 14px;margin:10px 0;font-size:15px;font-weight:bold}
+.diag{background:var(--ng-bg);color:var(--ng);border-radius:8px;padding:10px 12px;font-size:14px;margin:10px 0}
+.note{background:var(--warn-bg);color:var(--warn);border-radius:8px;padding:10px 12px;font-size:14px;margin:10px 0}
+h3{font-size:16px;margin:18px 0 8px}
+table{width:100%;border-collapse:collapse;font-size:15px}
+td,th{border-bottom:1px solid var(--line);padding:8px 6px;text-align:left;vertical-align:top}
+th{font-size:13px;color:var(--muted);font-weight:normal}
+tr.cur td{background:var(--accent-bg)}
+.btns{display:flex;gap:12px;flex-wrap:wrap;margin-top:14px;align-items:center}
+.ex{border-bottom:1px dashed var(--line);padding:8px 0}
+.exja{font-size:17px}
+.unit{display:flex;justify-content:space-between;gap:10px;padding:10px 12px;border:1px solid var(--line);border-radius:10px;margin-bottom:8px;cursor:pointer}
+.unit.sel{border-color:var(--accent);background:var(--accent-bg)}
+.unit.lock{opacity:.5;cursor:default}
+.unit .ur{text-align:right;white-space:nowrap}
+.lv{font-size:12px;background:var(--warn-bg);color:var(--warn);border-radius:10px;padding:0 8px;margin-left:4px}
+.cal{display:grid;grid-template-columns:repeat(7,1fr);gap:6px;margin-top:10px}
+.cell{border-radius:8px;padding:4px 0;text-align:center;font-size:12px;background:#f1efe8;color:var(--muted);min-height:44px}
+.cell.part{background:var(--accent-bg);color:var(--accent)}
+.cell.done{background:var(--accent);color:#fff}
+.cell.today{outline:2px solid var(--pink)}
+.cell b{display:block;font-size:14px}
+
+.pkrow{margin:10px 0}
+.pkname{display:flex;justify-content:space-between;font-size:15px}
+.pkbar{height:16px;background:var(--line);border-radius:8px;overflow:hidden;margin-top:4px}
+.pkbar>div{height:100%;transition:width .3s}
+.p0{background:var(--pink)}
+.p1{background:var(--blue)}
+.crown{color:var(--gold);font-weight:bold}
+.pkmsg{background:var(--gold-bg);color:var(--gold);border-radius:8px;padding:10px 12px;font-size:15px;font-weight:bold;margin-top:10px}
+.setup label{display:block;margin:12px 0 4px;font-size:14px;color:var(--muted)}
+.setup input[type=text],.setup input[type=password]{width:100%}
+.whobtn{display:block;width:100%;padding:18px;font-size:22px;font-weight:bold;border-radius:14px;margin:12px 0;background:#fff;cursor:pointer;border:2px solid var(--line)}
+.whobtn.w0{border-color:var(--pink);color:var(--pink);background:var(--pink-bg)}
+.whobtn.w1{border-color:var(--blue);color:var(--blue);background:var(--blue-bg)}
+details summary{cursor:pointer;font-weight:bold}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <h1 id="title">练习册</h1>
+  <div class="card setup" id="setup"><div class="muted">正在加载…</div></div>
+  <div id="main" class="hidden">
+    <div class="profiles" id="profiles"></div>
+    <div class="greet" id="greet"></div>
+    <div class="card" id="pk"></div>
+    <div class="card" id="dash"></div>
+    <div class="tabs" id="tabs"></div>
+    <div class="card" id="q"></div>
+    <div class="card hidden" id="res"></div>
+    <div class="card" id="cal"></div>
+    <div class="card" id="units"></div>
+    <div class="card" id="plan"></div>
+  </div>
+
+</div>
+
+<script>
 const E=(s,ja,zh)=>({s,ja,zh});
 const VERBS = [
   {k:"認める",r:"みとめる",t:"i",zh:"认可",ex:[E("职场","部長はこの経費を認めてくれました。","部长批准了这笔经费。"),E("生活","自分の間違いを素直に認めよう。","要坦率地承认自己的错误。")]},
@@ -8,7 +143,7 @@ const VERBS = [
   {k:"送る",r:"おくる",t:"g",zh:"发送",ex:[E("职场","資料はメールで送ります。","资料用邮件发送。"),E("生活","おばあちゃんに手紙を送った。","给奶奶寄了信。")]},
   {k:"書く",r:"かく",t:"g",zh:"写",ex:[E("职场","議事録を書いてもらえますか。","能帮忙写一下会议记录吗？"),E("生活","日記を毎日書いている。","每天都在写日记。")]},
   {k:"行く",r:"いく",t:"g",zh:"去",ex:[E("职场","午後、銀行に行ってきます。","下午去一趟银行。"),E("生活","週末、公園に行こう。","周末去公园吧。")]},
-  {k:"読む",r:"よむ",t:"g",zh:"读",ex:[E("职场","契約書をよく読んでからサインしてください。","请仔细阅读合同后再签字。"),E("生活","寝る前に本を読んだ。","睡前读了书。")]},
+  {k:"読む",r:"よむ",t:"g",zh:"读",ex:[E("职场","契約書をよく読んでからサインしてください。","请仔细阅读合同后再签字。"),E("生活","寝る前に絵本を読んだ。","睡前读了绘本。")]},
   {k:"話す",r:"はなす",t:"g",zh:"说",ex:[E("职场","その件は部長と話してみます。","那件事我和部长谈一下。"),E("生活","友だちと日本語で話せた。","用日语和朋友说上话了。")]},
   {k:"払う",r:"はらう",t:"g",zh:"支付",ex:[E("职场","請求書の金額を今週中に払います。","本周内支付请求书的金额。"),E("生活","レジでお金を払った。","在收银台付了钱。")]},
   {k:"待つ",r:"まつ",t:"g",zh:"等",ex:[E("职场","少々お待ちください。","请稍等。"),E("生活","信号が青になるまで待とう。","等到信号灯变绿吧。")]},
@@ -27,14 +162,14 @@ const VERBS = [
   {k:"取る",r:"とる",t:"g",zh:"取得",ex:[E("职场","来週、休みを取ります。","下周请假。"),E("生活","棚の上の本を取ってくれる？","能帮我拿一下架子上的书吗？")]},
   {k:"持つ",r:"もつ",t:"g",zh:"拿",ex:[E("职场","会議には資料を持って来てください。","开会请带资料来。"),E("生活","傘を持って出かけた。","带着伞出门了。")]},
   {k:"頼む",r:"たのむ",t:"g",zh:"拜托",ex:[E("职场","この作業を山田さんに頼みました。","把这项工作拜托给了山田。"),E("生活","お姉ちゃんに宿題を手伝ってほしいと頼んだ。","拜托姐姐帮忙做作业。")]},
+
   {k:"選ぶ",r:"えらぶ",t:"g",zh:"选择",ex:[E("职场","三つの案から一つを選んでください。","请从三个方案中选一个。"),E("生活","好きな色を選んでいいよ。","可以选喜欢的颜色哦。")]},
   {k:"休む",r:"やすむ",t:"g",zh:"休息",ex:[E("职场","体調が悪いので、今日は休ませていただきます。","身体不舒服，今天请允许我休息。"),E("生活","疲れたら少し休もう。","累了就休息一下吧。")]},
   {k:"返す",r:"かえす",t:"g",zh:"归还",ex:[E("职场","お借りした資料は明日お返しします。","借的资料明天还给您。"),E("生活","図書館に本を返しに行った。","去图书馆还书了。")]},
-
   {k:"手伝う",r:"てつだう",t:"g",zh:"帮忙",ex:[E("职场","何か手伝えることがあれば言ってください。","有什么我能帮忙的请告诉我。"),E("生活","料理を手伝ったら、ほめられた。","帮忙做饭，被表扬了。")]},
   {k:"作る",r:"つくる",t:"g",zh:"制作",ex:[E("职场","来週までに見積書を作ります。","下周之前做好报价单。"),E("生活","お母さんとケーキを作った。","和妈妈一起做了蛋糕。")]},
   {k:"聞く",r:"きく",t:"g",zh:"听／问",ex:[E("职场","わからないことは、遠慮なく聞いてください。","不懂的地方请尽管问。"),E("生活","先生の話をよく聞こう。","好好听老师讲话吧。")]},
-  {k:"教える",r:"おしえる",t:"i",zh:"教",ex:[E("职场","新しいシステムの使い方を教えていただけますか。","能请您教我新系统的用法吗？"),E("生活","妹に数学を教えてあげた。","教了妹妹数学。")]},
+  {k:"教える",r:"おしえる",t:"i",zh:"教",ex:[E("职场","新しいシステムの使い方を教えていただけますか。","能请您教我新系统的用法吗？"),E("生活","妹に九九を教えてあげた。","教了妹妹九九乘法表。")]},
   {k:"始める",r:"はじめる",t:"i",zh:"开始",ex:[E("职场","では、会議を始めましょう。","那么，我们开始开会吧。"),E("生活","ピアノを習い始めた。","开始学钢琴了。")]},
   {k:"忘れる",r:"わすれる",t:"i",zh:"忘记",ex:[E("职场","パスワードを忘れてしまいました。","把密码忘了。"),E("生活","宿題を忘れないでね。","别忘了作业哦。")]},
   {k:"起きる",r:"おきる",t:"i",zh:"起床",ex:[E("职场","明日は早く起きなければなりません。","明天必须早起。"),E("生活","今朝は七時に起きた。","今天早上七点起床。")]},
@@ -42,28 +177,11 @@ const VERBS = [
   {k:"着る",r:"きる",t:"i",zh:"穿",ex:[E("职场","明日はスーツを着て来てください。","明天请穿西装来。"),E("生活","寒いから、コートを着よう。","很冷，穿上外套吧。")]}
 ];
 
-const TRAPS = [
-  {k:"入る",r:"はいる",t:"g",zh:"进入"},
-  {k:"走る",r:"はしる",t:"g",zh:"跑"},
-  {k:"知る",r:"しる",t:"g",zh:"知道"},
-  {k:"切る",r:"きる",t:"g",zh:"切"},
-  {k:"要る",r:"いる",t:"g",zh:"需要"},
-  {k:"減る",r:"へる",t:"g",zh:"减少"},
-  {k:"喋る",r:"しゃべる",t:"g",zh:"聊天"},
-  {k:"寝る",r:"ねる",t:"i",zh:"睡觉"},
-  {k:"食べる",r:"たべる",t:"i",zh:"吃"},
-  {k:"借りる",r:"かりる",t:"i",zh:"借入"},
-  {k:"降りる",r:"おりる",t:"i",zh:"下（车）"},
-  {k:"足りる",r:"たりる",t:"i",zh:"足够"},
-  {k:"する",r:"する",t:"s",zh:"做"}
-];
-
 const UNITS = [
   {id:1,name:"基础五形",lv:"N5",total:60,desc:"ます・て・た・ない形",
    tpl:[["masu"],["te"],["ta"],["nai"],["masu","masen"],["masu","mashita"],["masu","masen","msd"]]},
   {id:2,name:"否定延伸",lv:"N5～N4",total:60,desc:"なかった・なくて・なければ・たら",
    tpl:[["nai","adjPast"],["nai","adjTe"],["nai","adjBa"],["ta","tara"],["nai","adjPast","tara"]]},
-
   {id:3,name:"可能形组合",lv:"N4",total:60,desc:"可能形＋否定／过去／条件",
    tpl:[["pot"],["pot","nai"],["pot","nai","adjPast"],["pot","nai","adjPast","tara"],["pot","masu","masen"],["pot","ta","tara"],["pot","ba"],["pot","te"],["pot","masu"],["pot","nai","adjTe"],["pot","nai","adjBa"],["pot","masu","mashita"]]},
   {id:4,name:"条件与意向",lv:"N4",total:60,desc:"ば・たら・意向形・命令形・ている",
@@ -72,66 +190,54 @@ const UNITS = [
    tpl:[["pas"],["cau"],["cp"],["pas","ta"],["pas","nai","adjPast"],["cau","te"],["cp","ta"],["cau","masu","masen"],["pas","ba"],["cp","nai","adjPast","tara"],["pas","masu"],["cau","ta"],["cau","nai"],["cp","masu","mashita"],["pas","te"],["cau","ba"],["cp","nai"]]},
   {id:6,name:"综合长链",lv:"N3实用",total:80,desc:"4～6步，全部变形混合",tpl:null}
 ];
+const PRAISE = ["很好！","漂亮！","这一步拿下了！","稳！","越来越熟练了！","完全掌握！","反应很快！","太棒了！"];
+const COMFORT = ["错了没关系，这题已经放进错题复习。","正是错过的地方最容易记住。","差一点，对照路线看看哪一步不同。","出错说明找到了薄弱点，这是好事。"];
 
-const CONF = [
-  {u:3,q:"（说自己）明日、銀行に＿＿。",zh:"我明天能去银行。",o:["行けます","行かれます","行かせます"],a:0,ex:"说自己“能去”用可能形「行けます」。「行かれます」多是尊敬语，「行かせます」是使役（让别人去）。"},
-  {u:3,q:"社長は午後、銀行に＿＿。",zh:"社长下午去银行。（尊敬）",o:["行けます","行かれます","行かせます"],a:1,ex:"主语是社长，表示尊敬用「行かれます」。"},
-  {u:5,q:"この資料は部長に＿＿。",zh:"这份资料被部长看过了。",o:["見られました","見れました","見させました"],a:0,ex:"被动用「見られました」。「見れました」是ら抜き的口语可能形，「見させました」是使役。"},
-  {u:3,q:"その映画はネットで＿＿。（标准说法）",zh:"那部电影在网上能看。",o:["見られます","見れます","見させます"],a:0,ex:"标准可能形是「見られます」。「見れます」是ら抜き言葉，日常口语常听到，但正式场合和考试用「見られます」。"},
-  {u:5,q:"毎日、子どもに野菜を＿＿。",zh:"每天让孩子吃蔬菜。",o:["食べさせています","食べられています","食べさせられています"],a:0,ex:"“让别人做”用使役形「食べさせる」。"},
-  {u:5,q:"子どものころ、母に野菜を＿＿。",zh:"小时候被妈妈逼着吃蔬菜。",o:["食べさせました","食べられました","食べさせられました"],a:2,ex:"“被迫做”用使役被动形「食べさせられる」。"},
-  {u:4,q:"ドアが＿＿います。",zh:"门开着。",o:["開いて","開けて"],a:0,ex:"「開く（あく）」是自动词，描述状态用「〜が開いている」。「開ける」是他动词，要和「を」一起用。"},
-  {u:1,q:"窓を＿＿ください。",zh:"请打开窗户。",o:["開いて","開けて"],a:1,ex:"有宾语「を」，要用他动词「開ける」。"},
-  {u:1,q:"会議は10時に＿＿。",zh:"会议10点开始。",o:["始まります","始めます"],a:0,ex:"「会議が始まる」是自动词。如果是「会議を始める」才用他动词。"},
-  {u:4,q:"では、会議を＿＿。",zh:"那么，开始开会吧。",o:["始まりましょう","始めましょう"],a:1,ex:"「を」后面用他动词「始める」，提议用「〜ましょう」。"},
-  {u:1,q:"旅行の日程が＿＿。",zh:"旅行日程定下来了。",o:["決まりました","決めました"],a:0,ex:"「日程が決まる」是自动词；「日程を決める」是他动词。"},
-  {u:1,q:"友だちが私にプレゼントを＿＿。",zh:"朋友送了我礼物。",o:["くれました","あげました","もらいました"],a:0,ex:"别人给我用「くれる」。"},
-  {u:1,q:"私は弟に本を＿＿。",zh:"我给了弟弟一本书。",o:["くれました","あげました","もらいました"],a:1,ex:"我给别人用「あげる」。"},
-  {u:1,q:"私は先輩に本を＿＿。",zh:"我从前辈那里得到了一本书。",o:["くれました","あげました","もらいました"],a:2,ex:"从别人那里得到用「もらう」，对方后面用「に」或「から」。"},
-  {u:2,q:"先生に作文を＿＿。",zh:"请老师帮我看了作文。",o:["見てもらいました","見てくれました","見てあげました"],a:0,ex:"请别人为自己做某事，主语是“我”时用「〜てもらう」。"},
-  {u:4,q:"壁に絵が＿＿。",zh:"墙上挂着画（有人特意挂好的）。",o:["かけてあります","かけています"],a:0,ex:"「他动词＋てある」表示有人做了某事后留下的状态。"},
-  {u:2,q:"駅に＿＿、電話してください。",zh:"到了车站之后，请打电话。",o:["着いたら","着けば","着くと"],a:0,ex:"“做完A之后再B”并且后面是请求，用「たら」。「と」后面不能接请求。"},
-  {u:2,q:"明日は早く起き＿＿。",zh:"明天必须早起。",o:["なければなりません","なくてもいいです"],a:0,ex:"必须：〜なければなりません；不必：〜なくてもいいです。"},
-  {u:2,q:"今日は会社に行か＿＿。",zh:"今天不用去公司。",o:["なければなりません","なくてもいいです"],a:1,ex:"不必：〜なくてもいいです。"},
-  {u:4,q:"まだ報告書を＿＿。",zh:"报告还没写。",o:["書いていません","書きませんでした"],a:0,ex:"“到现在还没做”用「まだ〜ていません」。「〜ませんでした」是过去某个时间没做。"},
-  {u:3,q:"日本語が少し話せる＿＿なりました。",zh:"变得能说一点日语了。",o:["ように","ことに"],a:0,ex:"能力或习惯的变化用「〜ようになる」。「〜ことになる」表示被决定、被安排。"},
-  {u:3,q:"来月、大阪に転勤する＿＿なりました。",zh:"（公司决定）下个月调到大阪工作。",o:["ように","ことに"],a:1,ex:"不是自己决定、而是被安排的事，用「〜ことになる」。"}
+const CLS = {g:"一类动词（五段）",i:"二类动词（一段）",s:"三类动词（する）",k:"三类动词（来る）"};
+const ROW = {"う":"わいうえお","く":"かきくけこ","ぐ":"がぎぐげご","す":"さしすせそ","つ":"たちつてと","ぬ":"なにぬねの","ぶ":"ばびぶべぼ","む":"まみむめも","る":"らりるれろ"};
 
-];
+const VOICE = ["pot","pas","cau","cp","cpS"];
 
-const FILL = [
-  {u:1,v:"確認する",b:"金額を＿＿から、ご連絡します。",a:["確認して","かくにんして"],f:"て形",c:"te",zh:"确认金额之后联系您。"},
-  {u:1,v:"送る",b:"資料はもう＿＿。",a:["送りました","おくりました"],f:"ました（礼貌过去）",c:"mashita",zh:"资料已经发过了。"},
-  {u:3,v:"行く",b:"明日なら銀行に＿＿。",a:["行けます","いけます"],f:"可能形＋ます",c:"pot",zh:"明天的话能去银行。"},
-  {u:4,v:"書く",b:"まだ報告書を＿＿いません。",a:["書いて","かいて"],f:"て形（〜ていません）",c:"te",zh:"还没写报告。"},
-  {u:3,v:"読む",b:"この漢字は難しくて＿＿。",a:["読めません","よめません"],f:"可能形＋ません",c:"pot",zh:"这个汉字太难，读不出来。"},
-  {u:4,v:"払う",b:"今週中に＿＿、問題ありません。",a:["払えば","はらえば"],f:"ば条件形",c:"ba",zh:"本周内付的话就没问题。"},
-  {u:1,v:"待つ",b:"少し＿＿ください。",a:["待って","まって"],f:"て形",c:"te",zh:"请稍等一下。"},
-  {u:4,v:"呼ぶ",b:"田中さんも会議に＿＿。",a:["呼びましょう","よびましょう"],f:"ましょう（提议）",c:"mashou",zh:"把田中也叫来开会吧。"},
-  {u:1,v:"急ぐ",b:"時間がないので、＿＿ください。",a:["急いで","いそいで"],f:"て形",c:"te",zh:"没时间了，请快一点。"},
-  {u:3,v:"使う",b:"この会議室は午後＿＿か。",a:["使えます","つかえます"],f:"可能形＋ます",c:"pot",zh:"这个会议室下午能用吗？"},
-  {u:1,v:"見る",b:"昨日の資料はもう＿＿か。",a:["見ました","みました"],f:"ました（礼貌过去）",c:"mashita",zh:"昨天的资料已经看过了吗？"},
-  {u:1,v:"調べる",b:"わからない言葉は辞書で＿＿ください。",a:["調べて","しらべて"],f:"て形",c:"te",zh:"不懂的词请用词典查。"},
-  {u:2,v:"決める",b:"来週までに予算を＿＿なりません。",a:["決めなければ","きめなければ"],f:"なければ（必须）",c:"adjBa",zh:"下周之前必须定下预算。"},
-  {u:3,v:"来る",b:"明日は会社に＿＿か。",a:["来られます","こられます"],f:"可能形＋ます",c:"pot",zh:"明天能来公司吗？"},
-  {u:1,v:"提出する",b:"書類は昨日＿＿。",a:["提出しました","ていしゅつしました"],f:"ました（礼貌过去）",c:"mashita",zh:"文件昨天提交了。"},
-  {u:2,v:"忘れる",b:"宿題を＿＿でね。",a:["忘れない","わすれない"],f:"ない形",c:"nai",zh:"别忘了作业哦。"},
-  {u:2,v:"起きる",b:"明日は早く＿＿なりません。",a:["起きなければ","おきなければ"],f:"なければ（必须）",c:"adjBa",zh:"明天必须早起。"},
-  {u:5,v:"休む",b:"体調が悪いので、今日は＿＿いただきます。",a:["休ませて","やすませて"],f:"使役形＋て",c:"cau",zh:"身体不舒服，今天请允许我休息。"},
-  {u:5,v:"認める",b:"計画が部長に＿＿。",a:["認められました","みとめられました"],f:"被动形＋ました",c:"pas",zh:"计划得到了部长的认可。"},
-  {u:3,v:"話す",b:"日本語が少し＿＿ようになりました。",a:["話せる","はなせる"],f:"可能形",c:"pot",zh:"变得能说一点日语了。"},
-  {u:4,v:"帰る",b:"仕事が終わったら、すぐ＿＿と思います。",a:["帰ろう","かえろう"],f:"意向形",c:"vol",zh:"打算工作一结束就马上回去。"},
-  {u:5,v:"手伝う",b:"母に掃除を＿＿。",a:["手伝わされました","手伝わせられました","てつだわされました","てつだわせられました"],f:"使役被动形＋ました",c:"cp",zh:"被妈妈叫去帮忙打扫了。"},
-  {u:5,v:"書く",b:"先生に作文を何回も＿＿。",a:["書かされました","書かせられました","かかされました","かかせられました"],f:"使役被动形＋ました",c:"cp",zh:"被老师要求把作文写了好几遍。"},
-  {u:1,v:"教える",b:"新しいシステムの使い方を＿＿いただけますか。",a:["教えて","おしえて"],f:"て形",c:"te",zh:"能请您教我新系统的用法吗？"},
-  {u:2,v:"行く",b:"昨日は会社に＿＿。",a:["行かなかった","いかなかった"],f:"なかった（过去否定）",c:"adjPast",zh:"昨天没去公司。"},
-  {u:2,v:"送る",b:"メールを＿＿、電話してください。",a:["送ったら","おくったら"],f:"たら条件形",c:"tara",zh:"发了邮件之后，请打个电话。"},
-  {u:4,v:"待つ",b:"今、お客様が＿＿。",a:["待っています","まっています"],f:"ている＋ます",c:"teiru",zh:"现在客人正在等着。"},
-  {u:5,v:"呼ぶ",b:"会議中に部長に＿＿。",a:["呼ばれました","よばれました"],f:"被动形＋ました",c:"pas",zh:"开会时被部长叫了。"},
-  {u:5,v:"読む",b:"子どもに本を＿＿。",a:["読ませました","よませました"],f:"使役形＋ました",c:"cau",zh:"让孩子读了书。"},
+const row = (f,i) => ROW[f.k.slice(-1)][i];
+const cut = (f,n,add,t) => ({k:f.k.slice(0,f.k.length-n)+add, r:f.r.slice(0,f.r.length-n)+add, t});
+function gTe(f,ta){
+  const ch=f.k.slice(-1);
+  const m={"う":"っ","つ":"っ","る":"っ","む":"ん","ぶ":"ん","ぬ":"ん","く":"い","ぐ":"い","す":"し"};
+  let s=m[ch], v=["む","ぶ","ぬ","ぐ"].includes(ch);
+  if(f.k==="行く"){s="っ";v=false;}
+  return s+(v?(ta?"だ":"で"):(ta?"た":"て"));
+}
+function V(f,g,i,s,k,t){
+  if(f.t==="g") return cut(f,1,g(f),t);
+  if(f.t==="i") return cut(f,1,i,t);
+  if(f.t==="s") return cut(f,2,s,t);
+  return {k:"来"+k[1], r:k[0]+k[1], t};
+}
 
-  {u:3,v:"出る",b:"昨日は忙しくて、会議に＿＿。",a:["出られませんでした","でられませんでした"],f:"可能形＋ませんでした",c:"pot",zh:"昨天太忙，没能参加会议。"}
-];
+const OPS = {
+  pot:{label:"可能形",fn:f=>V(f,f=>row(f,3)+"る","られる","できる",["こ","られる"],"i")},
+  pas:{label:"被动形",fn:f=>V(f,f=>row(f,0)+"れる","られる","される",["こ","られる"],"i")},
+  cau:{label:"使役形",fn:f=>V(f,f=>row(f,0)+"せる","させる","させる",["こ","させる"],"i")},
+  cp:{label:"使役被动形",fn:f=>V(f,f=>row(f,0)+"せられる","させられる","させられる",["こ","させられる"],"i")},
+  cpS:{label:"使役被动形（短）",fn:f=>V(f,f=>row(f,0)+"される","させられる","させられる",["こ","させられる"],"i")},
+  nai:{label:"否定形（ない）",fn:f=>V(f,f=>row(f,0)+"ない","ない","しない",["こ","ない"],"adj")},
+  masu:{label:"ます形",fn:f=>V(f,f=>row(f,1)+"ます","ます","します",["き","ます"],"masu")},
+  te:{label:"て形",fn:f=>V(f,f=>gTe(f,false),"て","して",["き","て"],"end")},
+  ta:{label:"た形（过去）",fn:f=>V(f,f=>gTe(f,true),"た","した",["き","た"],"ta")},
+  ba:{label:"ば条件形",fn:f=>V(f,f=>row(f,3)+"ば","れば","すれば",["く","れば"],"end")},
+  vol:{label:"意向形",fn:f=>V(f,f=>row(f,4)+"う","よう","しよう",["こ","よう"],"end")},
+  imp:{label:"命令形",fn:f=>V(f,f=>row(f,3),"ろ","しろ",["こ","い"],"end")},
+  teiru:{label:"ている形",fn:f=>{const x=OPS.te.fn(f);return {k:x.k+"いる",r:x.r+"いる",t:"i"};}},
+
+  adjPast:{label:"过去否定（なかった）",fn:f=>cut(f,1,"かった","ta")},
+  adjTe:{label:"なくて形",fn:f=>cut(f,1,"くて","end")},
+  adjBa:{label:"なければ（ば条件）",fn:f=>cut(f,1,"ければ","end")},
+  tara:{label:"たら条件形",fn:f=>cut(f,0,"ら","end")},
+  masen:{label:"礼貌否定（ません）",fn:f=>cut(f,1,"せん","masen")},
+  mashita:{label:"礼貌过去（ました）",fn:f=>cut(f,1,"した","end")},
+  mashou:{label:"礼貌意向（ましょう）",fn:f=>cut(f,1,"しょう","end")},
+  msd:{label:"礼貌过去否定（ませんでした）",fn:f=>cut(f,0,"でした","end")}
+};
 
 const HINT = {
   pot:"一类：う段→え段＋る（書く→書ける）；二类：去る＋られる；する→できる；来る→来られる（こられる）",
@@ -156,20 +262,773 @@ const HINT = {
   msd:"ません→ませんでした"
 };
 
-const TIPS = [
-  {t:"怎么判断动词是几类？",b:"三类只有「する」「来る」和「〜する」动词。<br>以「る」结尾、而且「る」前面是い段或え段的，大多是二类（見る・食べる・起きる）。<br>其他都是一类（書く・飲む・話す）。<br>⚠ 例外：帰る・入る・走る・知る・切る・要る・減る・喋る 看起来像二类，其实是一类。"},
-  {t:"可能形・被动形・尊敬形怎么分？",b:"一类：可能形是え段＋る（書ける），被动和尊敬是あ段＋れる（書かれる），长得不一样。<br>二类：可能、被动、尊敬都是「〜られる」（見られる），只能看上下文。<br>主语是自己→多半是可能；主语是上级→多半是尊敬；有「に」表示被谁→被动。"},
-  {t:"ら抜き言葉",b:"口语里常把二类动词和「来る」的可能形说成「見れる」「来れる」（去掉了ら）。日本人日常常说，但考试和正式场合要用「見られる」「来られる」。"},
-  {t:"使役 vs 使役被动",b:"使役：让／叫别人做 → 書かせる（我让他写）。<br>使役被动：被迫做 → 書かせられる／書かされる（我被逼着写）。<br>记法：先变使役（〜せる），再变被动（〜せられる）。一类动词可以缩短成「〜される」，但「す」结尾的不行（話させられる）。"},
-  {t:"て形口诀",b:"う・つ・る → って（買って・待って・帰って）<br>む・ぶ・ぬ → んで（読んで・呼んで・死んで）<br>く → いて，ぐ → いで（書いて・急いで）<br>す → して（話して）<br>例外：行く → 行って"},
 
-  {t:"自动词和他动词",b:"他动词有宾语，用「を」：ドアを開ける、会議を始める、日程を決める。<br>自动词描述事情自己发生，用「が」：ドアが開く、会議が始まる、日程が決まる。<br>状态：自动词＋ている（ドアが開いている）；他动词＋てある（ドアが開けてある，有人特意开着）。"},
-  {t:"あげる・くれる・もらう",b:"我→别人：あげる（友だちにあげる）<br>别人→我：くれる（友だちがくれる）<br>我从别人那里得到：もらう（友だちにもらう）<br>接在て形后面表示帮忙：〜てあげる／〜てくれる／〜てもらう。"},
-  {t:"たら・ば・と",b:"たら：做完A之后B，或者假设（駅に着いたら電話して）。最万能。<br>ば：强调条件（安ければ買う）。<br>と：A一发生B必然发生（春になると暖かくなる），后面不能接请求和意志。"},
-  {t:"ない形延伸",b:"ない → なかった（过去否定）／なくて（连接）／なければ（如果不）。<br>必须：〜なければなりません；不必：〜なくてもいいです。<br>变法和い形容词一样：去掉い再接。"},
-  {t:"「还没」和「没有」",b:"まだ〜ていません：到现在还没做（之后可能会做）。<br>〜ませんでした：过去某个时间没做（已经结束）。<br>「报告还没写」→ まだ書いていません。"}
-];
+function allowed(st){
+  if(["g","i","s","k"].includes(st.t)){
+    if(st.voice||st.teiru) return ["nai","masu","te","ta","ba"];
+    return ["pot","pas","cau","cp","nai","masu","te","ta","ba","vol","imp","teiru"];
+  }
+  return ({adj:["adjPast","adjTe","adjBa"],ta:["tara"],masu:["masen","mashita","mashou"],masen:["msd"]})[st.t]||[];
+}
+const base = v => ({k:v.k,r:v.r,t:v.t,voice:null,teiru:false,fl:{}});
 
-const CLS = {g:"一类动词（五段）",i:"二类动词（一段）",s:"三类动词（する）",k:"三类动词（来る）"};
-const PRAISE = ["很好！","漂亮！","这一步拿下了！","稳！","越来越熟练了！","完全掌握！","反应很快！","太棒了！"];
-const COMFORT = ["错了没关系，这题已经放进复习计划。","正是错过的地方最容易记住。","差一点，看看下面的解析。","出错说明找到了薄弱点，这是好事。"];
+function run(verb,ops){
+  let st=base(verb);
+  const steps=[];
+  for(const op of ops){
+    if(!allowed(st).includes(op==="cpS"?"cp":op)) return null;
+    const x=OPS[op].fn(st);
+    const fl={...st.fl};
+    if(op==="nai"||op==="masen") fl.neg=true;
+    if(["ta","adjPast","mashita","msd"].includes(op)) fl.past=true;
+    if(op==="masu"||op==="masen") fl.pol=true;
+    if(["tara","ba","adjBa"].includes(op)) fl.cond=true;
+    if(op==="te"||op==="adjTe") fl.te=true;
+    if(op==="vol") fl.vol=true;
+    if(op==="imp") fl.imp=true;
+    if(op==="mashou") fl.mashou=true;
+    st={k:x.k,r:x.r,t:x.t,voice:VOICE.includes(op)?(op==="cpS"?"cp":op):st.voice,teiru:st.teiru||op==="teiru",fl,op};
+    steps.push(st);
+  }
+  return steps;
+}
+
+function zh(st){
+
+  const v=chain.verb.zh, fl=st.fl||{};
+  const core={pas:"被"+v,cau:"让人"+v,cp:"被迫"+v}[st.voice]||v;
+  let s;
+  if(st.voice==="pot") s=fl.neg?(fl.past?"没能":"不能")+v:"能"+v+(fl.past?"了":"");
+  else if(st.teiru) s=fl.neg?(fl.past?"当时还没":"还没")+core:(fl.past?"当时正在／已经":"正在／已经")+core;
+  else s=fl.neg?(fl.past?"没有":"不")+core:core+(fl.past?"了":"");
+  if(fl.cond) s="如果"+s;
+  if(fl.te) s+="（て形，连接下文）";
+  if(fl.vol) s="打算"+s+"／"+s+"吧";
+  if(fl.imp) s+="！（命令）";
+  if(fl.mashou) s="一起"+s+"吧";
+  if(fl.pol&&!fl.mashou) s+="（礼貌）";
+  return s;
+}
+
+const fmtDate=d=>d.getFullYear()+"-"+String(d.getMonth()+1).padStart(2,"0")+"-"+String(d.getDate()).padStart(2,"0");
+const today=()=>fmtDate(new Date());
+function dayDiff(a,b){const p=s=>{const [y,m,d]=s.split("-").map(Number);return new Date(y,m-1,d);};return Math.round((p(b)-p(a))/864e5);}
+const md=s=>{const [y,m,d]=s.split("-").map(Number);return m+"/"+d;};
+
+const KEYP="jp-book-";
+let PROFILES=null;
+try{PROFILES=JSON.parse(localStorage.getItem("jp-profiles"));}catch(e){}
+if(!PROFILES) PROFILES=[{id:"yueyue",name:"yueyue小朋友"},{id:"jiejie",name:"姐姐"}];
+const storeProfiles=()=>{try{localStorage.setItem("jp-profiles",JSON.stringify(PROFILES));}catch(e){}};
+let pid="jiejie";
+try{pid=localStorage.getItem("jp-current")||"jiejie";}catch(e){}
+if(!PROFILES.some(p=>p.id===pid)) pid=PROFILES[0].id;
+
+let setup=true;
+let room="", cloud=false, connectedRoom="", syncState="local", started=false;
+try{room=localStorage.getItem("jp-room")||"";}catch(e){}
+
+let DEVICE="";
+try{DEVICE=localStorage.getItem("jp-device")||"";if(!DEVICE){DEVICE=Math.random().toString(36).slice(2);localStorage.setItem("jp-device",DEVICE);}}catch(e){DEVICE=Math.random().toString(36).slice(2);}
+const CACHE={};
+
+const fresh=()=>({n:1,total:0,correct:0,streak:0,best:0,wrong:[],units:{},start:today(),days:{},daysOk:{},checkins:{},course:0,goal:20});
+function normalize(d){
+  const x=Object.assign(fresh(),d||{});
+  if(!x.checkins) x.checkins={};
+  if(!x.daysOk) x.daysOk={};
+  if(!x.goal) x.goal=20;
+  UNITS.forEach(u=>{if(!x.units[u.id]) x.units[u.id]={done:0,ok:0,recent:[],passed:false};});
+  return x;
+}
+function readLocal(id){
+  let d=null;
+  try{d=JSON.parse(localStorage.getItem(KEYP+id));}catch(e){}
+  if(!d&&id==="jiejie"){try{d=JSON.parse(localStorage.getItem("jp-course-v1"));}catch(e){}}
+  return normalize(d);
+}
+const readData=id=>(cloud&&CACHE[id])?CACHE[id]:readLocal(id);
+let S=readLocal(pid);
+const getData=id=>id===pid?S:readData(id);
+
+const roomRef=()=>FB.doc(FB.db,"rooms",room);
+const playerRef=id=>FB.doc(FB.db,"rooms",room,"players",id);
+let saveTimer=null;
+function save(){
+  try{localStorage.setItem(KEYP+pid,JSON.stringify(S));localStorage.setItem("jp-current",pid);}catch(e){}
+  if(cloud){
+    CACHE[pid]=S;
+    clearTimeout(saveTimer);
+    syncState="saving"; renderSync();
+
+    saveTimer=setTimeout(pushCloud,800);
+  }
+}
+function pushCloud(){
+  FB.setDoc(playerRef(pid),{json:JSON.stringify(S),updated:Date.now(),dev:DEVICE})
+    .then(()=>{syncState="ok";renderSync();})
+    .catch(e=>{console.error(e);syncState="fail";renderSync();});
+}
+function applyNames(n){
+  if(!Array.isArray(n)) return;
+  n.forEach((x,i)=>{if(PROFILES[i]&&x) PROFILES[i].name=x;});
+  storeProfiles();
+}
+async function connectCloud(){
+  try{
+    const rs=await FB.getDoc(roomRef());
+    if(rs.exists()) applyNames(rs.data().names);
+    for(const p of PROFILES){
+      const ps=await FB.getDoc(playerRef(p.id));
+      if(ps.exists()) CACHE[p.id]=normalize(JSON.parse(ps.data().json));
+      else{
+        const loc=readLocal(p.id);
+        CACHE[p.id]=loc;
+        if(loc.total>0) await FB.setDoc(playerRef(p.id),{json:JSON.stringify(loc),updated:Date.now(),dev:DEVICE});
+      }
+    }
+    cloud=true; connectedRoom=room; syncState="ok";
+    S=CACHE[pid];
+    FB.onSnapshot(roomRef(),snap=>{
+      if(!snap.exists()) return;
+      applyNames(snap.data().names);
+      if(!setup){renderHeader();renderPK();}
+
+    });
+    PROFILES.forEach(p=>FB.onSnapshot(playerRef(p.id),snap=>{
+      if(!snap.exists()||snap.metadata.hasPendingWrites) return;
+      const v=snap.data();
+      if(v.dev===DEVICE) return;
+      CACHE[p.id]=normalize(JSON.parse(v.json));
+      if(p.id===pid) S=CACHE[p.id];
+      if(!setup){
+        renderPK();
+        if(p.id===pid){renderDash();renderTabs();renderCal();renderUnits();renderPlan();}
+      }
+    }));
+  }catch(e){
+    console.error(e);
+    cloud=false; syncState="fail";
+  }
+}
+
+const esc=s=>String(s).replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
+const pick=a=>a[Math.floor(Math.random()*a.length)];
+const norm=s=>s.trim().replace(/[\s。．.、，,「」]/g,"");
+const fmt=f=>f.k===f.r?f.k:f.k+"（"+f.r+"）";
+const acc=U=>U.recent.length?U.recent.reduce((a,b)=>a+b,0)/U.recent.length:0;
+const curUnit=()=>{const u=UNITS.find(u=>!S.units[u.id].passed);return u?u.id:7;};
+const nameOf=id=>PROFILES.find(p=>p.id===id).name;
+const pname=()=>nameOf(pid);
+const otherId=()=>PROFILES.find(p=>p.id!==pid).id;
+function plan(){const p=[];UNITS.forEach(u=>{for(let i=0;i<Math.ceil(u.total/S.goal);i++)p.push(u.id);});p.push("R","R");return p;}
+
+let chain=null, j=0, phase="none", firstTry=true, mode="course", selUnit=1, level=2, reviewIdx=0, justPassed=false, lastOk=false;
+
+function speak(text){
+
+  if(!window.speechSynthesis){alert("这个浏览器不支持朗读");return;}
+  speechSynthesis.cancel();
+  const u=new SpeechSynthesisUtterance(text);
+  u.lang="ja-JP"; u.rate=0.9;
+  speechSynthesis.speak(u);
+}
+function speakAns(){speak(chain.steps[j].k);}
+function speakEx(i){speak(chain.verb.ex[i].ja);}
+
+function setTitle(){
+  const t=`${PROFILES[0].name}和${PROFILES[1].name}的练习册`;
+  document.getElementById("title").textContent=t;
+  document.title=t;
+}
+
+function showLogin(stage,msg){
+  setup=true; phase="none";
+  setTitle();
+  document.getElementById("main").classList.add("hidden");
+  const el=document.getElementById("setup");
+  el.classList.remove("hidden");
+  let h="";
+  if(stage==="pwd"){
+    h=`<h3 style="margin-top:0">请输入密码</h3>
+      <div class="muted">两个人用同一个密码（8位以上，只用字母和数字）。第一次使用时输入一个新密码，就会创建你们的专属空间。</div>
+      <label>密码</label>
+      <input type="password" id="pwd" autocomplete="current-password">
+      <label style="display:flex;align-items:center;gap:6px"><input type="checkbox" id="rem" checked> 在这台设备上记住密码</label>
+      <div class="err" id="perr">${msg||""}</div>
+      <div class="btns"><button class="btn main" onclick="submitPwd()">进入</button></div>`;
+  } else if(stage==="names"){
+    const isNew=!cloud&&!!window.FB;
+
+    h=`<h3 style="margin-top:0">${isNew?"创建新的空间":"修改名字"}</h3>
+      ${isNew?`<div class="note">没有找到这个密码对应的空间。如果你们以前已经设置过，请点「返回」检查密码；如果是第一次使用，写下两个人的名字就会创建。</div>`:""}
+      <label>选手1</label><input type="text" id="n1" value="${esc(PROFILES[0].name)}">
+      <label>选手2</label><input type="text" id="n2" value="${esc(PROFILES[1].name)}">
+      <div class="err" id="serr"></div>
+      <div class="btns">
+        <button class="btn main" onclick="saveRoomNames()">${isNew?"创建":"保存"}</button>
+        <button class="btn" onclick="${isNew?"showLogin('pwd')":"showLogin('who')"}">返回</button>
+      </div>`;
+  } else {
+    const status=window.FB?(cloud?"☁ 已连接云端，记录永久保存，换设备也不会丢":"⚠ 云端没有连接，记录只保存在这台设备上"):"记录只保存在这台设备上";
+    h=`<h3 style="margin-top:0">你是谁？</h3>
+      ${PROFILES.map((p,i)=>`<button class="whobtn w${i}" onclick="chooseWho('${p.id}')">${esc(p.name)}</button>`).join("")}
+      <div class="muted">${status}</div>
+      <div class="btns">
+        <button class="link" onclick="showLogin('names')">修改名字</button>
+        ${window.FB?`<button class="link" onclick="logout()">退出密码</button>`:""}
+      </div>`;
+  }
+  el.innerHTML=h;
+  const f=document.getElementById("pwd");
+  if(f) f.focus();
+}
+
+async function submitPwd(){
+  const v=document.getElementById("pwd").value.trim();
+  const perr=document.getElementById("perr");
+  if(!/^[A-Za-z0-9_-]{8,40}$/.test(v)){perr.textContent="密码要8位以上，只能用字母和数字";return;}
+  const remember=document.getElementById("rem").checked;
+  if(cloud&&connectedRoom&&v!==connectedRoom){
+    try{localStorage.setItem("jp-room",v);}catch(e){}
+    location.reload(); return;
+
+  }
+  room=v;
+  perr.style.color="var(--muted)"; perr.textContent="连接中…";
+  try{
+    const rs=await FB.getDoc(roomRef());
+    try{ if(remember) localStorage.setItem("jp-room",room); else localStorage.removeItem("jp-room"); }catch(e){}
+    if(rs.exists()&&Array.isArray(rs.data().names)){
+      applyNames(rs.data().names);
+      if(!cloud) await connectCloud();
+      if(!cloud){perr.style.color="";perr.textContent="连接失败，请检查网络后再试。";return;}
+      showLogin("who");
+    } else {
+      showLogin("names");
+    }
+  }catch(e){
+    console.error(e);
+    perr.style.color=""; perr.textContent="连接失败，请检查网络后再试。";
+  }
+}
+
+async function saveRoomNames(){
+  const a=document.getElementById("n1").value.trim(), b=document.getElementById("n2").value.trim();
+  const serr=document.getElementById("serr");
+  if(!a||!b){serr.textContent="两个名字都要写哦";return;}
+  if(a===b){serr.textContent="两个名字不能一样";return;}
+  PROFILES[0].name=a.slice(0,12); PROFILES[1].name=b.slice(0,12);
+  storeProfiles();
+  if(window.FB&&room){
+    try{await FB.setDoc(roomRef(),{names:[PROFILES[0].name,PROFILES[1].name],updated:Date.now()},{merge:true});}
+    catch(e){console.error(e);serr.textContent="保存失败，请检查网络后再试。";return;}
+    if(!cloud) await connectCloud();
+  }
+
+  showLogin("who");
+}
+
+function logout(){
+  try{localStorage.removeItem("jp-room");}catch(e){}
+  location.reload();
+}
+
+function chooseWho(id){
+  pid=id;
+  S=readData(pid);
+  setup=false;
+  document.getElementById("setup").classList.add("hidden");
+  document.getElementById("main").classList.remove("hidden");
+  mode="course"; reviewIdx=0; justPassed=false;
+  selUnit=Math.min(curUnit(),6);
+  save();
+  newChain();
+  window.scrollTo(0,0);
+}
+
+function genOps(verb,mn,mx){
+  const L=mn+Math.floor(Math.random()*(mx-mn+1));
+  const ops=[];
+  for(let i=0;i<L;i++){
+    const cur=ops.length?run(verb,ops).at(-1):base(verb);
+    let c=allowed(cur);
+    if(!c.length) break;
+    if(i===0&&Math.random()<0.5) c=c.filter(o=>VOICE.includes(o));
+    if(L-i>1){
+      const c2=c.filter(o=>{const s=run(verb,[...ops,o]);return s&&allowed(s.at(-1)).length>0;});
+      if(c2.length) c=c2;
+
+    }
+    ops.push(pick(c));
+  }
+  return ops;
+}
+function build(verb,ops){
+  let alt=null;
+  if(ops[0]==="cp"&&verb.t==="g"&&verb.k.slice(-1)!=="す") alt=run(verb,["cpS",...ops.slice(1)]);
+  return {verb,ops,steps:run(verb,ops),alt};
+}
+
+function newChain(){
+  if(mode==="review"){
+    S.wrong=S.wrong.filter(w=>VERBS[w.vi]&&run(VERBS[w.vi],w.ops));
+    if(!S.wrong.length){showEmptyReview();return;}
+    const w=S.wrong[reviewIdx%S.wrong.length];
+    chain=build(VERBS[w.vi],w.ops);
+    chain.review=w;
+    j=w.j;
+    showQ();
+    return;
+  }
+  const verb=pick(VERBS);
+  let ops;
+  if(mode==="course"){
+    const u=UNITS[selUnit-1];
+    ops=u.tpl?pick(u.tpl).slice():genOps(verb,4,6);
+  } else {
+    const [mn,mx]=({1:[2,3],2:[3,4],3:[4,6]})[level];
+    ops=genOps(verb,mn,mx);
+  }
+  chain=build(verb,ops);
+
+  j=0;
+  showQ();
+}
+
+function showEmptyReview(){
+  phase="none";
+  document.getElementById("res").classList.add("hidden");
+  document.getElementById("q").innerHTML=`<div class="ok-h">错题全部清空了！</div>
+    <p>之前答错的题都已经重新答对，基础越来越扎实了。</p>
+    <button class="btn main" onclick="setMode('course')">回到课程</button>`;
+  renderAll();
+}
+
+function showQ(){
+  phase="ask"; firstTry=true;
+  const {verb,steps}=chain, t=steps[j], known=j?steps[j-1]:null;
+  const s=Math.min(5,j+1);
+  let top="";
+  if(mode==="course"){
+    const u=UNITS[selUnit-1], U=S.units[selUnit];
+    top=U.done<u.total
+      ?`单元${u.id}「${u.name}」 · 第 ${U.done+1}/${u.total} 题`
+      :`单元${u.id}「${u.name}」 · 巩固练习（最近20题正确率 ${Math.round(acc(U)*100)}%）`;
+  } else if(mode==="review") top=`错题复习 · 剩余 ${S.wrong.length} 题`;
+  else top="自由练习";
+  document.getElementById("res").classList.add("hidden");
+  document.getElementById("q").innerHTML=`
+    <div class="qtop">${esc(pname())} 正在答题 · ${top}</div>
+    <div class="qhead">第${S.n}题｜${OPS[t.op].label}</div>
+    <div class="muted">难度：${"★".repeat(s)+"☆".repeat(5-s)}　本动词第 ${j+1}/${steps.length} 步</div>
+    <div class="box"><div class="muted">指定动词原形</div><div class="big">${fmt(verb)}</div><div>${verb.zh}</div></div>
+    <div class="row"><span class="lbl">目标</span>${esc(zh(t))}</div>
+
+    <div class="row"><span class="lbl">已知</span>${known?`${fmt(known)} ＝ ${esc(zh(known))}`:`原形 ${fmt(verb)}`}</div>
+    <div class="row"><span class="lbl">要求</span>在已知形式的基础上变成「${OPS[t.op].label}」。写标准完整形式，不使用ら抜き言葉，只写一个动词，不造句。</div>
+    <div class="inputrow">
+      <input type="text" id="ans" placeholder="汉字或假名都可以" autocomplete="off" oninput="document.getElementById('err').textContent=''">
+      <button class="btn main" onclick="submit()">提交</button>
+    </div>
+    <div class="err" id="err"></div>
+    <button class="link" onclick="document.getElementById('hint').classList.toggle('hidden')">看提示</button>
+    <div class="hint hidden" id="hint">${HINT[t.op]}</div>`;
+  document.getElementById("ans").focus();
+  renderAll();
+}
+
+function variants(pre){
+  const vIdx=pre.findIndex(o=>VOICE.includes(o));
+  const rest=vIdx>=0?pre.filter((o,i)=>i!==vIdx):pre.slice();
+  const list=[rest,["pot",...rest],["pas",...rest],["cau",...rest],["cp",...rest]];
+  if(vIdx<0) list.push(["teiru",...rest]);
+  return list.filter(v=>v.join()!==pre.join());
+}
+function lastOf(ops){
+  if(!ops.length) return {...base(chain.verb),op:null};
+  const s=run(chain.verb,ops);
+  return s?s.at(-1):null;
+}
+const routeLabel=ops=>ops.length?ops.map(o=>OPS[o].label).join(" → "):"原形";
+
+function diagnose(val){
+  const {verb,steps}=chain, t=steps[j], pre=chain.ops.slice(0,j+1);
+  if(["i","k"].includes(verb.t)&&t.voice==="pot"){
+    if(val===t.k.replace("られ","れ")||val===t.r.replace("られ","れ"))
+      return "这是「ら抜き言葉」（漏掉了「ら」）。口语里常听到，但标准形式要保留「られ」。";
+
+  }
+  for(let i=0;i<j;i++){
+    if(val===steps[i].k||val===steps[i].r)
+      return `你写到「${OPS[steps[i].op].label}」就停了，还差后面的「${OPS[t.op].label}」。`;
+  }
+  if(val===verb.k||val===verb.r) return "你写的是原形，还没有变形。";
+  for(const v of variants(pre)){
+    const l=lastOf(v);
+    if(l&&(val===l.k||val===l.r))
+      return `你写的是「${routeLabel(v)}」，意思是“${esc(zh(l))}”。本题要的是“${esc(zh(t))}”。`;
+  }
+  return "形式不对。对照下面的变形路线，找出是哪一步出了问题。";
+}
+
+function compareRows(){
+  const pre=chain.ops.slice(0,j+1);
+  const vIdx=pre.findIndex(o=>VOICE.includes(o));
+  const rest=vIdx>=0?pre.filter((o,i)=>i!==vIdx):pre.slice();
+  const cand=[pre,rest,["pot",...rest],["pas",...rest]];
+  if(vIdx<0) cand.push(["teiru",...rest]);
+  const seen=new Set(), rows=[];
+  for(const v of cand){
+    const l=lastOf(v);
+    if(!l||seen.has(l.k)) continue;
+    seen.add(l.k);
+    rows.push({cur:v===pre,zh:zh(l),f:l});
+  }
+  return rows;
+}
+
+function submit(){
+  if(phase!=="ask") return;
+
+  const input=document.getElementById("ans");
+  const val=norm(input.value);
+  if(!val){document.getElementById("err").textContent="请先输入答案";return;}
+  const {verb,steps,alt}=chain, t=steps[j];
+  const accepted=[t.k,t.r];
+  if(alt) accepted.push(alt[j].k,alt[j].r);
+  const ok=accepted.includes(val);
+  lastOk=ok;
+  const cheers=[];
+
+  if(firstTry){
+    S.total++;
+    if(ok){S.correct++;S.streak++;S.best=Math.max(S.best,S.streak);}
+    else S.streak=0;
+    if(ok&&[5,10,20,30,50,100].includes(S.streak)) cheers.push(`连续答对 ${S.streak} 题！状态非常好！`);
+
+    const d=today(), before=S.days[d]||0;
+    S.days[d]=before+1;
+    S.daysOk[d]=(S.daysOk[d]||0)+(ok?1:0);
+    if(before+1===S.goal){
+      S.checkins[d]=true;
+      cheers.push(`打卡成功！今天的 ${S.goal} 题完成了，${esc(pname())}是最棒的！继续做就是超前进度。`);
+    } else if(before+1>S.goal&&(before+1-S.goal)%10===0) cheers.push(`今天已经超前做了 ${before+1-S.goal} 题，太拼了！`);
+
+    const oid=otherId(), oc=getData(oid).days[d]||0;
+    if(oc>0&&before<=oc&&before+1>oc) cheers.push(`你超过了${esc(nameOf(oid))}！今天暂时领先！`);
+    else if(oc>0&&before+1===oc) cheers.push(`追平了${esc(nameOf(oid))}！再做一题就领先了！`);
+
+    if(mode==="course"){
+      const u=UNITS[selUnit-1], U=S.units[selUnit];
+      U.done++; if(ok) U.ok++;
+      U.recent.push(ok?1:0); U.recent=U.recent.slice(-20);
+
+      S.course++;
+      if(!U.passed&&U.done>=u.total){
+        if(acc(U)>=0.8){
+          U.passed=true; justPassed=true;
+          const nx=UNITS[selUnit];
+          cheers.push(`恭喜通过单元${u.id}「${u.name}」！`+(nx?`已解锁单元${nx.id}「${nx.name}」（${nx.lv}）。`:"全部6个单元都完成了，太厉害了！"));
+        } else if(U.done===u.total){
+          cheers.push(`单元${u.id}的${u.total}题做完了！最近20题正确率 ${Math.round(acc(U)*100)}%，再巩固几题达到80%就能过关。`);
+        }
+      }
+    }
+
+    if(mode==="review"){
+      if(ok){
+        const w=chain.review;
+        S.wrong=S.wrong.filter(x=>x.key!==w.key);
+        cheers.push("这道错题攻克了，已从错题本移除！");
+      }
+    } else if(!ok){
+      const key=VERBS.indexOf(verb)+"|"+chain.ops.join()+"|"+j;
+      if(!S.wrong.some(w=>w.key===key)){
+        S.wrong.unshift({key,vi:VERBS.indexOf(verb),ops:chain.ops,j,ans:t.k});
+        S.wrong=S.wrong.slice(0,60);
+      }
+    }
+    save();
+  }
+  firstTry=false;
+  phase=ok?"done":"wrong";
+  input.disabled=true;
+
+  let h=ok?`<div class="ok-h">第${S.n}题：完全正确！</div><div class="praise">${pick(PRAISE)}</div>`
+
+          :`<div class="ng-h">第${S.n}题：还差一点</div><div class="comfort">${pick(COMFORT)}</div>`;
+  cheers.forEach(c=>{h+=`<div class="celebrate">${c}</div>`;});
+  h+=`<div class="row">你的答案：「${esc(val)}」</div>`;
+  h+=`<div class="row">正确答案：「${fmt(t)}」<button class="mini" onclick="speakAns()">朗读</button></div>`;
+  if(alt) h+=`<div class="muted">也可以说「${fmt(alt[j])}」（使役被动的短形式，口语常用）</div>`;
+  if(!ok) h+=`<div class="diag">${diagnose(val)}</div>`;
+
+  h+=`<h3>一、完整变形路线</h3><div class="muted">动词类别：${CLS[verb.t]}</div>
+    <table><tr><th>步骤</th><th>形式</th><th>意思</th></tr>
+    <tr><td>原形</td><td>${fmt(verb)}</td><td>${verb.zh}</td></tr>`;
+  for(let i=0;i<=j;i++){
+    const s=steps[i];
+    h+=`<tr class="${i===j?"cur":""}"><td>${OPS[s.op].label}</td><td>${fmt(s)}</td><td>${esc(zh(s))}</td></tr>`;
+  }
+  h+=`</table>`;
+
+  const rows=compareRows();
+  if(rows.length>=2){
+    h+=`<h3>二、相似形式的区别</h3><table><tr><th>中文</th><th>日语</th><th></th></tr>`;
+    rows.forEach(r=>{h+=`<tr class="${r.cur?"cur":""}"><td>${esc(r.zh)}</td><td>${fmt(r.f)}</td><td>${r.cur?"本题":""}</td></tr>`;});
+    h+=`</table>`;
+  }
+  if(["i","k"].includes(verb.t)&&(t.voice==="pot"||t.voice==="pas"))
+    h+=`<div class="note">注意：二类动词和「来る」的可能形与被动形同形（都是〜られる），实际交流时要看上下文判断。</div>`;
+
+  if(verb.ex&&verb.ex.length){
+    h+=`<h3>三、应用场景（「${verb.k}」在实际中的用法）</h3>`;
+    verb.ex.forEach((e,i)=>{
+      h+=`<div class="ex"><span class="lv">${e.s}</span> <span class="exja">${e.ja}</span><button class="mini" onclick="speakEx(${i})">朗读</button><div class="muted">${e.zh}</div></div>`;
+    });
+  }
+
+
+  const last=j===steps.length-1;
+  let nextLabel="下一题";
+  if(mode!=="review") nextLabel=last?"下一题（换新动词）":"下一题（再加一步）";
+  if(justPassed) nextLabel="进入下一单元";
+  h+=`<div class="btns">`;
+  if(!ok) h+=`<button class="btn" onclick="retry()">再试一次</button>`;
+  h+=`<button class="btn main" onclick="next()">${nextLabel}</button></div>`;
+
+  const res=document.getElementById("res");
+  res.innerHTML=h;
+  res.classList.remove("hidden");
+  renderAll();
+}
+
+function retry(){
+  phase="ask";
+  const input=document.getElementById("ans");
+  input.disabled=false; input.value=""; input.focus();
+  document.getElementById("res").classList.add("hidden");
+}
+
+function next(){
+  S.n++; save();
+  if(mode==="review"){
+    if(!lastOk) reviewIdx++;
+    newChain(); return;
+  }
+  if(justPassed){
+    justPassed=false;
+    selUnit=Math.min(curUnit(),6);
+    newChain(); return;
+  }
+
+  if(j<chain.steps.length-1){j++;showQ();}
+  else newChain();
+}
+
+function setMode(m){
+  mode=m; reviewIdx=0; justPassed=false;
+  if(m==="course") selUnit=Math.min(curUnit(),6);
+  newChain();
+}
+function selectUnit(id){mode="course";selUnit=id;justPassed=false;newChain();}
+function setLevel(v){level=+v;newChain();}
+function setGoal(v){
+  S.goal=+v;
+  const d=today();
+  if((S.days[d]||0)>=S.goal) S.checkins[d]=true;
+  save(); renderAll();
+}
+
+function checkinStreak(){
+  const d=new Date();
+  if(!S.checkins[fmtDate(d)]) d.setDate(d.getDate()-1);
+  let k=0;
+  while(S.checkins[fmtDate(d)]){k++;d.setDate(d.getDate()-1);}
+  return k;
+}
+
+function renderSync(){
+  const el=document.getElementById("sync");
+  if(!el) return;
+  const m={local:"本机保存",saving:"☁ 同步中…",ok:"☁ 已同步",fail:"⚠ 云端同步失败（已存在本机）"};
+  el.textContent=m[syncState];
+  el.className="sync"+(syncState==="fail"?" fail":"");
+
+}
+
+function renderHeader(){
+  setTitle();
+  document.getElementById("profiles").innerHTML=
+    `<span class="muted">现在是：</span><b>${esc(pname())}</b>
+     <button class="link" style="margin:0 6px" onclick="showLogin('who')">切换身份</button>
+     <span id="sync"></span>`;
+  document.getElementById("greet").textContent=`${pname()}，我是最棒的，今天也加油呀！`;
+  renderSync();
+}
+
+function winner(a,b){
+  if(a.c!==b.c) return a.c>b.c?0:1;
+  if(a.ok!==b.ok) return a.ok>b.ok?0:1;
+  return -1;
+}
+
+function renderPK(){
+  const t=today();
+  const D=PROFILES.map(p=>getData(p.id));
+  const now=D.map((d,i)=>({name:PROFILES[i].name,c:d.days[t]||0,ok:d.daysOk[t]||0}));
+  const max=Math.max(1,...now.map(x=>x.c));
+  const w=winner(now[0],now[1]);
+  let msg;
+  if(now[0].c===0&&now[1].c===0) msg="今天的PK还没开始，谁先来？";
+  else if(w===-1) msg="目前平手！再加把劲！";
+  else msg=`${esc(now[w].name)} 暂时领先${now[w].c!==now[1-w].c?` ${now[w].c-now[1-w].c} 题`:"（答对数更多）"}！`;
+  let h=`<h3 style="margin-top:0">今日PK（${md(t)}）${cloud?'<span class="muted">　实时同步中</span>':""}</h3>`;
+  now.forEach((x,i)=>{
+    h+=`<div class="pkrow"><div class="pkname"><span>${w===i?'<span class="crown">♛ </span>':""}${esc(x.name)}</span><span>${x.c} 题（答对 ${x.ok}）</span></div>
+      <div class="pkbar"><div class="p${i}" style="width:${x.c/max*100}%"></div></div></div>`;
+
+  });
+  h+=`<div class="pkmsg">${msg}</div>`;
+
+  const dates=new Set();
+  D.forEach(d=>Object.keys(d.days).forEach(k=>{if(k!==t&&d.days[k]>0) dates.add(k);}));
+  const list=[...dates].sort().reverse();
+  const wins=[0,0,0];
+  const rows=list.map(k=>{
+    const a={c:D[0].days[k]||0,ok:D[0].daysOk[k]||0}, b={c:D[1].days[k]||0,ok:D[1].daysOk[k]||0};
+    const r=winner(a,b);
+    wins[r===-1?2:r]++;
+    return {k,a,b,r};
+  });
+  h+=`<h3>历史战绩</h3><div class="muted">${esc(PROFILES[0].name)} 胜 ${wins[0]} 场 ｜ ${esc(PROFILES[1].name)} 胜 ${wins[1]} 场 ｜ 平局 ${wins[2]} 场</div>`;
+  if(rows.length){
+    h+=`<table style="margin-top:8px"><tr><th>日期</th><th>${esc(PROFILES[0].name)}</th><th>${esc(PROFILES[1].name)}</th><th>结果</th></tr>`;
+    rows.slice(0,14).forEach(x=>{
+      h+=`<tr><td>${md(x.k)}</td><td>${x.a.c}（对${x.a.ok}）</td><td>${x.b.c}（对${x.b.ok}）</td><td>${x.r===-1?"平局":"♛ "+esc(PROFILES[x.r].name)}</td></tr>`;
+    });
+    h+=`</table>`;
+  } else h+=`<div class="muted" style="margin-top:6px">从明天开始，每天的PK结果都会记录在这里。</div>`;
+  h+=`<div class="muted" style="margin-top:8px">规则：比当天刷题数（每题只算第一次作答），题数一样比答对数。每天0点开始新一轮，以前的结果永久保存在战绩里。</div>`;
+  document.getElementById("pk").innerHTML=h;
+}
+
+function renderDash(){
+  const P=plan(), t=today(), tc=S.days[t]||0, g=S.goal;
+  const cal=Math.min(P.length,dayDiff(S.start,t)+1);
+  const prog=Math.floor(S.course/g)+1;
+  const dayNow=Math.min(prog,P.length);
+  const ahead=dayNow-cal;
+  const pct=S.total?Math.round(S.correct/S.total*100):0;
+
+  let msg;
+  if(prog>P.length) msg=`${P.length}天计划全部完成！接下来用错题复习和自由练习保持手感。`;
+  else if(tc===0) msg=`今天还没开始。${g}题大约${Math.round(g*0.8)}分钟，先做5题热热身也很好。`;
+  else if(tc<g) msg=`还差 ${g-tc} 题就能打卡了，加油！`;
+  else msg=`今天已打卡 ✓ 想多做就继续，超前的题都会算进计划进度。`;
+  if(prog<=P.length){
+    if(ahead>0) msg+=` 你目前超前计划 ${ahead} 天。`;
+    else if(ahead<0) msg+=` 比日历计划慢 ${-ahead} 天，没关系，按自己的节奏来，每做一题都算数。`;
+  }
+  const pu=P[dayNow-1];
+  const planTxt=pu==="R"?"总复习":`单元${pu}「${UNITS[pu-1].name}」`;
+  document.getElementById("dash").innerHTML=`
+    <div class="dash-top">
+      <div><span class="muted">${esc(pname())} 的今日目标</span>
+        <div class="dash-big">${Math.min(tc,g)} / ${g} 题${tc>g?`<span class="muted">　＋超前 ${tc-g} 题</span>`:""}</div></div>
+      <div class="muted" style="text-align:right">每日目标
+        <select onchange="setGoal(this.value)">${[10,15,20,30].map(x=>`<option value="${x}" ${x===g?"selected":""}>${x}题</option>`).join("")}</select>
+        <br>总正确率 ${pct}% ｜ 最佳连对 ${S.best}</div>
+    </div>
+    <div class="barw"><div style="width:${Math.min(100,tc/g*100)}%"></div></div>
+    <div class="muted">按日历：计划第 ${cal} 天　｜　按完成量：第 ${dayNow} 天（${planTxt}）</div>
+    <div class="cheer">${msg}</div>`;
+}
+
+function renderCal(){
+  const cells=[];
+  const d=new Date();
+  d.setDate(d.getDate()-27);
+  for(let i=0;i<28;i++){
+    const key=fmtDate(d), c=S.days[key]||0, done=!!S.checkins[key];
+    const cls=done?"done":c?"part":"";
+    cells.push(`<div class="cell ${cls} ${i===27?"today":""}" title="${key}：${c}题"><div>${d.getMonth()+1}/${d.getDate()}</div><b>${done?"✓":c?c:""}</b></div>`);
+
+    d.setDate(d.getDate()+1);
+  }
+  document.getElementById("cal").innerHTML=`<h3 style="margin-top:0">${esc(pname())}的打卡记录</h3>
+    <div class="muted">累计打卡 ${Object.keys(S.checkins).length} 天 ｜ 连续打卡 ${checkinStreak()} 天 ｜ 深绿✓＝完成当天目标，浅绿数字＝做了几题</div>
+    <div class="cal">${cells.join("")}</div>`;
+}
+
+function renderTabs(){
+  document.getElementById("tabs").innerHTML=`
+    <button class="tab ${mode==="course"?"on":""}" onclick="setMode('course')">课程</button>
+    <button class="tab ${mode==="review"?"on":""}" onclick="setMode('review')">错题复习（${S.wrong.length}）</button>
+    <button class="tab ${mode==="free"?"on":""}" onclick="setMode('free')">自由练习</button>
+    ${mode==="free"?`<select onchange="setLevel(this.value)">
+      <option value="1" ${level===1?"selected":""}>入门（2～3步）</option>
+      <option value="2" ${level===2?"selected":""}>标准（3～4步）</option>
+      <option value="3" ${level===3?"selected":""}>挑战（4～6步）</option></select>`:""}`;
+}
+
+function renderUnits(){
+  const cu=curUnit();
+  document.getElementById("units").innerHTML=`<h3 style="margin-top:0">${esc(pname())}的课程单元</h3>`+UNITS.map(u=>{
+    const U=S.units[u.id], lock=u.id>cu;
+    const st=U.passed?"✓ 已通过":lock?"未解锁":"进行中";
+    const a=U.recent.length?Math.round(acc(U)*100)+"%":"—";
+    return `<div class="unit ${lock?"lock":""} ${mode==="course"&&selUnit===u.id?"sel":""}" ${lock?"":`onclick="selectUnit(${u.id})"`}>
+      <div><b>单元${u.id} ${u.name}</b><span class="lv">${u.lv}</span><div class="muted">${u.desc}</div></div>
+      <div class="ur"><div>${Math.min(U.done,u.total)}/${u.total}</div><div class="muted">${st} · 近20题 ${a}</div></div>
+    </div>`;
+  }).join("")+`<div class="muted">过关条件：题数做满，并且最近20题正确率达到80%。共 ${VERBS.length} 个动词，题目每次随机组合。</div>`;
+}
+
+function renderPlan(){
+
+  const P=plan(), t=today(), cal=Math.min(P.length,dayDiff(S.start,t)+1), prog=Math.floor(S.course/S.goal)+1;
+  let h=`<details><summary>查看${esc(pname())}的${P.length}天学习计划（每天${S.goal}题）</summary><table><tr><th>天</th><th>内容</th><th>状态</th></tr>`;
+  P.forEach((p,i)=>{
+    const d=i+1;
+    const name=p==="R"?"总复习（错题复习＋自由练习）":`单元${p} ${UNITS[p-1].name}（${UNITS[p-1].lv}）`;
+    let st=d<prog?"✓ 完成":d===prog?"← 你在这里":"";
+    if(d===cal) st+=(st?" ":"")+"（今天）";
+    h+=`<tr class="${d===prog?"cur":""}"><td>第${d}天</td><td>${name}</td><td>${st}</td></tr>`;
+  });
+  h+=`</table><div class="muted" style="margin-top:8px">可以超前做，计划会按完成量往前推。改每日目标后，计划天数会自动调整。</div></details>`;
+  document.getElementById("plan").innerHTML=h;
+}
+
+function renderAll(){
+  if(setup) return;
+  renderHeader();renderPK();renderDash();renderTabs();renderCal();renderUnits();renderPlan();
+}
+
+document.addEventListener("keydown",e=>{
+  if(e.key!=="Enter"||e.isComposing) return;
+  if(setup){
+    if(document.activeElement&&document.activeElement.id==="pwd") submitPwd();
+    return;
+  }
+  if(phase==="ask") submit();
+  else if(phase==="done") next();
+});
+
+async function start(){
+  if(started) return;
+  started=true;
+  if(!window.FB){showLogin("who");return;}
+
+  if(room){
+    await connectCloud();
+    if(cloud){showLogin("who");return;}
+  }
+  showLogin("pwd");
+}
+window.addEventListener("fb-ready",start);
+setTimeout(()=>{if(!started){if(window.FB===undefined) window.FB=null;start();}},8000);
+</script>
+</body>
+</html>
