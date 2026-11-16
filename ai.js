@@ -30,7 +30,6 @@ Object.defineProperty(AI_MODES.work,"p",{get(){
 她的身份：${scVal("me")}
 你的身份：${scVal("other")}
 两人的关系和进展：${scVal("rel")}
-
 ${sc.topic?`她想聊的话题：${sc.topic}`:""}
 ${sc.hot?"对话里自然地加入一个和当前季节或近期社会话题有关的内容。你无法实时上网，不要编造具体的新闻细节，不确定的事情用一般性的说法。":""}
 规则：
@@ -63,7 +62,6 @@ function aiSystem(){
   return `你是「さくら先生」，一位温柔又幽默的日语老师，正在陪成年学习者「${pname()}」练习日语。她的母语是中文，日语水平大约N4到N3，目标是N1，住在日本。
 规则：
 1. 主要用自然的日语回复，每句日语后面用（）附上中文翻译。
-
 2. 如果她的日语有错误，先用「✏️ 订正：」指出，给出正确说法和简短的中文原因，然后再继续话题。没有错误时适当表扬。
 3. 每次回复控制在150字左右（当前模式另有规定的除外），结尾提一个问题或留一句话，让对话继续。
 4. 她用中文说话时，先告诉她这句话用日语怎么说，再继续聊。
@@ -92,4 +90,189 @@ async function callGemini(){
       const c=d.candidates&&d.candidates[0];
       const t=c&&c.content&&c.content.parts?c.content.parts.map(p=>p.text||"").join(""):"";
       if(!t.trim()) throw new Error("这次没有生成回复，换个说法再试试。");
-      return
+      return t.trim();
+    }
+    let msg="";
+    try{const j=await res.json();msg=(j.error&&j.error.message)||"";}catch(e){}
+    if(/API key/i.test(msg)) throw new Error("密钥无效，请点下面的「更换密钥」重新粘贴。");
+    last=msg;
+    if(res.status===429||res.status===404||res.status===400||res.status>=500) continue;
+    throw new Error("出错了："+msg);
+  }
+  console.error(last);
+  throw new Error("暂时连不上 AI（可能是免费次数用完了，每分钟和每天都有上限），过一会儿再试。");
+}
+
+function fmtAI(t){return esc(t).replace(/\*\*(.+?)\*\*/g,"<b>$1</b>").replace(/\n/g,"<br>");}
+function aiSpeak(i){
+  const lines=aiHist[i].text.split("\n")
+    .filter(l=>/[ぁ-んァ-ヶ]/.test(l))
+    .map(l=>l.replace(/（[^）]*）/g,"").replace(/\([^)]*\)/g,"").replace(/[*✏️👉#💡👍【】]/g,""));
+  speak(lines.join("。"));
+}
+
+function renderLog(){
+  const el=$("ailog");
+  if(!el) return;
+  el.innerHTML=aiHist.map((m,i)=>{
+    if(m.hidden) return "";
+    if(m.role==="user") return `<div class="msg me">${esc(m.text).replace(/\n/g,"<br>")}</div>`;
+    return `<div class="msg bot">${fmtAI(m.text)}${m.err?"":`<div><button class="mini" style="margin:6px 0 0" onclick="aiSpeak(${i})">朗读日语</button></div>`}</div>`;
+  }).join("")+(aiBusy?`<div class="msg bot muted">さくら先生正在输入…</div>`:"");
+  el.scrollTop=el.scrollHeight;
+}
+
+function sceneSummary(){
+  const sc=S.scene||{};
+  return `情景：${scVal("place")} ｜ 我：${scVal("me")} ｜ 对方：${scVal("other")} ｜ 关系：${scVal("rel")}${sc.topic?" ｜ 话题："+sc.topic:""}${sc.hot?" ｜ 含时事":""}`;
+}
+
+function renderAI(){
+  $("q").innerHTML=`<div class="qhead">AI 日语伙伴 · さくら先生</div>
+    <div class="muted">${esc(pname())}，用日语或中文跟我聊吧！日语写错了我会帮你订正。</div>
+    <div class="aimodes">${Object.keys(AI_MODES).map(k=>`<button class="chip ${aiMode===k?"on":""}" onclick="aiSetMode('${k}')">${AI_MODES[k].n}</button>`).join("")}</div>
+    ${aiMode==="work"?`<div class="scbar"><span>当前情景：${esc(sceneSummary())}</span><button class="btn" onclick="showSceneSetup()">设定情景</button></div>`:""}
+    <div id="ailog" class="ailog"></div>
+    <div class="inputrow">
+      <textarea id="aiin" rows="2" placeholder="输入日语或中文，按回车发送（Shift+回车换行）"></textarea>
+      <button class="btn main" onclick="aiSubmit()">发送</button>
+    </div>
+    <div class="btns">
+      <button class="link" onclick="aiReset()">换个话题</button>
+      ${aiMode==="work"?`<button class="link" onclick="showSceneSetup()">设定情景</button>`:""}
+      <button class="link" onclick="showKeySetup(true)">更换密钥</button>
+    </div>
+    <div class="muted">提醒：免费版的对话可能会被 Google 用来改进服务，请不要输入真实姓名、地址、公司名等个人信息。</div>`;
+  renderLog();
+  $("aiin").addEventListener("keydown",e=>{
+    if(e.key==="Enter"&&!e.shiftKey&&!e.isComposing){e.preventDefault();aiSubmit();}
+  });
+}
+
+function showSceneSetup(){
+  const sc=S.scene||{};
+  const log=$("ailog");
+  if(!log) return;
+  const field=k=>{
+    const d=SC_OPTS[k],v=sc[k]||"random";
+    return `<label>${d.label}</label>
+      <select id="sc_${k}" onchange="$('sc_${k}X').style.display=this.value==='custom'?'block':'none'">
+        ${Object.keys(d.o).map(o=>`<option value="${o}" ${v===o?"selected":""}>${d.o[o]}</option>`).join("")}
+      </select>
+      <input type="text" id="sc_${k}X" value="${esc(sc[k+"X"]||"")}" placeholder="${d.ph}" style="margin-top:6px;display:${v==="custom"?"block":"none"}">`;
+  };
+  log.innerHTML=`<div class="msg bot scene" style="max-width:100%">
+    <b>设定情景</b>
+    <div class="muted">每一项都可以选「随机」，交给 AI 安排。请不要写真实姓名、具体公司名等个人信息。</div>
+    ${field("place")}${field("me")}${field("other")}${field("rel")}
+    <label>想聊的话题（可以不填）</label>
+    <input type="text" id="sc_topic" value="${esc(sc.topic||"")}" placeholder="例如：最近看的日剧、年末的忘年会、新开的店">
+    <label style="display:flex;align-items:center;gap:6px;margin-top:10px"><input type="checkbox" id="sc_hot" ${sc.hot?"checked":""}> 加入季节和时事话题（AI 不能实时上网，不会是最新新闻）</label>
+    <div class="btns">
+      <button class="btn main" onclick="sceneStart(false)">按这个情景开始</button>
+      <button class="btn" onclick="sceneStart(true)">全部随机</button>
+    </div>
+  </div>`;
+  log.scrollTop=0;
+}
+function sceneStart(clear){
+  if(clear) S.scene={};
+  else{
+    const sc={};
+    ["place","me","other","rel"].forEach(k=>{
+      sc[k]=$("sc_"+k).value;
+      const x=$("sc_"+k+"X").value.trim();
+      if(x) sc[k+"X"]=x.slice(0,60);
+    });
+    sc.topic=$("sc_topic").value.trim().slice(0,80);
+    sc.hot=$("sc_hot").checked;
+    S.scene=sc;
+  }
+  save();
+  aiHist=[];
+  renderAI();
+  aiSend("请开始。",true);
+}
+
+async function aiSend(text,hidden){
+  aiHist.push({role:"user",text,hidden});
+  aiBusy=true; renderLog();
+  try{
+    const reply=await callGemini();
+    aiHist.push({role:"model",text:reply});
+  }catch(e){
+    aiHist.push({role:"model",text:"⚠ "+e.message,err:true});
+  }
+  aiBusy=false;
+  if(mode==="ai") renderLog();
+}
+function aiSubmit(){
+  const ta=$("aiin");
+  if(!ta||aiBusy) return;
+  const v=ta.value.trim();
+  if(!v) return;
+  ta.value="";
+  aiSend(v,false);
+}
+function aiSetMode(k){aiMode=k;aiHist=[];renderAI();aiSend("请开始。",true);}
+function aiReset(){aiHist=[];renderAI();aiSend("请开始。",true);}
+
+function showKeySetup(change){
+  $("q").innerHTML=`<div class="qhead">设置 AI 密钥（只需要一次）</div>
+    <ol class="steps">
+      <li>打开 <a href="https://aistudio.google.com/app/apikey" target="_blank">Google AI Studio</a>，用 Google 账号登录。</li>
+      <li>点「Create API key」创建密钥，复制那串以 AIza 开头的字符。</li>
+      <li>粘贴到下面，点「保存」。</li>
+    </ol>
+    <div class="note">密钥会保存在你们的云端空间里，另一个人的设备会自动读取，不用重复设置。⚠ 不要把密钥贴进 GitHub 的代码里。</div>
+    <input type="password" id="aikey" placeholder="粘贴密钥" style="width:100%">
+    <div class="err" id="kerr"></div>
+    <div class="btns">
+      <button class="btn main" onclick="saveKey()">保存</button>
+      ${change&&AIKEY?'<button class="btn" onclick="renderAI()">取消</button>':""}
+    </div>`;
+}
+async function saveKey(){
+  const v=$("aikey").value.trim();
+  if(v.length<20){$("kerr").textContent="密钥看起来不完整，请重新复制。";return;}
+  AIKEY=v;
+  try{localStorage.setItem("jp-aikey",v);}catch(e){}
+  if(cloud){try{await FB.setDoc(roomRef(),{aiKey:v},{merge:true});}catch(e){console.error(e);}}
+  aiModelIdx=0; aiHist=[];
+  renderAI();
+  aiSend("请开始。",true);
+}
+
+async function showAI(){
+  phase="none"; cur={type:"none"};
+  if(!AIKEY&&cloud){
+    try{
+      const rs=await FB.getDoc(roomRef());
+      if(rs.exists()&&rs.data().aiKey){
+        AIKEY=rs.data().aiKey;
+        try{localStorage.setItem("jp-aikey",AIKEY);}catch(e){}
+      }
+    }catch(e){console.error(e);}
+  }
+  if(mode!=="ai") return;
+  if(!AIKEY){showKeySetup(false);renderAll();return;}
+  renderAI();
+  renderAll();
+  if(!aiHist.length) aiSend("请开始。",true);
+}
+
+const _prevNewQuestion=window.newQuestion;
+window.newQuestion=function(){
+  if(mode==="ai"){$("res").classList.add("hidden");return showAI();}
+  return _prevNewQuestion();
+};
+const _prevRenderTabs=window.renderTabs;
+window.renderTabs=function(){
+  _prevRenderTabs();
+  const t=$("tabs");
+  const b=document.createElement("button");
+  b.className="tab"+(mode==="ai"?" on":"");
+  b.textContent="AI聊天";
+  b.onclick=()=>setMode("ai");
+  t.insertBefore(b,t.querySelector("select"));
+};
