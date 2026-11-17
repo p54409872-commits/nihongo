@@ -30,6 +30,7 @@ document.head.insertAdjacentHTML("beforeend",`<style>
 .pcfg{display:flex;flex-wrap:wrap;gap:10px;margin:6px 0}
 .pitem{font-size:14px;padding:3px 0}
 .nextbar{position:fixed;left:0;right:0;bottom:0;padding:10px 16px calc(10px + env(safe-area-inset-bottom));background:rgba(246,245,241,.96);border-top:1px solid var(--line);display:flex;justify-content:center;z-index:50}
+
 .nextbar.hidden{display:none}
 .nextbar .btn{width:100%;max-width:520px;font-size:18px;padding:14px}
 body{padding-bottom:90px}
@@ -62,6 +63,7 @@ function nextPV(i){
   return L[S.pV%L.length];
 }
 function confetti(){
+
   const e=["🎉","✨","🌸","⭐","🎊","💮"];
   for(let k=0;k<26;k++){
     const s=document.createElement("span");
@@ -94,6 +96,7 @@ function optsFor(v,ops){
   let near=[];
   if(typeof nmList==="function"){
     if(!tail.length) near=nmList(v,o1);
+
     else if(k.startsWith(baseK.slice(0,-1))){
       const suf=k.slice(baseK.length-1);
       near=nmList(v,o1).map(x=>x.slice(0,-1)+suf);
@@ -126,6 +129,7 @@ function pathNear(v,op,o){
     <div class="hint">技巧：${HINT[op]||""}</div>`+
     opts.map((x,i)=>`<button class="opt" data-i="${i}" onclick="answerNear(${i},this)">${esc(x)}</button>`).join("");
   renderAll();
+
 }
 
 function pathQuestion(i,o,old){
@@ -158,6 +162,315 @@ function pathStart(o){
   const i=curItem(),d=itemOf(i);
   const passed=PATH.map((p,k)=>k).filter(k=>itemOf(k).passed);
   const due=dueList();
+
   if(itemLocked(i)){
     if(due.length) return startReview(due[0]);
     if(passed.length) return pathQuestion(pick(passed),o,true);
+    return showCls(o,pick(pathVerbs(0)));
+  }
+  if(d.done>=pT()) return showTestReady(i);
+  if(due.length&&Math.random()<0.35) return startReview(due[0]);
+  if(dayN(d)>=pD()){
+    if(due.length) return startReview(due[0]);
+    if(passed.length) return pathQuestion(pick(passed),o,true);
+    return showCls(o,pick(pathVerbs(0)));
+  }
+  if(passed.length&&Math.random()<0.15) return pathQuestion(pick(passed),o,true);
+  return pathQuestion(i,o,false);
+}
+
+function sentQs(item){
+  const res=[];
+  VERBS.forEach(v=>{
+    (v.ex||[]).forEach(e=>{
+      item.tpl.forEach(ops=>{
+        const s=run(v,ops);
+        if(!s) return;
+        const k=s[s.length-1].k;
+        if(!e.ja.includes(k)) return;
+        const o=optsFor(v,ops);
+        if(o) res.push({kind:"sent",v,ops,k,e,opts:o.opts});
+      });
+    });
+  });
+  return shuffle(res);
+}
+
+function buildTest(i){
+  const item=PATH[i],qs=sentQs(item).slice(0,5);
+  let g=0;
+  while(qs.length<10&&g<300){
+    g++;
+    const v=pick(pathVerbs(i)),ops=pick(item.tpl);
+    if(qs.some(q=>q.v===v&&q.ops.join()===ops.join())) continue;
+    const o=optsFor(v,ops);
+    if(o) qs.push({kind:"form",v,ops,k:o.k,opts:o.opts});
+  }
+  return shuffle(qs);
+}
+
+let PT=null;
+function startPTest(i){
+  PT={i,qs:buildTest(i),k:0,wrong:0,ans:null};
+  cur={type:"ptest"};
+  phase="ptest";
+  renderPTest();
+}
+function renderPTest(){
+  const q=PT.qs[PT.k],item=PATH[PT.i];
+  const body=q.kind==="sent"
+    ?`<div class="box"><div class="muted">在空格里选出正确的形式</div><div class="big">${blankify(q.e.ja)}</div><div class="muted">${esc(q.e.zh)}</div></div>`
+    :`<div class="box"><div class="muted">选出正确的形式</div><div class="big">${fmt(q.v)}（${q.v.zh}）→ ${q.ops.map(o=>OPS[o].label).join(" ＋ ")}</div></div>`;
+  $("q").innerHTML=`<div class="qtop">${esc(pname())} · 闯关测试</div>
+    <div class="qhead">📝「${item.n}」模拟测试 · 第 ${PT.k+1}/${PT.qs.length} 题</div>
+    <div class="muted">JLPT 风格的原创测试题。错 4 题以上要回去再练一下。目前错了 ${PT.wrong} 题。</div>`+
+    body+q.opts.map((x,j)=>`<button class="opt" data-i="${j}" onclick="answerPTest(${j},this)">${esc(x)}</button>`).join("")+
+    `<div id="ptfb"></div>`;
+  hideBar(); renderAll(); scrollQ();
+}
+
+function answerPTest(j,el){
+  if(!PT||PT.ans!==null) return;
+  const q=PT.qs[PT.k];
+  PT.ans=j;
+  const ok=q.opts[j]===q.k;
+  markChoice(q.opts.indexOf(q.k),el,ok);
+  if(!ok){
+    PT.wrong++;
+    srsAdd({kind:"chain",vi:VERBS.indexOf(q.v),ops:q.ops,j:q.ops.length-1,cat:opCat(q.ops[q.ops.length-1])});
+  }
+  const ch=record(ok,opCat(q.ops[q.ops.length-1]));
+  save();
+  $("ptfb").innerHTML=(ok?`<div class="ok-h">✓ 正确</div>`:`<div class="ng-h">✗ 正确答案是「${esc(q.k)}」</div>`)+
+    (q.kind==="sent"?`<div class="muted">${esc(q.e.ja)}</div>`:"")+
+    ch.map(c=>`<div class="celebrate">${c}</div>`).join("");
+  showBar(PT.k<PT.qs.length-1?"下一题 →":"看测试结果 →");
+}
+function ptestNext(){
+  if(!PT||PT.ans===null) return;
+  PT.k++; PT.ans=null;
+  if(PT.k<PT.qs.length) renderPTest();
+  else endPTest();
+}
+function endPTest(){
+  const i=PT.i,d=itemOf(i),item=PATH[i],total=PT.qs.length,score=total-PT.wrong;
+  let h;
+  if(PT.wrong>=4){
+    d.done=Math.max(0,pT()-pR());
+    d.tries=(d.tries||0)+1;
+    h=`<div class="ng-h">得分 ${score}/${total}，还差一点点</div>
+      <p>错了 ${PT.wrong} 题。我们回去把「${item.n}」再练 ${pR()} 题，然后再考一次。第一次没过很正常，多练几次就稳了！</p>
+      <div class="hint">复习一下规则：<br>${[...new Set(item.tpl.map(t=>t[t.length-1]))].map(o=>OPS[o].label+"："+(HINT[o]||"")).join("<br>")}</div>`;
+
+  } else {
+    d.passed=true;
+    d.passDate=today();
+    const nx=PATH[i+1];
+    h=`<div class="ok-h">🎉 得分 ${score}/${total}，「${item.n}」通关！</div>
+      <p>${nx?(nx.l>pcfg().lesson?`下一关「${nx.n}」在课本第 ${nx.l} 课，等课本学到了再来挑战。这段时间会帮你复习学过的内容。`:`下一关：「${nx.n}」（${nx.lv}）。${esc(pname())}太棒了，继续加油！`):"全部关卡都完成了！"}</p>`;
+    confetti();
+  }
+  save();
+  PT=null; phase="none";
+  $("q").innerHTML=`<div class="qhead">📝 测试结果</div>${h}<div class="btns"><button class="btn main" onclick="newQuestion()">继续练习</button></div>`;
+  hideBar(); renderAll(); scrollQ();
+}
+
+const _recBeforePath=window.record;
+window.record=function(ok,cats){
+  const ch=_recBeforePath(ok,cats);
+  if(isPath()&&cur&&cur.pathItem!==undefined){
+    const d=itemOf(cur.pathItem),t=today();
+    if(d.day!==t){d.day=t;d.dn=0;}
+    d.done++; d.dn++;
+    const nm=PATH[cur.pathItem].n;
+    if(d.done===pT()) ch.push(`🎯「${nm}」已经练够 ${pT()} 题！接下来可以参加模拟测试了。`);
+    else if(d.dn===pD()) ch.push(`今天「${nm}」已经练了 ${pD()} 题，新内容就到这里。接下来复习以前学过的内容，分几天练记得更牢！`);
+  }
+  if(ok&&isPath()){
+    const m={3:"👍 连对3题，好的开始！",8:"🌟 连对8题，越来越稳了！",15:"🔥 连对15题！太厉害了！",25:"🏆 连对25题！已经掌握得很好了！",40:"👑 连对40题！简直是变形小达人！"}[S.streak];
+    if(m){ch.push(m);if(S.streak>=15) confetti();}
+  }
+  return ch;
+};
+
+
+const _topLabelBeforePath=window.topLabel;
+window.topLabel=function(){
+  if(cur&&cur.pathItem!==undefined&&!cur.review){
+    const d=itemOf(cur.pathItem);
+    return `🌱 闯关「${PATH[cur.pathItem].n}」 · ${d.done}/${pT()}（今天 ${dayN(d)}/${pD()}）`;
+  }
+  if(cur&&cur.pathOld!==undefined) return `🔁 复习已通关的「${PATH[cur.pathOld].n}」`;
+  return _topLabelBeforePath();
+};
+
+const _pickSmartBeforePath=window.pickSmart;
+window.pickSmart=function(){
+  if(!isPath()) return _pickSmartBeforePath();
+  if(itemOf(curItem()).passed) return _pickSmartBeforePath();
+  return {type:"path"};
+};
+const _startTypeBeforePath=window.startType;
+window.startType=function(t,o){
+  if(t==="path") return pathStart(o||{});
+  return _startTypeBeforePath(t,o);
+};
+
+window.ensureGoal=function(){
+  if(isPath()){if(!S.goal||S.goal<15) S.goal=25;}
+  else if(!S.goal||S.goal<MIN) S.goal=MIN;
+};
+window.dayStat=function(d,k){
+  const c=d.days[k]||0,ok=(d.daysOk||{})[k]||0;
+  return {c,ok,p:c?ok/c:0,g:d.goal||MIN};
+};
+window.judge=function(a,b){
+  const qa=a.c>=(a.g||MIN),qb=b.c>=(b.g||MIN);
+
+  if(qa&&qb){
+    if(a.p!==b.p) return {w:a.p>b.p?0:1};
+    if(a.c!==b.c) return {w:a.c>b.c?0:1};
+    return {w:-1};
+  }
+  if(qa) return {w:0};
+  if(qb) return {w:1};
+  return {w:-1,none:true};
+};
+window.statusText=function(d,k){
+  if(k<d.start) return {txt:"—",cls:""};
+  const x=dayStat(d,k);
+  if(x.c===0) return {txt:"😴 "+lazyMsg(lazyDays(d,k)),cls:"lazy"};
+  if(x.c<x.g) return {txt:`${pct(x)}%（${x.c}/${x.g}题）· 未达标`,cls:"miss"};
+  return {txt:`${pct(x)}%（${x.c}题）`,cls:"okd"};
+};
+window.renderPK=function(){
+  const t=today(),y=addDays(t,-1);
+  const D=PROFILES.map(p=>getData(p.id));
+  const first=D.map(d=>d.start).sort()[0];
+  const now=D.map(d=>dayStat(d,t));
+  const jn=judge(now[0],now[1]);
+  let h=`<h3 style="margin-top:0">今日PK（${md(t)}）· 比正确率</h3>
+    <div class="muted">每个人完成自己的每日目标就算达标（${esc(PROFILES[0].name)} ${now[0].g} 题，${esc(PROFILES[1].name)} ${now[1].g} 题），达标的人比正确率。每天晚上12点出结果。</div>`;
+  now.forEach((x,i)=>{
+    const d=D[i],lz=y>=d.start?lazyDays(d,y):0;
+    let st;
+    if(x.c===0) st=lz>0?`今天还没开始 · 已经连续偷懒 ${lz} 天了，快回来！`:"今天还没开始";
+    else if(x.c<x.g) st=`还差 ${x.g-x.c} 题达标`;
+    else st="已达标 ✓";
+    h+=`<div class="pkrow">
+      <div class="pkname"><span>${jn.w===i?'<span class="crown">♛ </span>':""}${esc(PROFILES[i].name)}</span><span>${x.c}/${x.g} 题 · 正确率 ${x.c?pct(x)+"%":"—"}</span></div>
+
+      <div class="pkbar"><div class="p${i}" style="width:${Math.min(100,x.c/x.g*100)}%"></div></div>
+      <div class="muted">${st}</div></div>`;
+  });
+  let msg;
+  if(now[0].c===0&&now[1].c===0) msg="今天的PK还没开始，谁先来？";
+  else if(jn.none) msg="还没有人完成每日目标，先达标才有资格比正确率！";
+  else if(jn.w===-1) msg="两个人正确率和题数都一样，平手！";
+  else msg=`${esc(PROFILES[jn.w].name)} 暂时领先！`;
+  h+=`<div class="pkmsg">${msg}</div>`;
+  if(y>=first){
+    const ys=D.map(d=>dayStat(d,y)),jy=judge(ys[0],ys[1]);
+    h+=`<div class="yest"><b>昨日结果（${md(y)}）：</b>${jy.w>=0?"♛ "+esc(PROFILES[jy.w].name)+" 获胜！":jy.none?"两个人都没达标，无人获胜。":"平局！"}`+
+      D.map((d,i)=>`<div>${esc(PROFILES[i].name)}：${statusText(d,y).txt}</div>`).join("")+`</div>`;
+  }
+  const wins=[0,0,0],rows=[];
+  let k=first,guard=0;
+  while(k<t&&guard<400){
+    const s=D.map(d=>dayStat(d,k)),r=judge(s[0],s[1]);
+    if(r.w>=0) wins[r.w]++; else if(!r.none) wins[2]++;
+    rows.push({k,r});
+    k=addDays(k,1); guard++;
+  }
+  h+=`<h3>每日战绩</h3><div class="muted">${esc(PROFILES[0].name)} 胜 ${wins[0]} 场 ｜ ${esc(PROFILES[1].name)} 胜 ${wins[1]} 场 ｜ 平局 ${wins[2]} 场</div>`;
+  if(rows.length){
+    h+=`<table style="margin-top:8px"><tr><th>日期</th><th>${esc(PROFILES[0].name)}</th><th>${esc(PROFILES[1].name)}</th><th>结果</th></tr>`;
+    rows.reverse().slice(0,14).forEach(x=>{
+      h+=`<tr><td>${md(x.k)}</td>`+D.map(d=>{const s=statusText(d,x.k);return `<td class="${s.cls}">${s.txt}</td>`;}).join("")+
+        `<td>${x.r.w>=0?"♛ "+esc(PROFILES[x.r.w].name):x.r.none?"无人达标":"平局"}</td></tr>`;
+    });
+    h+=`</table>`;
+  } else h+=`<div class="muted" style="margin-top:6px">从明天开始，每天的结果都会记录在这里。</div>`;
+  $("pk").innerHTML=h;
+
+  if(typeof renderTravel==="function") renderTravel();
+};
+
+const _renderDashBeforePath=window.renderDash;
+window.renderDash=function(){
+  _renderDashBeforePath();
+  const p=isPath();
+  if(p){
+    const sel=document.querySelector('#dash select[onchange^="setGoal"]');
+    if(sel) sel.innerHTML=[15,20,25,30,40,50].map(x=>`<option value="${x}" ${x===S.goal?"selected":""}>${x}题</option>`).join("");
+  }
+  let h=`<div class="lmode"><span>学习模式：</span>
+    <select onchange="setLMode(this.value)">
+      <option value="path" ${p?"selected":""}>🌱 闯关（按《大家的日语》顺序，一个语法练够再考试）</option>
+      <option value="adv" ${!p?"selected":""}>🚀 进阶（各种题型随机混合）</option>
+    </select></div>`;
+  if(p){
+    const c=pcfg(),i=curItem(),d=itemOf(i),item=PATH[i];
+    let status;
+    if(d.passed) status="✓ 全部通关";
+    else if(itemLocked(i)) status=`🔒 等课本学到第 ${item.l} 课再解锁，现在先复习学过的内容`;
+    else if(d.done>=pT()) status="📝 可以参加模拟测试了";
+    else status=`练习 ${d.done}/${pT()} ｜ 今天新题 ${dayN(d)}/${pD()}`;
+    h+=`<div class="pathbox">
+      <div class="pcfg">
+        <label>课本进度：<select onchange="setPcfg('lesson',this.value)">${Array.from({length:51},(x,k)=>k+1).map(n=>`<option value="${n}" ${n===c.lesson?"selected":""}>${n===51?"初级学完（TRY N3）":"第 "+n+" 课"}</option>`).join("")}</select></label>
+        <label>每个语法练习量：<select onchange="setPcfg('target',this.value)">${[80,120,200].map(n=>`<option value="${n}" ${n===c.target?"selected":""}>${n}题</option>`).join("")}</select></label>
+        <label>每天新题：<select onchange="setPcfg('day',this.value)">${[15,20,30,40].map(n=>`<option value="${n}" ${n===c.day?"selected":""}>${n}题</option>`).join("")}</select></label>
+      </div>
+      <b>当前关卡 ${i+1}/${PATH.length}：「${item.n}」（${item.lv}・第 ${item.l>50?"N3":item.l} 课）</b><br>${status}${d.tries?` ｜ 已重练 ${d.tries} 次`:""}
+      <div class="barw"><div style="width:${Math.min(100,d.done/pT()*100)}%"></div></div>
+      <details><summary>查看全部关卡</summary>${PATH.map((it,k)=>{
+
+        const x=itemOf(k);
+        const icon=x.passed?"✅":itemLocked(k)?"🔒":k===i?"▶️":"⬜";
+        return `<div class="pitem">${icon} ${k+1}. ${it.n}（${it.l>50?"TRY N3":"第"+it.l+"课"}）${x.passed?" 通关":k===i&&!itemLocked(k)?` ${x.done}/${pT()}`:""}</div>`;
+      }).join("")}</details></div>`;
+  }
+  $("dash").insertAdjacentHTML("beforeend",h);
+};
+
+document.body.insertAdjacentHTML("beforeend",`<div id="nextbar" class="nextbar hidden"><button class="btn main" id="nextbtn" onclick="stickyNext()">下一题 →</button></div>`);
+function showBar(label){
+  $("nextbtn").textContent=label||"下一题 →";
+  $("nextbar").classList.remove("hidden");
+}
+function hideBar(){const b=$("nextbar");if(b) b.classList.add("hidden");}
+function scrollQ(){const q=$("q");if(q&&!setup) q.scrollIntoView({behavior:"smooth",block:"start"});}
+function stickyNext(){
+  if(PT) return ptestNext();
+  hideBar();
+  next();
+}
+const _finishBeforeBar=window.finish;
+window.finish=function(ok,body,cheers){
+  _finishBeforeBar(ok,body,cheers);
+  showBar(nextLabel()+" →");
+  const r=$("res");
+  if(r) r.scrollIntoView({behavior:"smooth",block:"start"});
+};
+const _showChainBeforeBar=window.showChain;
+window.showChain=function(){
+  hideBar();
+  _showChainBeforeBar();
+  scrollQ();
+
+};
+const _retryBeforeBar=window.retry;
+window.retry=function(){
+  hideBar();
+  _retryBeforeBar();
+};
+const _nqBeforeBar=window.newQuestion;
+window.newQuestion=function(){
+  hideBar();
+  PT=null;
+  const r=_nqBeforeBar();
+  scrollQ();
+  return r;
+};
