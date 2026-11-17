@@ -219,7 +219,7 @@ function startPTest(i){
 function renderPTest(){
   const q=PT.qs[PT.k],item=PATH[PT.i];
   const body=q.kind==="sent"
-    ?`<div class="box"><div class="muted">在空格里选出正确的形式</div><div class="big">${blankify(q.e.ja)}</div><div class="muted">${esc(q.e.zh)}</div></div>`
+    ?`<div class="box"><div class="muted">在空格里选出正确的形式</div><div class="big">${blankify(q.e.ja.replace(q.k,"＿＿"))}</div><div class="muted">${esc(q.e.zh)}</div></div>`
     :`<div class="box"><div class="muted">选出正确的形式</div><div class="big">${fmt(q.v)}（${q.v.zh}）→ ${q.ops.map(o=>OPS[o].label).join(" ＋ ")}</div></div>`;
   $("q").innerHTML=`<div class="qtop">${esc(pname())} · 闯关测试</div>
     <div class="qhead">📝「${item.n}」模拟测试 · 第 ${PT.k+1}/${PT.qs.length} 题</div>
