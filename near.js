@@ -116,7 +116,7 @@ window.renderSpeed=function(){
   if(G.stage==="sent"){
     const s=G.q2;
     body=`<div class="muted">✓ 追加一题：在句子里填入「${s.v.k}」的正确形式</div>
-      <div class="box"><div class="big">${blankify(s.e.ja)}</div><div class="muted">${esc(s.e.zh)}</div></div>
+      <div class="box"><div class="big">${blankify(s.blank)}</div><div class="muted">${esc(s.e.zh)}</div></div>
       ${s.opts.map((o,i)=>`<button class="gbtn" onclick="speedPick(${i})">${esc(o)}</button>`).join("")}`;
   } else {
     const q=G.q;
@@ -191,7 +191,7 @@ function answerNear(i,el){
         cheers.map(t=>`<div class="celebrate">${t}</div>`).join("")+`
         <div class="ok-h">✓ ${c.v.k}的${OPS[c.op].label}是「${esc(c.f.k)}」！</div>
         <div class="box"><div class="muted">追加一题：在句子里填入「${c.v.k}」的正确形式（换了一种形态）</div>
-        <div class="big">${blankify(fol.e.ja)}</div><div class="muted">${esc(fol.e.zh)}</div></div>`+
+        <div class="big">${blankify(fol.blank)}</div><div class="muted">${esc(fol.e.zh)}</div></div>`+
         fol.opts.map((x,j)=>`<button class="opt" data-i="${j}" onclick="answerNear(${j},this)">${esc(x)}</button>`).join("");
       renderAll();
       return;
