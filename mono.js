@@ -897,7 +897,7 @@ function entry(){
   if (e._h !== html) { e._h = html; e.innerHTML = html; }
 }
 function hideTravel(){
-  var core = ["q","res","pk","dash","mastery","cal","units","plan","mono-card"];
+  var core = ["q","res","pk","dash","mastery","cal","units","plan","mono-card","mono-map"];
   document.querySelectorAll("#main h3, #main summary, #main .qhead, #main b").forEach(function(x){
     if (/环游世界|世界跑道/.test(x.textContent)) {
       var c = x.closest(".card");
