@@ -167,13 +167,15 @@ function persist(st){
 }
 
 function curLesson(){
-  var sels = document.querySelectorAll("#main select");
+  // 进阶模式不限制课数（返回 0 = 全部）；闯关模式才按「课本进度」出题
+  var sels = document.querySelectorAll("#main select"), lesson = 0, adv = false;
   for (var i = 0; i < sels.length; i++) {
-    var o = sels[i].options[sels[i].selectedIndex];
-    var m = o && o.text.match(/第\s*(\d+)\s*课/);
-    if (m) return +m[1];
+    var o = sels[i].options[sels[i].selectedIndex], t = o ? o.text : "";
+    if (/进阶/.test(t)) adv = true;
+    var m = t.match(/第\s*(\d+)\s*课/);
+    if (m && !lesson) lesson = +m[1];
   }
-  return 0;
+  return adv ? 0 : lesson;
 }
 
 // ---------- 发音 ----------
@@ -265,7 +267,7 @@ function openGame(kind){ G.kind = kind; menu(); }
 
 function menu(){
   var st = store(), name = G.kind === "listen" ? "🎧 听力" : "📖 单词";
-  if (G.maxL == null) G.maxL = curLesson() || 99;
+  if (!G.manual) G.maxL = curLesson() || 99;   // 每次打开都按当前账号的模式重新判断，除非手动选过范围
   var nw = Object.keys(st.wrong).filter(function(k){ return k.indexOf(G.kind + ":") === 0; }).length;
   var top = maxLesson(), opts = '<option value="99">全部课</option>';
   for (var l = 1; l <= top; l++) opts += '<option value="' + l + '">学到第 ' + l + ' 课</option>';
@@ -282,7 +284,7 @@ function menu(){
     '</div>';
   var sel = document.getElementById("ws-range");
   sel.value = G.maxL > top ? "99" : String(G.maxL);
-  sel.onchange = function(){ G.maxL = +sel.value; menu(); };
+  sel.onchange = function(){ G.maxL = +sel.value; G.manual = true; menu(); };
   document.getElementById("ws-go").onclick = function(){ start(false); };
   document.getElementById("ws-wrong").onclick = function(){ start(true); };
   document.getElementById("ws-close").onclick = closePanel;
@@ -400,6 +402,12 @@ function makeBtn(kind, cls){
   return b;
 }
 function ensure(){
+    // 0) 进阶模式：题型栏里直接放「🎧 听力」「📖 单词」
+  var tabs = document.getElementById("tabs");
+  if (tabs && !tabs.querySelector("[data-ws]")) {
+    tabs.appendChild(makeBtn("listen", "tab"));
+    tabs.appendChild(makeBtn("word", "tab"));
+  }
   // 1) 游戏中心：找到「消消乐 / 60秒 / 掉落 / 拼图」按钮，把听力和单词加在旁边
   var all = document.querySelectorAll("#main button");
   for (var i = 0; i < all.length; i++) {
