@@ -905,7 +905,8 @@ function hideTravel(){
     }
   });
 }
-
+// 给地图用：把大富翁的状态开放出去（只读）
+window.MONO = {st:function(){ return (M && ready) ? {M:M, O:O, B:B, C:C, N:N, me:curPid, other:oid(), owner:ownerOf, tileName:tileName} : null; }};
 // ===== 主循环 =====
 setInterval(function(){
   if (typeof setup === "undefined" || setup || typeof S !== "object" || !S || typeof pid !== "string") return;
