@@ -5,7 +5,7 @@
 
 var CFG = {START_CASH:20000, START_DICE:3, SALARY:1000, MAX_DICE:50, GOAL:50,
   BANK_RATE:0.01, P2P_RATE:0.005, RATE_MIN:2, RATE_MAX:20, RATE_DEF:5,
-  AIR_FEE:200, JAIL_FEE:500, GAME_ROUNDS_PER_DAY:6};
+  AIR_FEE:200, JAIL_FEE:500, GAME_ROUNDS_PER_DAY:6, BUYOUT_PREMIUM:0.2, BUYOUT_BANK_MAX:10000};
 
 // ===== 国家（按棋盘路线顺序）。gdp = IMF 2026年10月 名义GDP（十亿美元）=====
 var C = [
@@ -250,7 +250,11 @@ function payO(x){ M.cash -= x; M.sent = (M.sent || 0) + x; }
 function rateEff(){ return Math.max(M.rate, O ? O.rate : 0); }
 function ownerOf(ci){
   var a = M && M.own[ci], b = O && O.own[ci];
-  if (a && b) return (a.t < b.t || (a.t === b.t && curPid < oid())) ? curPid : oid();
+  if (a && b) {
+    if (a.take && a.take === b.t) return curPid;   // 我收购了她的
+    if (b.take && b.take === a.t) return oid();    // 她收购了我的
+    return (a.t < b.t || (a.t === b.t && curPid < oid())) ? curPid : oid();
+  }
   return a ? curPid : (b ? oid() : null);
 }
 function netOf(P, ci){ var v = price(ci), o = P && P.own[ci]; if (o) (o.inv || []).forEach(function(p){ v += p.val; }); return v; }
@@ -259,10 +263,18 @@ function resolve(){
   Object.keys(M.own).forEach(function(k){
     var ci = +k;
     if (O.own[k] && ownerOf(ci) !== curPid) {
-      var v = netOf(M, ci);
-      M.cash += v; delete M.own[k];
-      log("↩️ " + C[ci].cap.n + " 对方先买了，退回 " + money(v));
-      toast("↩️ " + C[ci].cap.n + " 对方先买了，钱已退回");
+      if (O.own[k].take === M.own[k].t) {
+        // 被对方收购：钱对方已经付过了，这里只交出地产
+        delete M.own[k];
+        log("🤝 " + C[ci].cap.n + " 被 " + nameOf(oid()) + " 以 " + money(O.own[k].paid || 0) + " 收购了");
+        M.news = (M.news || []).concat(["🤝 " + C[ci].cap.n + " 被 " + nameOf(oid()) + " 以 " + money(O.own[k].paid || 0) + " 收购了，钱已到账"]);
+      } else {
+        // 两个人同时买：后买的退款
+        var v = netOf(M, ci);
+        M.cash += v; delete M.own[k];
+        log("↩️ " + C[ci].cap.n + " 对方先买了，退回 " + money(v));
+        toast("↩️ " + C[ci].cap.n + " 对方先买了，钱已退回");
+      }
     }
   });
 }
@@ -642,7 +654,13 @@ function renderAct(){
   var bl = $m("mo-bail"); if (bl) bl.onclick = function(){ M.cash -= CFG.JAIL_FEE; M.jail = false; M.js = 0; log("🔓 付 " + CFG.JAIL_FEE + " 出狱"); finish("🔓 付了 " + CFG.JAIL_FEE + "，出狱啦！"); };
   $m("mo-props").onclick = propsPanel; $m("mo-loan").onclick = loanPanel; $m("mo-rate").onclick = ratePanel;
   $m("mo-how").onclick = howPanel; $m("mo-log").onclick = logPanel;
-}
+  var br = M.buyRight;
+  if (br && !off && ownerOf(br.ci) === oid()) {
+    var bb = document.createElement("button");
+    bb.className = "btn"; bb.textContent = "🤝 收购 " + C[br.ci].cap.n;
+    bb.onclick = function(){ buyoutOffer(br.ci, capHead(br.ci)); };
+    el.insertBefore(bb, el.children[1]);
+  }
 function ev(html, btns){
   var e = $m("mono-ev"); if (!e) return;
   e.innerHTML = '<div class="box" style="background:#fff;border:1px solid var(--line)">' + html + '<div class="btns" id="mo-evb"></div></div>';
@@ -666,7 +684,7 @@ function finish(html){ lock = false; ev(html, [{t:"好的", main:1, f:evHome}]);
 var FACES = ["⚀","⚁","⚂","⚃","⚄","⚅"];
 function roll(){
   if (busy || lock || M.dice <= 0) return;
-  busy = true; M.dice--; M.rolled = true; M.rateWin = false; M.news = null;
+  busy = true; M.dice--; M.rolled = true; M.rateWin = false; M.news = null; M.buyRight = null;
   var a = 1 + Math.floor(Math.random() * 6), b = 1 + Math.floor(Math.random() * 6), k = 0;
   refresh();
   var e = $m("mono-ev");
@@ -753,7 +771,41 @@ function landCap(ci, extra){
   payO(toll); log("💸 在 " + C[ci].cap.n + " 付过路费 " + money(toll));
   var msg = hd + '<div class="diag">这是 ' + h(nameOf(oid())) + ' 的首都！净资产 ' + money(net) + ' × ' + r + '% = 过路费 <b>' + money(toll) + '</b></div>';
   if (myCash() < 0) msg += '<div class="hint">钱不够，变成欠银行 ' + money(-myCash()) + '（每天 1% 利息）。现在<b>每答对 1 题就 +100</b>，快去做题还债！也可以向 ' + h(nameOf(oid())) + ' 借钱（每天 0.5%，当天做满 ' + CFG.GOAL + ' 题免息）。</div>';
-  finish(msg);
+  buyoutOffer(ci, msg);
+}
+  // ===== 收购对方的首都 =====
+function bpOf(ci){ return Math.round(netOf(O, ci) * (1 + CFG.BUYOUT_PREMIUM)); }
+function buyoutOffer(ci, msg){
+  M.buyRight = {ci:ci, t:Date.now()};
+  var p = bpOf(ci), mc = myCash(), on = h(nameOf(oid())), gap = p - mc;
+  var html = msg + '<div class="task">🤝 <b>你可以收购这座首都！</b><br>' +
+    '收购价 = 净资产 ' + money(netOf(O, ci)) + ' × ' + Math.round((1 + CFG.BUYOUT_PREMIUM) * 100) + '% = <b>' + money(p) + '</b><br>' +
+    '必须连同里面的投资一起买，一次付清，不能分期。<br>你现在有 ' + money(mc) + '。' +
+    (gap > 0 ? '还差 <b>' + money(gap) + '</b>：可以向银行借高利贷补上（最多 ' + money(CFG.BUYOUT_BANK_MAX) + '，每天 1%），或者先向 ' + on + ' 借钱。' : '') +
+    '<br><span class="muted">收购权到你下次掷骰子前都有效。</span></div>';
+  var btns = [];
+  if (gap <= 0) btns.push({t:"🤝 用现金收购（" + money(p) + "）", main:1, f:function(){ doBuyout(ci, false); }});
+  else if (mc - p >= -CFG.BUYOUT_BANK_MAX) btns.push({t:"🏦 借高利贷 " + money(gap) + " 收购", main:1, f:function(){ doBuyout(ci, true); }});
+  else btns.push({t:"差太多，借高利贷也不够", dis:true, f:function(){}});
+  btns.push({t:"💰 去向 " + nameOf(oid()) + " 借钱", f:loanPanel});
+  btns.push({t:"不收购", f:evHome});
+  lock = false;
+  ev(html, btns); saveM(); refresh();
+}
+function doBuyout(ci, useBank){
+  if (!M.buyRight || M.buyRight.ci !== ci || ownerOf(ci) !== oid()) return finish("现在不能收购这座首都了。");
+  var p = bpOf(ci), mc = myCash();
+  if (mc < p && (!useBank || mc - p < -CFG.BUYOUT_BANK_MAX)) return finish("钱不够，不能收购。");
+  var src = O.own[ci];
+  payO(p);   // 一次付清，对方马上到账
+  M.own[ci] = {t:Date.now(), take:src.t, paid:p,
+    inv:(src.inv || []).map(function(x){ return {k:x.k, amt:x.val, val:x.val}; })};
+  M.buyRight = null;
+  log("🤝 以 " + money(p) + " 收购了 " + C[ci].cap.n + (mc < p ? "（借高利贷 " + money(p - mc) + "）" : ""));
+  burst();
+  finish('🎉 收购成功！<b>' + h(C[ci].cap.n) + '</b> 连同里面的投资都是你的了。' +
+    (myCash() < 0 ? '<div class="hint">现在欠银行 ' + money(-myCash()) + '，每天 1% 利息。欠债期间每答对 1 题 +100，快去做题还债！</div>' : ''));
+
 }
 function landCity(ci, j, extra){
   var c = C[ci], x = c.cs[j];
