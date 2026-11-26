@@ -30,6 +30,7 @@ var C = [
  {n:"墨尔本",e:"☕",i:"咖啡和有轨电车之城，经常被评为最宜居城市。",w:["コーヒー","咖啡"]},
  {n:"凯恩斯",e:"🐠",i:"去大堡礁潜水的出发地，海里有各种彩色的鱼。",w:["さかな","鱼"]}]},
 {id:"IN",n:"印度",f:"🇮🇳",gdp:4060,cap:{n:"新德里",i:"印度首都，有印度门和红堡。",w:["もん","门"]},cs:[
+
  {n:"孟买",e:"🎬",i:"印度最大城市，宝莱坞电影的大本营。",w:["えいが","电影"]},
  {n:"阿格拉",e:"🕌",i:"白色大理石建成的泰姬陵就在这里。",w:["しろい","白色的"]},
  {n:"班加罗尔",e:"💻",i:"被称为「印度硅谷」，有很多 IT 公司。",w:["コンピューター","电脑"]}]},
@@ -62,6 +63,7 @@ var C = [
  {n:"里昂",e:"🍽️",i:"被称为法国的美食之都。",w:["りょうり","料理"]},
  {n:"波尔多",e:"🍇",i:"世界有名的葡萄酒产地。",w:["ぶどう","葡萄"]}]},
 {id:"UK",n:"英国",f:"🇬🇧",gdp:4268,cap:{n:"伦敦",i:"英国首都，有大本钟和伦敦眼摩天轮。",w:["とけい","钟表"]},cs:[
+
  {n:"爱丁堡",e:"🏰",i:"苏格兰的首府，山上有古老的城堡。",w:["しろ","城堡"]},
  {n:"曼彻斯特",e:"⚽",i:"有两支世界有名的足球队。",w:["サッカー","足球"]},
  {n:"牛津",e:"🎓",i:"有九百多年历史的大学城。",w:["だいがく","大学"]}]},
@@ -94,6 +96,7 @@ var C = [
 var IND = {
   agri:  {n:"🌾 农业", lo:0.00,  hi:0.02},
   mfg:   {n:"🏭 制造", lo:-0.02, hi:0.04},
+
   energy:{n:"⚡ 能源", lo:-0.06, hi:0.08},
   fin:   {n:"🏦 金融", lo:-0.08, hi:0.10},
   tour:  {n:"✈️ 旅游", lo:-0.10, hi:0.12},
@@ -126,6 +129,7 @@ function h(s){ return (typeof esc === "function") ? esc(String(s)) : String(s).r
 function money(x){ x = Math.round(x); return (x < 0 ? "-" : "") + Math.abs(x).toLocaleString(); }
 function shuf(a){ a = a.slice(); for (var i = a.length - 1; i > 0; i--){ var j = Math.floor(Math.random() * (i + 1)); var t = a[i]; a[i] = a[j]; a[j] = t; } return a; }
 function rpick(a){ return a[Math.floor(Math.random() * a.length)]; }
+
 function oid(){ return otherId(); }
 function pidx(id){ return PROFILES.findIndex(function(p){ return p.id === id; }); }
 function pcol(id){ return pidx(id) === 0 ? "var(--pink)" : "var(--blue)"; }
@@ -158,6 +162,7 @@ function toast(s){
   t.style.bottom = (24 + 46 * (toasts++ % 4)) + "px";
   document.body.appendChild(t);
   setTimeout(function(){ t.remove(); toasts = Math.max(0, toasts - 1); }, 3200);
+
 }
 function burst(){
   var em = ["🌸","⭐","🎉","✨","💰","🌟"];
@@ -189,7 +194,8 @@ var MS = 0, busy = false, lock = false, lastRoundT = 0, lastInd = "mfg";
 function fresh(){
   return {v:1, pos:0, laps:0, cash:CFG.START_CASH, dice:CFG.START_DICE, rate:CFG.RATE_DEF, rolled:false, rateWin:false,
     own:{}, sent:0, taken:0, p2p:0, giftOut:0, giftIn:0, loanReq:null, credit:null, creditUsed:0, loanAnsT:0,
-    jail:false, js:0, lastSettle:today(), lastAct:"", fl:{d:""}, log:[], news:null, ts:0};
+    jail:false, js:0, lastSettle:today(), lastAct:"", fl:{d:""}, log:[], news:null, buyRight:null, ts:0};
+
 }
 function fix(x){
   var d = Object.assign(fresh(), x || {});
@@ -222,6 +228,7 @@ function init(){
   curPid = pid; ready = false;
   M = fix(loadLocal(pid));
   var o = loadLocal(oid()); O = o ? fix(o) : null;
+
   if (cloud && window.FB && room) {
     FB.getDoc(roomRef()).then(function(s){ if (s.exists()) applyDoc(s.data()); ready = true; afterSync(); })
       .catch(function(e){ console.error(e); ready = true; afterSync(); });
@@ -254,6 +261,7 @@ function ownerOf(ci){
     if (a.take && a.take === b.t) return curPid;   // 我收购了她的
     if (b.take && b.take === a.t) return oid();    // 她收购了我的
     return (a.t < b.t || (a.t === b.t && curPid < oid())) ? curPid : oid();
+
   }
   return a ? curPid : (b ? oid() : null);
 }
@@ -264,12 +272,11 @@ function resolve(){
     var ci = +k;
     if (O.own[k] && ownerOf(ci) !== curPid) {
       if (O.own[k].take === M.own[k].t) {
-        // 被对方收购：钱对方已经付过了，这里只交出地产
+        var paid = O.own[k].paid || 0;
         delete M.own[k];
-        log("🤝 " + C[ci].cap.n + " 被 " + nameOf(oid()) + " 以 " + money(O.own[k].paid || 0) + " 收购了");
-        M.news = (M.news || []).concat(["🤝 " + C[ci].cap.n + " 被 " + nameOf(oid()) + " 以 " + money(O.own[k].paid || 0) + " 收购了，钱已到账"]);
+        log("🤝 " + C[ci].cap.n + " 被 " + nameOf(oid()) + " 以 " + money(paid) + " 收购了");
+        M.news = (M.news || []).concat(["🤝 " + C[ci].cap.n + " 被 " + nameOf(oid()) + " 以 " + money(paid) + " 收购了，钱已到账"]);
       } else {
-        // 两个人同时买：后买的退款
         var v = netOf(M, ci);
         M.cash += v; delete M.own[k];
         log("↩️ " + C[ci].cap.n + " 对方先买了，退回 " + money(v));
@@ -287,6 +294,7 @@ function takeGifts(){
 function log(s){ M.log.unshift(today().slice(5) + " " + s); M.log = M.log.slice(0, 40); }
 function addDice(n, why){
   var b = M.dice; M.dice = Math.min(CFG.MAX_DICE, M.dice + n);
+
   var got = M.dice - b;
   if (got > 0) { toast("🎲 +" + got + " 次骰子：" + why); log("🎲 +" + got + " " + why); }
   else toast("🎲 骰子已经攒满 " + CFG.MAX_DICE + " 次啦，先去掷掉一些吧");
@@ -319,6 +327,7 @@ function settle(){
       if (me.c > 0 && winner(me, ot) === 0) pk++;
       d = addDays(d, 1); n++;
     }
+
     M.lastSettle = t;
     var news = [];
     if (invB) news.push("📈 投资结算：" + (invA >= invB ? "赚了 +" : "亏了 ") + money(invA - invB));
@@ -352,6 +361,7 @@ function warnText(){
   return "";
 }
 
+
 // ===== 做题奖励 =====
 function onAnswer(ok, src){
   if (!M || !ready) return;
@@ -383,13 +393,13 @@ function onRound(id, s, n){
   if (id === "rv-box" && s / n >= 0.7) addDice(1, "综合测试 70% 以上");
   M.lastAct = today(); saveM(); refresh();
 }
+
 function hookRecord(){
   if (typeof window.record !== "function" || window.record.__mono) return;
   var orig = window.record;
   var w = function(ok, cats){ var r = orig.apply(this, arguments); try { onAnswer(ok, "main"); } catch(e){ console.error(e); } return r; };
   w.__mono = true; window.record = w;
 }
-// 小游戏（助词 / 听力单词 / 综合测试）的答题
 document.addEventListener("click", function(e){
   var b = e.target.closest && e.target.closest(".opt");
   if (!b || b.disabled || !b.closest("#joshi, #ws-box, #rv-box")) return;
@@ -398,7 +408,6 @@ document.addEventListener("click", function(e){
     else if (b.classList.contains("wrong")) onAnswer(false, "mini");
   }, 0);
 }, true);
-// 小游戏一轮结束
 var seenCel = new WeakSet();
 new MutationObserver(function(muts){
   if (!M) return;
@@ -417,6 +426,7 @@ new MutationObserver(function(muts){
 }).observe(document.body, {childList:true, subtree:true});
 
 // ===== 题库（机会卡、学校、问路） =====
+
 function JL(i){ var a = window.JOSHI_L || JLD; return a[i] || 1; }
 function distinct(arr, t, f){
   var seen = {}; seen[f(t)] = 1; var out = [];
@@ -449,6 +459,7 @@ function makeQ(kind){
   }
   if (k === "joshi") {
     var jj = J[rpick(jq)];
+
     return {head:"选出正确的助词", q:h(jj.s).replace("＿", '<span class="blank">　</span>'),
       o:jj.o.map(h), a:jj.o.indexOf(jj.a), ex:h(jj.zh) + "<br>" + h(jj.e)};
   }
@@ -481,6 +492,7 @@ function quiz(n, reward, kind, title){
         e.querySelectorAll(".opt").forEach(function(x){ x.disabled = true; if (+x.dataset.k === q.a) x.classList.add("right"); });
         if (!right) b.classList.add("wrong");
         $m("mo-qfb").innerHTML = (right ? '<div class="ok-h">✅ 正确！</div>' : '<div class="ng-h">❌ 正确答案是「' + q.o[q.a] + '」</div>') +
+
           (q.ex ? '<div class="note">' + q.ex + '</div>' : '') +
           '<div class="btns"><button class="btn main" id="mo-qn">' + (i + 1 < n ? '下一题' : '看结果') + '</button></div>';
         $m("mo-qn").onclick = function(){ i++; next(); };
@@ -513,6 +525,7 @@ var CHANCE = [
 ];
 var FATE = [
   {t:"🌪️ 台风来袭", d:"你所有的旅游业投资 -20%。", f:function(){ shock("tour", -0.2, "🌪️ 台风来袭"); }},
+
   {t:"🤖 科技突破", d:"你所有的科技投资 +15%。", f:function(){ shock("tech", 0.15, "🤖 科技突破"); }},
   {t:"🌾 大丰收", d:"你所有的农业投资 +10%。", f:function(){ shock("agri", 0.10, "🌾 大丰收"); }},
   {t:"⛽ 油价暴跌", d:"你所有的能源投资 -15%。", f:function(){ shock("energy", -0.15, "⛽ 油价暴跌"); }},
@@ -545,6 +558,7 @@ function openMono(){
     ov.id = "mono-ov";
     ov.innerHTML = '<div class="card" id="mono-box"><div id="mono-top"></div><div id="mono-strip" class="mstrip"></div><div id="mono-ev"></div><div id="mono-act" class="btns"></div></div>';
     document.body.appendChild(ov);
+
   }
   evHome();
 }
@@ -577,6 +591,7 @@ function pendingCount(){
   return (O && O.loanReq && O.loanReq.t > (M.loanAnsT || 0) ? 1 : 0) + (creditOffer() ? 1 : 0);
 }
 function noticeHtml(){
+
   var s = "", on = h(nameOf(oid()));
   if (O && O.loanReq && O.loanReq.t > (M.loanAnsT || 0)) {
     var mx = Math.max(0, Math.floor(myCash()));
@@ -609,6 +624,7 @@ function bindNotices(){
     var v = Math.max(0, Math.min(Math.floor(+$m("mo-take").value || 0), cr.amt));
     M.creditUsed = cr.at; M.loanReq = null;
     if (v > 0) { M.cash += v; M.taken = (M.taken || 0) + v; M.p2p = (M.p2p || 0) + v; log("💰 向 " + nameOf(oid()) + " 借了 " + money(v)); toast("💰 借到 " + money(v)); }
+
     saveM(); refresh();
   };
   var d = $m("mo-take-no");
@@ -641,6 +657,7 @@ function renderStrip(){
   }
   el.innerHTML = s;
   var cu = el.querySelector(".cur"); if (cu) el.scrollLeft = Math.max(0, cu.offsetLeft - el.offsetLeft - 90);
+
 }
 function renderAct(){
   var el = $m("mono-act"); if (!el) return;
@@ -661,6 +678,7 @@ function renderAct(){
     bb.onclick = function(){ buyoutOffer(br.ci, capHead(br.ci)); };
     el.insertBefore(bb, el.children[1]);
   }
+}
 function ev(html, btns){
   var e = $m("mono-ev"); if (!e) return;
   e.innerHTML = '<div class="box" style="background:#fff;border:1px solid var(--line)">' + html + '<div class="btns" id="mo-evb"></div></div>';
@@ -672,6 +690,7 @@ function ev(html, btns){
   });
   e.querySelectorAll("[data-say]").forEach(function(x){ x.onclick = function(){ if (typeof speak === "function") speak(x.dataset.say); }; });
 }
+
 function evHome(){
   lock = false;
   ev('<div class="muted">' + (M.jail ? '你在监狱里：掷出两个相同点数、连对 3 题、或付 ' + CFG.JAIL_FEE + ' 就能出狱。'
@@ -704,6 +723,7 @@ function afterRoll(a, b){
     else { busy = false; log("🏛️ 没掷出相同点数"); finish('🏛️ 没有掷出相同点数，还在监狱里。<br>连对 3 题或者付 ' + CFG.JAIL_FEE + ' 也能出狱。'); }
     return;
   }
+
   walk(a + b);
 }
 function walk(n){
@@ -736,6 +756,7 @@ function land(passed){
     case "SCHOOL": return ev('<div class="qhead">🏫 日语学校</div>连答 3 题，每答对一题奖励 200。' + extra, [{t:"开始答题", main:1, f:function(){ quiz(3, 200, null, "🏫 日语学校"); }}]);
     case "AIR": return airport(extra, CFG.AIR_FEE);
     case "JAIL": return finish('🏛️ 只是路过参观监狱，不用担心。' + extra);
+
     case "POLICE": return goJail('🚔 被警察带走了！直接进监狱。' + extra);
   }
   finish("继续旅行！");
@@ -768,12 +789,14 @@ function landCap(ci, extra){
       {t:"先不投资", f:function(){ finish("下次再来投资。"); }}]);
   }
   var r = rateEff(), net = netOf(O, ci), toll = Math.max(1, Math.round(net * r / 100));
+
   payO(toll); log("💸 在 " + C[ci].cap.n + " 付过路费 " + money(toll));
   var msg = hd + '<div class="diag">这是 ' + h(nameOf(oid())) + ' 的首都！净资产 ' + money(net) + ' × ' + r + '% = 过路费 <b>' + money(toll) + '</b></div>';
   if (myCash() < 0) msg += '<div class="hint">钱不够，变成欠银行 ' + money(-myCash()) + '（每天 1% 利息）。现在<b>每答对 1 题就 +100</b>，快去做题还债！也可以向 ' + h(nameOf(oid())) + ' 借钱（每天 0.5%，当天做满 ' + CFG.GOAL + ' 题免息）。</div>';
   buyoutOffer(ci, msg);
 }
-  // ===== 收购对方的首都 =====
+
+// ===== 收购对方的首都 =====
 function bpOf(ci){ return Math.round(netOf(O, ci) * (1 + CFG.BUYOUT_PREMIUM)); }
 function buyoutOffer(ci, msg){
   M.buyRight = {ci:ci, t:Date.now()};
@@ -797,16 +820,17 @@ function doBuyout(ci, useBank){
   var p = bpOf(ci), mc = myCash();
   if (mc < p && (!useBank || mc - p < -CFG.BUYOUT_BANK_MAX)) return finish("钱不够，不能收购。");
   var src = O.own[ci];
-  payO(p);   // 一次付清，对方马上到账
+  payO(p);
   M.own[ci] = {t:Date.now(), take:src.t, paid:p,
+
     inv:(src.inv || []).map(function(x){ return {k:x.k, amt:x.val, val:x.val}; })};
   M.buyRight = null;
   log("🤝 以 " + money(p) + " 收购了 " + C[ci].cap.n + (mc < p ? "（借高利贷 " + money(p - mc) + "）" : ""));
   burst();
   finish('🎉 收购成功！<b>' + h(C[ci].cap.n) + '</b> 连同里面的投资都是你的了。' +
     (myCash() < 0 ? '<div class="hint">现在欠银行 ' + money(-myCash()) + '，每天 1% 利息。欠债期间每答对 1 题 +100，快去做题还债！</div>' : ''));
-
 }
+
 function landCity(ci, j, extra){
   var c = C[ci], x = c.cs[j];
   var hd = '<div class="qhead">' + x.e + ' ' + h(x.n) + ' <span class="muted">（' + c.f + ' ' + h(c.n) + '）</span></div><div>' + h(x.i) + '</div>' + wordHtml(x.w) + extra;
@@ -831,6 +855,7 @@ function airport(extra, fee){
     {t:fee ? "起飞（" + fee + "）" : "起飞", main:1, dis:!can, f:function(){
       var ci = +$m("mo-fly").value; M.cash -= fee; M.pos = capPos(ci);
       log("✈️ 飞到 " + C[ci].cap.n); renderStrip(); toast("✈️ 到达 " + C[ci].cap.n); landCap(ci, ""); }},
+
     {t:"不飞了", f:function(){ finish("留在原地，继续旅行。"); }}]);
 }
 function investPanel(ci){
@@ -863,6 +888,7 @@ function propsPanel(){
   var rows = C.map(function(c, i){
     var ow = ownerOf(i), P = ow === curPid ? M : (ow ? O : null), net = P ? netOf(P, i) : 0;
     return '<tr><td>' + c.f + ' ' + h(c.cap.n) + '<div class="muted">GDP 第 ' + rank(i) + '</div></td><td>' + money(price(i)) + '</td><td>' +
+
       (ow ? '<b style="color:' + pcol(ow) + '">' + h(nameOf(ow)) + '</b>' : '—') + '</td><td>' + (ow ? money(net) : '') + '</td><td>' +
       (ow ? money(Math.round(net * rateEff() / 100)) : '') + '</td></tr>';
   }).join("");
@@ -893,7 +919,9 @@ function loanPanel(){
     btn.push({t:"能还多少还多少", f:function(){ repay(M.p2p); }});
   }
   btn.push({t:"返回", f:evHome});
+  lock = false;
   ev(html, btn);
+
 }
 function ratePanel(){
   var on = h(nameOf(oid())), can = M.rateWin || !M.rolled;
@@ -926,6 +954,7 @@ function howPanel(){
     '<div class="hint">骰子可以一直攒着，但<b>连续 3 天不做题就清零</b>。</div>', [{t:"返回", main:1, f:evHome}]);
 }
 function logPanel(){
+
   ev('<div class="qhead">📜 最近记录</div>' + (M.log.length ? M.log.map(function(x){ return '<div class="ex">' + h(x) + '</div>'; }).join("") : '<div class="muted">还没有记录。</div>'),
     [{t:"返回", main:1, f:evHome}]);
 }
@@ -958,12 +987,15 @@ function hideTravel(){
   document.querySelectorAll("#main h3, #main summary, #main .qhead, #main b").forEach(function(x){
     if (/环游世界|世界跑道/.test(x.textContent)) {
       var c = x.closest(".card");
+
       if (c && core.indexOf(c.id) < 0) c.style.display = "none";
     }
   });
 }
+
 // 给地图用：把大富翁的状态开放出去（只读）
 window.MONO = {st:function(){ return (M && ready) ? {M:M, O:O, B:B, C:C, N:N, me:curPid, other:oid(), owner:ownerOf, tileName:tileName} : null; }};
+
 // ===== 主循环 =====
 setInterval(function(){
   if (typeof setup === "undefined" || setup || typeof S !== "object" || !S || typeof pid !== "string") return;
