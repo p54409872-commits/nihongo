@@ -932,13 +932,18 @@ function logPanel(){
 
 // ===== 首页入口卡片、隐藏旧的环游世界 =====
 function entry(){
-  var dash = $m("dash"); if (!dash || !M || !ready) return;
+  if (!M || !ready) return;
+  var dash = $m("dash"), greet = $m("greet");
+  var anchor = (dash && dash.offsetParent !== null) ? dash : greet;   // 进度卡片被藏起来时，改放到问候语下面
+  if (!anchor) return;
   var e = $m("mono-card");
   if (!e) {
     e = document.createElement("div");
     e.id = "mono-card"; e.className = "card"; e.style.cursor = "pointer"; e.onclick = openMono;
-    dash.parentNode.insertBefore(e, dash.nextSibling);
   }
+  if (e.previousElementSibling !== anchor) anchor.parentNode.insertBefore(e, anchor.nextSibling);
+  e.classList.remove("hidden");
+  if (e.style.display === "none") e.style.display = "";
   var notes = [], w = warnText(), pc = pendingCount();
   if (w) notes.push(w);
   if (pc) notes.push("📬 有 " + pc + " 条借钱消息");
