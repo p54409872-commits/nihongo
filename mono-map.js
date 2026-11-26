@@ -134,11 +134,14 @@ setInterval(function(){
   var card = document.getElementById("mono-card");
   if (card) {
     var m = document.getElementById("mono-map");
-    if (!m) {
+        if (!m) {
       m = document.createElement("div");
       m.id = "mono-map"; m.className = "card";
-      card.parentNode.insertBefore(m, card.nextSibling);
     }
+    if (m.previousElementSibling !== card) card.parentNode.insertBefore(m, card.nextSibling);
+    m.classList.remove("hidden");
+    if (m.style.display === "none") m.style.display = "";
+    
     paint(m, s, true);
   }
   // 大富翁里面：放在格子条下面
