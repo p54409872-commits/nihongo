@@ -988,7 +988,7 @@ function hideTravel(){
     if (/环游世界|世界跑道/.test(x.textContent)) {
       var c = x.closest(".card");
 
-      if (c && core.indexOf(c.id) < 0) c.style.display = "none";
+      if (c && core.indexOf(c.id) < 0) c.style.display = window.SHOW_OLD_TRAVEL ? "" : "none";
     }
   });
 }
