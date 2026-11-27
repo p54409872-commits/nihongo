@@ -23,18 +23,30 @@ var XY = {
   BR:[[-47.88,-15.79],[-43.17,-22.91],[-46.63,-23.55],[-60.02,-3.12]],
   MX:[[-99.13,19.43],[-86.85,21.16],[-101.26,21.02],[-103.35,20.67]],
   US:[[-77.04,38.91],[-74.01,40.71],[-118.24,34.05],[-122.42,37.77]],
-  CA:[[-75.70,45.42],[-79.38,43.65],[-123.12,49.28],[-71.21,46.81]]
+  CA:[[-75.70,45.42],[-79.38,43.65],[-123.12,49.28],[-71.21,46.81]],
+  VN:[[105.85,21.03],[107.08,20.95],[108.33,15.88],[106.70,10.78]],
+  TH:[[100.50,13.76],[100.57,14.35],[98.99,18.79],[98.39,7.88]],
+  SG:[[103.85,1.29],[103.86,1.28],[103.83,1.25],[103.84,1.28]],
+  NZ:[[174.78,-41.29],[174.76,-36.85],[176.25,-38.14],[168.66,-45.03]],
+  AE:[[54.37,24.45],[55.27,25.20],[55.41,25.35],[55.76,24.21]],
+  EG:[[31.24,30.04],[29.92,31.20],[32.64,25.69],[32.90,24.09]],
+
+  KE:[[36.82,-1.29],[36.07,-0.30],[35.14,-1.49],[39.67,-4.04]],
+  ZA:[[28.19,-25.75],[28.05,-26.20],[31.02,-29.86],[18.42,-33.92]],
+  NG:[[7.40,9.06],[8.52,12.00],[3.38,6.52],[8.33,4.95]],
+  GR:[[23.73,37.98],[22.94,40.64],[21.63,37.64],[25.43,36.39]],
+  SE:[[18.07,59.33],[17.64,59.86],[20.23,67.86],[11.97,57.71]],
+  AR:[[-58.38,-34.60],[-54.58,-25.60],[-68.30,-54.80],[-68.84,-32.89]],
+  CL:[[-70.67,-33.45],[-71.63,-33.05],[-68.20,-22.91],[-109.35,-27.11]]
 };
 var START = [139.2, 37.8];   // 起点在东京附近
 var HEX = ["#993556", "#185fa5"];   // yueyue 粉、姐姐蓝（和 PK 一样）
 var world = null, loading = false, PTS = null, keys = {};
 
 function st(){ return window.MONO ? window.MONO.st() : null; }
-
 function col(id){ return HEX[PROFILES.findIndex(function(p){ return p.id === id; }) === 0 ? 0 : 1]; }
 function h(s){ return typeof esc === "function" ? esc(String(s)) : String(s); }
 
-// 每一格在地图上的位置；特殊格放在前后两个地点的中间
 function coord(s, i){
   var b = s.B[i];
   if (b.t !== "sp") return XY[s.C[b.c].id][b.t === "cap" ? 0 : b.j + 1];
@@ -45,12 +57,13 @@ function coord(s, i){
   return d3.geoInterpolate(coord(s, p), coord(s, n))(0.5);
 }
 function points(s){
-  if (!PTS) { PTS = []; for (var i = 0; i < s.N; i++) PTS.push(coord(s, i)); }
+  if (!PTS || PTS.length !== s.N) { PTS = []; for (var i = 0; i < s.N; i++) PTS.push(coord(s, i)); }
   return PTS;
 }
 
 function loadWorld(){
   if (world || loading || !window.d3 || !window.topojson) return;
+
   loading = true;
   fetch("https://cdn.jsdelivr.net/npm/world-atlas@2/countries-110m.json")
     .then(function(r){ return r.json(); })
@@ -63,11 +76,10 @@ function race(s){
   var ids = [s.me, s.other], P = [s.M, s.O];
   var prog = P.map(function(x){ return x ? x.laps * s.N + x.pos : 0; });
   var mx = Math.max(prog[0], prog[1], 1);
-
   var rows = ids.map(function(id, k){
     var x = P[k];
     return '<div class="pkrow"><div class="pkname"><span><b style="color:' + col(id) + '">' + h(nameOf(id)) + '</b></span><span class="muted">' +
-      (x ? '第 ' + (x.laps + 1) + ' 圈 · ' + s.tileName(x.pos) + ' · 共走 ' + prog[k] + ' 格' : '还没出发') + '</span></div>' +
+      (x ? '第 ' + (x.laps + 1) + ' 圈 · ' + s.tileName(x.pos) + ' · 共走 ' + prog[k] + ' 格 · 🎲 ' + x.dice + ' 次' : '还没出发') + '</span></div>' +
       '<div class="pkbar"><div style="width:' + Math.round(prog[k] / mx * 100) + '%;background:' + col(id) + '"></div></div></div>';
   }).join("");
   var d = prog[0] - prog[1], msg;
@@ -84,25 +96,25 @@ function svg(s){
   var W = 960, H = 480;
   var proj = d3.geoNaturalEarth1().fitSize([W, H], {type:"Sphere"}), path = d3.geoPath(proj), pts = points(s);
   var out = '<svg viewBox="0 0 ' + W + ' ' + H + '" style="width:100%;height:auto;display:block;background:#eef5fb;border-radius:10px;margin-top:8px">';
+
   if (world) out += '<path d="' + path(world) + '" fill="#e4e1d8" stroke="#ffffff" stroke-width="0.5"/>';
-  // 整条路线（灰色虚线）
-  out += '<path d="' + path({type:"LineString", coordinates:pts.concat([pts[0]])}) + '" fill="none" stroke="#8a8a8a" stroke-width="1.2" stroke-dasharray="4 4"/>';
-  // 这一圈走过的路（各自颜色）
+  var loop = {type:"LineString", coordinates:pts.concat([pts[0]])};
+  out += '<path d="' + path(loop) + '" fill="none" stroke="#8a8a8a" stroke-width="1.2" stroke-dasharray="4 4"/>';
   [[s.other, s.O], [s.me, s.M]].forEach(function(x){
-    var P = x[1]; if (!P || P.pos < 1) return;
+    var P = x[1]; if (!P) return;
+    // 已经绕完至少一圈：整条路线用淡色铺一遍
+    if (P.laps > 0) out += '<path d="' + path(loop) + '" fill="none" stroke="' + col(x[0]) + '" stroke-width="2" opacity="0.25"/>';
+    if (P.pos < 1) return;
     out += '<path d="' + path({type:"LineString", coordinates:pts.slice(0, P.pos + 1)}) + '" fill="none" stroke="' + col(x[0]) + '" stroke-width="3.5" stroke-linecap="round" opacity="0.8"/>';
   });
-  // 首都：有主人就是主人的颜色
   s.C.forEach(function(c, ci){
+    if (!XY[c.id]) return;
     var ow = s.owner(ci), p = proj(XY[c.id][0]);
     out += '<circle cx="' + p[0].toFixed(1) + '" cy="' + p[1].toFixed(1) + '" r="' + (ow ? 7 : 4) + '" fill="' + (ow ? col(ow) : "#ffffff") + '" stroke="#444" stroke-width="1"><title>' +
-
       h(c.f + " " + c.cap.n + (ow ? "（" + nameOf(ow) + "）" : "（还没人买）")) + '</title></circle>';
   });
-  // 起点
   var sp = proj(START);
   out += '<text x="' + (sp[0] + 8).toFixed(1) + '" y="' + (sp[1] - 8).toFixed(1) + '" font-size="18">🏁</text>';
-  // 棋子
   var same = s.O && s.M.pos === s.O.pos;
   [[s.other, s.O, same ? 9 : 0], [s.me, s.M, same ? -9 : 0]].forEach(function(x){
     var P = x[1]; if (!P) return;
@@ -116,43 +128,33 @@ function svg(s){
 
 function keyOf(s){
   var own = s.C.map(function(_, ci){ return s.owner(ci) || "-"; }).join(",");
-  return [s.M.pos, s.M.laps, s.O ? s.O.pos : "", s.O ? s.O.laps : "", own, !!world, s.me].join("|");
+  return [s.M.pos, s.M.laps, s.M.dice, s.O ? s.O.pos : "", s.O ? s.O.laps : "", s.O ? s.O.dice : "", own, !!world, s.me].join("|");
+
 }
 function paint(el, s, title){
   var k = keyOf(s);
-  if (keys[el.id] === k) return;
+  if (keys[el.id] === k && el.innerHTML) return;
   keys[el.id] = k;
   el.innerHTML = (title ? '<h3 style="margin-top:0">🗺️ 环游世界大富翁</h3>' : '') + race(s) + svg(s) +
-    '<div class="muted" style="margin-top:6px">彩色粗线＝这一圈走过的路，大圆点＝已经被买下的首都（颜色＝主人），🏁＝起点（东京出发）。</div>';
+    '<div class="muted" style="margin-top:6px">深色粗线＝这一圈走过的路，淡色线＝已经绕完的圈，大圆点＝已经被买下的首都（颜色＝主人），🏁＝起点（东京出发）。</div>';
 }
 
 setInterval(function(){
   var s = st(); if (!s) return;
   loadWorld();
-
-  // 首页：放在大富翁卡片下面
   var card = document.getElementById("mono-card");
   if (card) {
     var m = document.getElementById("mono-map");
-        if (!m) {
-      m = document.createElement("div");
-      m.id = "mono-map"; m.className = "card";
-    }
+    if (!m) { m = document.createElement("div"); m.id = "mono-map"; m.className = "card"; }
     if (m.previousElementSibling !== card) card.parentNode.insertBefore(m, card.nextSibling);
     m.classList.remove("hidden");
     if (m.style.display === "none") m.style.display = "";
-    
     paint(m, s, true);
   }
-  // 大富翁里面：放在格子条下面
   var strip = document.getElementById("mono-strip");
   if (strip) {
     var m2 = document.getElementById("mono-map2");
-    if (!m2) {
-      m2 = document.createElement("div");
-      m2.id = "mono-map2";
-      strip.parentNode.insertBefore(m2, strip.nextSibling);
-    }
+    if (!m2) { m2 = document.createElement("div"); m2.id = "mono-map2"; strip.parentNode.insertBefore(m2, strip.nextSibling); }
     paint(m2, s, false);
   }
 }, 1500);
